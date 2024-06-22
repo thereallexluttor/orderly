@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:orderly/homepage/homepage.dart';
 //import 'package:orderly_app/HomePage/HomePage.dart';
 import 'package:orderly/personal_information/personal_information.dart';
 import 'package:orderly/login/login.dart';
@@ -92,7 +93,7 @@ class _logincontrollerState extends State<logincontroller> {
 
                   if (snapshot.hasData && snapshot.data!.exists) {
                     // El usuario existe en Firestore, por lo que puede ir a HomePage
-                    return PersonalInformation();
+                    return HomePage();
                   } else {
                     // El usuario no existe en Firestore, por lo que necesita completar su información personal
                     if (_personalInfoCompleted) {

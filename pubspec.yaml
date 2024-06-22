@@ -70,6 +70,11 @@ flutter:
   uses-material-design: true
 
   assets: 
+    - lib/images/product_category/motos_y_autopartes.png
+    - lib/images/product_category/moda_y_accesorios.png
+    - lib/images/product_category/deportes_y_hobbies.png
+    - lib/images/product_category/electronica_de_consumo.png
+    - lib/images/product_category/hogar_y_accesorios.png
     - lib/images/OrderlyLogo_doggie_alone.png
     - lib/images/OrderlyLogo_doggie.png
     - lib/images/OrderlyLogo_doggie_alone2.png

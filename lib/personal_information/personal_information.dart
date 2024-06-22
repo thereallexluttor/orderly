@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:orderly/homepage/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -312,7 +313,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
         'phoneNumber': phoneNumber,
       }).then((value) {
         _setPersonalInfoCompleted();
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       }).catchError((error) {
         print('Error saving personal information: $error');
       });
