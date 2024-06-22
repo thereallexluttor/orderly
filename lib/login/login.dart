@@ -1,4 +1,3 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, camel_case_types, avoid_print
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -161,17 +160,26 @@ class LogAndSign extends StatelessWidget {
   }
 
   Future<void> signInWithGoogle() async {
-    final googleUser = await GoogleSignIn().signIn();
-    final googleAuth = await googleUser?.authentication;
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        // El usuario canceló el inicio de sesión
+        return;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    // Imprimir el nombre del usuario para fines de depuración
-    print(userCredential.user?.displayName);
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      // Imprimir el nombre del usuario para fines de depuración
+      print(userCredential.user?.displayName);
+    } catch (e) {
+      print('Error during Google sign in: $e');
+    }
   }
 }
 

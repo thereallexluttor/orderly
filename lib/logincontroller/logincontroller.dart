@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 //import 'package:orderly_app/HomePage/HomePage.dart';
-//import 'package:orderly_app/Personal_information/PersonalInformation.dart';
+import 'package:orderly/personal_information/personal_information.dart';
 import 'package:orderly/login/login.dart';
 import 'package:permission_handler/permission_handler.dart'; // Importa el paquete de manejo de permisos
 
@@ -71,51 +71,51 @@ class _logincontrollerState extends State<logincontroller> {
           if (snapshot.hasData) {
             final User? user = snapshot.data;
             if (user != null) {
-              // return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              //   future: FirebaseFirestore.instance.collection('Orderly').doc('Users').collection('users').doc(user.uid).get(),
-              //   // builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-              //   //   if (snapshot.hasError) {
-              //   //     return Center(
-              //   //       child: Text('Error: ${snapshot.error}'),
-              //   //     );
-              //   //   }
+              return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                future: FirebaseFirestore.instance.collection('Orderly').doc('Users').collection('users').doc(user.uid).get(),
+                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
 
-              //   //   if (snapshot.connectionState == ConnectionState.waiting) {
-              //   //     return Center(
-              //   //       child: LoadingAnimationWidget.twistingDots(
-              //   //         leftDotColor: const Color(0xFF1A1A3F),
-              //   //         rightDotColor: Color.fromARGB(255, 198, 55, 234),
-              //   //         size: 50,
-              //   //       ),
-              //   //     );
-              //   //   }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: LoadingAnimationWidget.twistingDots(
+                        leftDotColor: const Color(0xFF1A1A3F),
+                        rightDotColor: Color.fromARGB(255, 198, 55, 234),
+                        size: 50,
+                      ),
+                    );
+                  }
 
-              //   //   // if (snapshot.hasData && snapshot.data!.exists) {
-              //   //   //   // El usuario existe en Firestore, por lo que puede ir a HomePage
-              //   //   //   return HomePage();
-              //   //   // } else {
-              //   //   //   // El usuario no existe en Firestore, por lo que necesita completar su información personal
-              //   //   //   if (_personalInfoCompleted) {
-              //   //   //     // Si los permisos están concedidos, muestra la pantalla de PersonalInformation
-              //   //   //     return PersonalInformation();
-              //   //   //   } else {
-              //   //   //     // Si los permisos no están concedidos, muestra una pantalla de carga o un mensaje de espera
-              //   //   //     return Center(
-              //   //   //       child: LoadingAnimationWidget.twistingDots(
-              //   //   //         leftDotColor: const Color(0xFF1A1A3F),
-              //   //   //         rightDotColor: Color.fromARGB(255, 198, 55, 234),
-              //   //   //         size: 50,
-              //   //   //       ),
-              //   //   //     ); // Puedes personalizar esto según tu diseño
-              //   //   //   }
-              //   //   }
-              //   // },
-              // );
+                  if (snapshot.hasData && snapshot.data!.exists) {
+                    // El usuario existe en Firestore, por lo que puede ir a HomePage
+                    return PersonalInformation();
+                  } else {
+                    // El usuario no existe en Firestore, por lo que necesita completar su información personal
+                    if (_personalInfoCompleted) {
+                      // Si los permisos están concedidos, muestra la pantalla de PersonalInformation
+                      return PersonalInformation();
+                    } else {
+                      // Si los permisos no están concedidos, muestra una pantalla de carga o un mensaje de espera
+                      return Center(
+                        child: LoadingAnimationWidget.twistingDots(
+                          leftDotColor: const Color(0xFF1A1A3F),
+                          rightDotColor: Color.fromARGB(255, 198, 55, 234),
+                          size: 50,
+                        ),
+                      ); // Puedes personalizar esto según tu diseño
+                    }
+                  }
+                },
+              );
             }
           }
           // No hay usuario autenticado
-          // ignore: prefer_const_constructors
-          return  LogAndSign();
+          return 
+          LogAndSign();
         },
       ),
     );

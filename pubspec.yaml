@@ -42,6 +42,10 @@ dependencies:
   permission_handler: ^11.3.1
   loading_animation_widget: ^1.2.1
   google_sign_in: ^6.2.1
+  flutter_form_builder: ^9.2.1
+  geolocator: ^12.0.0
+  intl_phone_number_input: ^0.7.4
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +76,27 @@ flutter:
     - lib/images/OrderlyLogo_doggie2.png
     - lib/images/OrderlyLogoLogin.png
     - lib/images/interfaceicons/google.png
+    - lib/images/animations/qr-code.gif
+    - lib/images/animations/clock.gif
+    - lib/images/animations/walk.gif
+    - lib/images/animations/configuration.gif
+    - lib/images/animations/plus.gif
+    - lib/images/animations/arrow.gif
+    - lib/images/animations/x.gif
+    - lib/images/animations/platter.gif
+    - lib/images/animations/payO.png
+    - lib/images/animations/wompi.png
+    - lib/images/animations/dinero.gif
+    - lib/images/animations/datafono.gif
+    - lib/images/animations/mesero.gif
+    - lib/images/animations/man.gif
+    - lib/images/animations/woman.gif
+    - lib/images/animations/black-friday.gif
+    - lib/images/animations/helpdesk.gif
+    - lib/images/animations/law-document.gif
+    - lib/images/animations/log-out.gif
+    - lib/images/animations/menu.gif
+    
 
   # To add assets to your application, add an assets section, like this:
   # assets:
