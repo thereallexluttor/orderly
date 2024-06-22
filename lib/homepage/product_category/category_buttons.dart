@@ -15,12 +15,12 @@ class CategoryButton extends StatelessWidget {
     return Column(
       children: [
         CircleAvatar(
-          radius: 23,
+          radius: 25,
           backgroundImage: AssetImage(imagePath),
         ),
         const SizedBox(height: 5),
         SizedBox(
-          width: 50, // Ajusta el ancho para forzar el texto en dos líneas
+          width: 55, // Ajusta el ancho para forzar el texto en dos líneas
           child: Text(
             label,
             textAlign: TextAlign.center,
