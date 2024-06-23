@@ -122,8 +122,8 @@ class _StoreCardState extends State<StoreCard> {
                 ClipOval(
                   child: Image.network(
                     widget.storeData['logo'] ?? '',
-                    height: 40,
-                    width: 40,
+                    height: 35,
+                    width: 35,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Icon(Icons.store, size: 50);
@@ -138,7 +138,7 @@ class _StoreCardState extends State<StoreCard> {
                       Text(
                         widget.storeData['nombre'] ?? 'Unnamed Store',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                           fontFamily: "Poppins",
                         ),

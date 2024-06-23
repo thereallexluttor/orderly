@@ -124,6 +124,9 @@ flutter:
     - family: Poppins
       fonts:
         - asset: lib/fonts/Poppins-Regular.ttf
+    - family: Poppins-Black
+      fonts:
+        - asset: lib/fonts/Poppins-Medium.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

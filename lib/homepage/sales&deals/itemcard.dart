@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -8,6 +10,12 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determinar el color del texto en función del estado del producto
+    final bool isAgotado = itemData['status'] == 'agotado';
+    final Color priceColor = isAgotado ? Colors.grey : const Color.fromARGB(255, 255, 17, 0);
+    final Color priceColor2 = isAgotado ? Colors.grey : Color.fromARGB(255, 0, 0, 0);
+    const Color infoColor = Colors.grey;
+
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -17,7 +25,7 @@ class ItemCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start, // Alinear contenido a la izquierda
           children: [
             Stack(
               children: [
@@ -39,7 +47,7 @@ class ItemCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (itemData['status'] == 'agotado')
+                if (isAgotado)
                   Positioned(
                     top: 0,
                     left: 0,
@@ -50,7 +58,7 @@ class ItemCard extends StatelessWidget {
                         topRight: Radius.circular(10.0),
                       ),
                       child: Container(
-                        color: Colors.red,
+                        color: Colors.grey,
                         padding: EdgeInsets.symmetric(vertical: 4.0),
                         child: Center(
                           child: Text(
@@ -59,7 +67,7 @@ class ItemCard extends StatelessWidget {
                               color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              fontFamily: "Poppins"
+                              fontFamily: "Poppins",
                             ),
                           ),
                         ),
@@ -68,20 +76,21 @@ class ItemCard extends StatelessWidget {
                   ),
                 if (itemData['discount'] != null && itemData['discount'] > 0)
                   Positioned(
-                    bottom: 10,
+                    top: 0,
                     left: 0,
                     child: ClipRRect(
                       borderRadius: BorderRadius.only(
-                        //bottomLeft: Radius.circular(10.0),
+                        topLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0),
                       ),
                       child: Container(
-                        color: Colors.green,
-                        padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                        color: const Color.fromARGB(255, 255, 17, 0),
+                        padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
                         child: Text(
                           '-${itemData['discount']}%',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 11,
                             fontWeight: FontWeight.bold,
                             fontFamily: "Poppins"
                           ),
@@ -96,14 +105,42 @@ class ItemCard extends StatelessWidget {
               itemData['nombre'] != null && itemData['nombre'].length > 15
                   ? itemData['nombre'].substring(0, 15) + '...'
                   : itemData['nombre'] ?? 'Unnamed Item',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins"),
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.left, // Alinear texto a la izquierda
             ),
             SizedBox(height: 4),
-            Text(
-              'COP ${itemData['precio'] != null ? NumberFormat('#,##0', 'es_CO').format(itemData['precio']) : 'N/A'}',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: Colors.black),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start, // Alinear a la izquierda
+              children: [
+                Text(
+                  'COP',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  itemData['precio'] != null ? NumberFormat('#,##0', 'es_CO').format(itemData['precio']) : 'N/A',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'Ventas: ${itemData['ventas'] ?? 'N/A'}',
+                  style: TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                ),
+                SizedBox(width: 8),
+                Icon(Icons.star, size: 12, color: infoColor),
+                SizedBox(width: 2),
+                Text(
+                  itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',
+                  style: TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                ),
+              ],
             ),
           ],
         ),
@@ -111,4 +148,3 @@ class ItemCard extends StatelessWidget {
     );
   }
 }
-
