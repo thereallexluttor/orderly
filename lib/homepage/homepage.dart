@@ -1,14 +1,29 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-
 import 'package:flutter/material.dart';
 import 'package:orderly/homepage/product_category/category_buttons.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+  int _page = 0;
+  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +33,6 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Home Page'),
-         
         ),
         body: Padding(
           padding: const EdgeInsets.all(0.0),
@@ -54,7 +68,6 @@ class HomePage extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 20), // Espacio entre las categorías y los botones de venta
-               
               PreferredSize(
                 preferredSize: const Size.fromHeight(60),
                 child: ClipRRect(
@@ -78,13 +91,11 @@ class HomePage extends StatelessWidget {
                       tabs: [
                         TabItem(title: 'Top ventas'),
                         TabItem(title: 'Ofertas'),
-                        
                       ],
                     ),
                   ),
                 ),
               ),
-        
               Expanded(
                 child: TabBarView(
                   children: [
@@ -121,8 +132,32 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
+        
+bottomNavigationBar: CurvedNavigationBar(
+          height: 50,
+          key: _bottomNavigationKey,
+          index: 0,
+          items: <Widget>[
+            Icon(Icons.home_outlined, size: 15),
+            Icon(Icons.store_outlined, size: 15),
+            Icon(Icons.perm_identity, size: 15),
+          ],
+          color: Colors.white,
+          buttonBackgroundColor: Colors.white,
+          backgroundColor: Colors.purpleAccent,
+          animationCurve: Curves.easeInOut,
+          animationDuration: Duration(milliseconds: 600),
+          onTap: (index) {
+            setState(() {
+              _page = index;
+            });
+          },
+          letIndexChange: (index) => true,
+        ),
+        
+
+
       ),
     );
   }
 }
-
