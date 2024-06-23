@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:orderly/homepage/product_category/category_buttons.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -50,7 +51,30 @@ class HomePage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20), // Espacio entre las categorías y los botones de venta
-            
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('Orderly/Stores/Stores').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  var stores = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: stores.length,
+                    itemBuilder: (context, index) {
+                      var store = stores[index];
+                      var storeData = store.data() as Map<String, dynamic>;
+
+                      return StoreCard(
+                        storeData: storeData,
+                        storeReference: store.reference,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
