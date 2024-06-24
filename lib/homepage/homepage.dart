@@ -2,10 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:orderly/homepage/product_category/category_buttons.dart';
-import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:orderly/homepage/sales&deals/offers_tab.dart'; // Import the new OffersTab widget
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -123,30 +124,27 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                     // Ofertas tab
-                    Center(
-                      child: Text('Ofertas', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    ),
+                    OffersTab(), // Use the new OffersTab widget here
                   ],
                 ),
               ),
             ],
           ),
         ),
-        
-bottomNavigationBar: CurvedNavigationBar(
-          height: 50,
+        bottomNavigationBar: CurvedNavigationBar(
+          height: 45,
           key: _bottomNavigationKey,
           index: 0,
           items: <Widget>[
-            Icon(Icons.home_outlined, size: 15),
-            Icon(Icons.store_outlined, size: 15),
-            Icon(Icons.perm_identity, size: 15),
+            Icon(Icons.home_outlined, size: 17),
+            Icon(Icons.shopping_bag_outlined, size: 17),
+            Icon(Icons.perm_identity, size: 17),
           ],
           color: Colors.white,
           buttonBackgroundColor: Colors.white,
-          backgroundColor: Colors.purpleAccent,
+          backgroundColor: Color.fromARGB(255, 249, 217, 255),
           animationCurve: Curves.easeInOut,
-          animationDuration: Duration(milliseconds: 600),
+          animationDuration: Duration(milliseconds: 800),
           onTap: (index) {
             setState(() {
               _page = index;
@@ -154,9 +152,6 @@ bottomNavigationBar: CurvedNavigationBar(
           },
           letIndexChange: (index) => true,
         ),
-        
-
-
       ),
     );
   }
