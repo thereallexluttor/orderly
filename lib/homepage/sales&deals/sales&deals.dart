@@ -108,7 +108,7 @@ class _StoreCardState extends State<StoreCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => StoreHomePage(storeData: widget.storeData),
+            builder: (context) => StoreHomePage(storeData: widget.storeData, storeReference: widget.storeReference),
           ),
         );
       },

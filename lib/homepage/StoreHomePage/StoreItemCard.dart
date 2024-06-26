@@ -1,12 +1,10 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ItemCard extends StatelessWidget {
+class StoreItemCard extends StatelessWidget {
   final Map<String, dynamic> itemData;
 
-  const ItemCard({Key? key, required this.itemData}) : super(key: key);
+  const StoreItemCard({Key? key, required this.itemData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +40,8 @@ class ItemCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
                     child: Image.network(
                       itemData['foto_producto'] ?? '',
-                      height: 100,
-                      width: 100,
+                      height: 130,
+                      width: 130,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(Icons.image, size: 100);
