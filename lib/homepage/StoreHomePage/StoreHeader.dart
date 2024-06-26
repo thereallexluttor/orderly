@@ -10,6 +10,7 @@ class StoreHeader extends StatelessWidget {
   final String sales;
   final int discount;
   final int minimumPurchase;
+  final String description;
 
   const StoreHeader({
     super.key,
@@ -19,7 +20,8 @@ class StoreHeader extends StatelessWidget {
     required this.stars,
     required this.sales,
     required this.discount,
-    required this.minimumPurchase,
+    required this.minimumPurchase, 
+    required this.description,
   });
 
   @override
@@ -124,7 +126,10 @@ class StoreHeader extends StatelessWidget {
                         fontFamily: "Poppins",
                       ),
                     ),
+                    
                   ),
+
+                  
                   Row(
                     children: [
                       Text(
@@ -152,53 +157,72 @@ class StoreHeader extends StatelessWidget {
               ),
               SizedBox(height: 15.0),
               Center(
-                child: AnimatedContainer(
-                  duration: Duration(seconds: 1),
-                  curve: Curves.easeInOut,
-                  padding: EdgeInsets.all(15.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.local_offer_outlined, size: 18),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'COP$discount de descuento por compras superiores a COP$minimumPurchase (Cupon de tienda)',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                                fontFamily: "Alef",
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Icon(Icons.local_shipping_outlined, size: 18),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'Garantía de envío',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                                fontFamily: "Alef",
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+               child: Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.black87,
+                    fontFamily: "Alef",
                   ),
                 ),
               ),
+              SizedBox(height: 15.0),
+              Center(
+  child: AnimatedContainer(
+    duration: Duration(seconds: 1),
+    curve: Curves.easeInOut,
+    padding: EdgeInsets.all(15.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15.0),
+      border: Border.all(
+        color: const Color.fromARGB(255, 180, 180, 180), // Borde negro
+        width: 1.0, // Ancho del borde
+      ),
+    ),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Icon(Icons.local_offer_outlined, size: 18),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'COP$discount de descuento por compras superiores a COP$minimumPurchase (Cupon de tienda)',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black87,
+                  fontFamily: "Alef",
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+        Row(
+          children: [
+            Icon(Icons.local_shipping_outlined, size: 18),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Garantía de envío',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black87,
+                  fontFamily: "Alef",
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+      
+    ),
+  ),
+),
+
+
+
             ],
           ),
         ),

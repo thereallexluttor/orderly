@@ -22,6 +22,7 @@ class StoreHomePage extends StatelessWidget {
           sales: storeData['numero_ventas']?.toString() ?? 'N/A',
           discount: storeData['descuento'],
           minimumPurchase: storeData['compra_minima'],
+          description: storeData['descripcion']
         ),
       ),
     );
