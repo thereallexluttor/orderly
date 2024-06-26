@@ -27,16 +27,16 @@ class StoreHeader extends StatelessWidget {
     return Column(
       children: [
         Stack(
-          clipBehavior: Clip.none, // Allows the logo to overlap the banner
+          clipBehavior: Clip.none,
           children: [
             Container(
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2), // Shadow color
-                    spreadRadius: 2, // Spread radius
-                    blurRadius: 7, // Blur radius
-                    offset: Offset(0, 3), // Shadow offset
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 7,
+                    offset: Offset(0, 3),
                   ),
                 ],
                 borderRadius: BorderRadius.only(
@@ -50,7 +50,7 @@ class StoreHeader extends StatelessWidget {
                   bottomRight: Radius.circular(20.0),
                 ),
                 child: Container(
-                  height: 130, // Reduced banner size
+                  height: 130,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -62,8 +62,8 @@ class StoreHeader extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: -20, // Logo overlaps 20 pixels from the banner
-              left: 15,
+              bottom: -20,
+              left: 20,
               child: CircleAvatar(
                 radius: 33,
                 backgroundColor: Colors.white,
@@ -75,21 +75,21 @@ class StoreHeader extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 25, // Adjust the position as needed
-              left: 15,
+              top: 20,
+              left: 20,
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
                 },
                 child: Container(
-                  width: 30,
-                  height: 30,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
-                    color: Colors.white, // White background
+                    color: Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 3,
                         offset: Offset(0, 1),
@@ -99,90 +99,96 @@ class StoreHeader extends StatelessWidget {
                   child: Icon(
                     Icons.arrow_back,
                     size: 20,
-                    color: Colors.black, // Black icon
+                    color: Colors.black,
                   ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: 15.0), // Adjust space for the logo overlap
+        SizedBox(height: 30.0),
         Padding(
-          padding: EdgeInsets.only(top: 14.0, left: 18, right: 18),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Text(
-                    storeName,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontFamily: "Poppins-Black",
+                  Expanded(
+                    child: Text(
+                      storeName,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontFamily: "Poppins",
+                      ),
                     ),
                   ),
-                  SizedBox(width: 60),
-                  Text(
-                    '⭐',
-                    style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    stars,
-                    style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    '❤️',
-                    style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    sales,
-                    style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
+                  Row(
+                    children: [
+                      Text(
+                        "⭐",
+                        style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        stars,
+                        style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        "❤️",
+                        style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        sales,
+                        style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              SizedBox(height: 25.0),
+              SizedBox(height: 15.0),
               Center(
-                child: Container(
-                  padding: EdgeInsets.all(10.0),
+                child: AnimatedContainer(
+                  duration: Duration(seconds: 1),
+                  curve: Curves.easeInOut,
+                  padding: EdgeInsets.all(15.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.local_offer_outlined, size: 15),
-                          SizedBox(width: 8),
+                          Icon(Icons.local_offer_outlined, size: 18),
+                          SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'COP${discount.toString()} de descuento por compras superiores a COP${minimumPurchase.toString()} (Cupon de tienda)',
+                              'COP$discount de descuento por compras superiores a COP$minimumPurchase (Cupon de tienda)',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Color.fromARGB(255, 27, 27, 27),
+                                color: Colors.black87,
                                 fontFamily: "Alef",
-                                //fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 10),
                       Row(
                         children: [
-                          Icon(Icons.local_shipping_outlined, size: 15),
-                          SizedBox(width: 8),
+                          Icon(Icons.local_shipping_outlined, size: 18),
+                          SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Garantia de envio',
+                              'Garantía de envío',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Color.fromARGB(255, 27, 27, 27),
+                                color: Colors.black87,
                                 fontFamily: "Alef",
                               ),
                             ),
