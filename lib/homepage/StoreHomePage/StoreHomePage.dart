@@ -6,7 +6,6 @@ import 'package:orderly/homepage/StoreHomePage/CategoryButtons.dart';
 import 'package:orderly/homepage/StoreHomePage/CategoryItems.dart';
 import 'package:orderly/homepage/StoreHomePage/StoreHeader.dart';
 
-
 class StoreHomePage extends StatefulWidget {
   final Map<String, dynamic> storeData;
   final DocumentReference<Object?> storeReference;
@@ -27,9 +26,13 @@ class _StoreHomePageState extends State<StoreHomePage> {
   }
 
   void _initializeSelectedCategory() async {
-    var snapshot = await widget.storeReference.collection('items').get();
+    var snapshot = await widget.storeReference.collection('items').get(GetOptions(source: Source.cache));
+    
+    if (snapshot.docs.isEmpty) {
+      snapshot = await widget.storeReference.collection('items').get(GetOptions(source: Source.server));
+    }
+    
     var items = snapshot.docs;
-
     Map<String, dynamic> topProducts = {};
 
     for (var item in items) {
@@ -96,8 +99,6 @@ class _StoreHomePageState extends State<StoreHomePage> {
           selectedCategory: selectedCategory,
         ),
       ),
-     // bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
-
 }

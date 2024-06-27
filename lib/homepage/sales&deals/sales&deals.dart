@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 import 'package:orderly/homepage/StoreHomePage/StoreHomePage.dart';
 import 'dart:math' as math;
-
 import 'package:orderly/homepage/sales&deals/itemcard.dart';
 
 class StoreCard extends StatefulWidget {
@@ -72,12 +71,23 @@ class _StoreCardState extends State<StoreCard> {
 
   Future<List<Map<String, dynamic>>> _fetchItems() async {
     final itemsCollection = widget.storeReference.collection('items');
-    final snapshot = await itemsCollection.get();
-    List<Map<String, dynamic>> items = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-    items.sort((a, b) => (b['ventas'] ?? 0).compareTo(a['ventas'] ?? 0));
+    // Primero intentamos obtener los datos de la caché
+    final snapshot = await itemsCollection.get(GetOptions(source: Source.cache));
 
-    return items.take(10).toList();
+    if (snapshot.docs.isEmpty) {
+      // Si la caché está vacía, obtenemos los datos del servidor
+      final serverSnapshot = await itemsCollection.get(GetOptions(source: Source.server));
+      List<Map<String, dynamic>> items = serverSnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+      items.sort((a, b) => (b['ventas'] ?? 0).compareTo(a['ventas'] ?? 0));
+      return items.take(10).toList();
+    } else {
+      List<Map<String, dynamic>> items = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+      items.sort((a, b) => (b['ventas'] ?? 0).compareTo(a['ventas'] ?? 0));
+      return items.take(10).toList();
+    }
   }
 
   double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
