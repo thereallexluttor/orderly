@@ -84,6 +84,8 @@ flutter:
     - lib/images/OrderlyLogo_doggie2.png
     - lib/images/OrderlyLogoLogin.png
     - lib/images/interfaceicons/google.png
+    - lib/images/interfaceicons/message.png
+    - lib/images/interfaceicons/shop.png
     - lib/images/animations/qr-code.gif
     - lib/images/animations/clock.gif
     - lib/images/animations/walk.gif
