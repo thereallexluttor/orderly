@@ -68,7 +68,8 @@ class _HomePageState extends State<HomePage> {
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(7)),
                   child: Container(
-                    height: 35,
+                    height: 30,
+                    width: 200,
                     margin: const EdgeInsets.symmetric(horizontal: 60),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.all(Radius.circular(7)),
                       ),
                       labelColor: Colors.white,
-                      unselectedLabelColor: Colors.black54,
+                      unselectedLabelColor: Color.fromARGB(137, 92, 92, 92),
                       tabs: [
                         TabItem(title: 'Top ventas'),
                         TabItem(title: 'Ofertas'),

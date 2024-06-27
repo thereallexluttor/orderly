@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:orderly/homepage/StoreHomePage/StoreItemCard.dart';
 
-
 class CategoryItems extends StatelessWidget {
   final DocumentReference storeReference;
   final String? selectedCategory;
@@ -26,19 +25,30 @@ class CategoryItems extends StatelessWidget {
 
         var items = snapshot.data!.docs;
 
-        return GridView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 0.70,
-          ),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            var itemData = items[index].data() as Map<String, dynamic>;
-            return StoreItemCard(itemData: itemData);
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
           },
+          child: GridView.builder(
+            key: ValueKey<String?>(selectedCategory),
+            padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 0.66
+              ,
+            ),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              var itemData = items[index].data() as Map<String, dynamic>;
+              return StoreItemCard(itemData: itemData);
+            },
+          ),
         );
       },
     );

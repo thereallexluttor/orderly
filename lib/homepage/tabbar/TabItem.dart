@@ -18,7 +18,7 @@ class TabItem extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-                          fontSize: 10,
+                          fontSize: 8,
                           fontWeight: FontWeight.bold,
                           fontFamily: "Poppins",
                         ),

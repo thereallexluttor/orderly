@@ -104,14 +104,25 @@ class _StoreCardState extends State<StoreCard> {
         : null;
 
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StoreHomePage(storeData: widget.storeData, storeReference: widget.storeReference),
-          ),
+     onTap: () {
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => StoreHomePage(
+        storeData: widget.storeData,
+        storeReference: widget.storeReference,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
         );
       },
+      transitionDuration: Duration(milliseconds: 800), // Ajusta la duración aquí
+    ),
+  );
+},
+
       child: Card(
         color: Colors.white,
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
