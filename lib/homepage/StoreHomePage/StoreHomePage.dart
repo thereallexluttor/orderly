@@ -60,7 +60,8 @@ class _StoreHomePageState extends State<StoreHomePage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              expandedHeight: 435.0,
+              surfaceTintColor: Colors.white,
+              expandedHeight: 415.0,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
                   color: Colors.white,
@@ -79,7 +80,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
               pinned: true,
               automaticallyImplyLeading: false, // Aquí se desactiva el botón de retroceso
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(42), // Altura ajustada para incluir el rectángulo blanco
+                preferredSize: Size.fromHeight(32), // Altura ajustada para incluir el rectángulo blanco
                 child: Container(
                   color: Colors.white, // Rectángulo blanco
                   child: _buildCategoryButtons(),
@@ -117,27 +118,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
           },
         ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 50,
-        key: _bottomNavigationKey,
-        index: 0,
-        items: <Widget>[
-          Icon(Icons.home_outlined, size: 17),
-          Icon(Icons.shopping_bag_outlined, size: 17),
-          Icon(Icons.perm_identity, size: 17),
-        ],
-        color: Colors.white,
-        buttonBackgroundColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 249, 217, 255),
-        animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 800),
-        onTap: (index) {
-          setState(() {
-            _page = index;
-          });
-        },
-        letIndexChange: (index) => true,
-      ),
+      
     );
   }
 Widget _buildCategoryButtons() {
@@ -180,10 +161,10 @@ Widget _buildCategoryButtons() {
                       });
                     },
                     child: AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
+                      duration: Duration(milliseconds: 600),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: isSelected ? Border.all(color: Colors.purple, width: 3) : null,
+                        border: isSelected ? Border.all(color: Colors.purple, width: 1.5) : null,
                         color: isSelected ? Colors.purple.withOpacity(0.2) : Colors.transparent,
                       ),
                       child: CircleAvatar(
@@ -198,7 +179,7 @@ Widget _buildCategoryButtons() {
                   SizedBox(height: 5),
                   Text(
                     category ?? 'Unknown',
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 8, fontFamily: "Poppins"),
                   ),
                 ],
               ),

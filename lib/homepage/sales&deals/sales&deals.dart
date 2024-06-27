@@ -166,7 +166,7 @@ class _StoreCardState extends State<StoreCard> {
                                 '(${distance.toStringAsFixed(2)} km. 📍)',
                                 style: TextStyle(fontSize: 10, color: Colors.grey, fontFamily: "Poppins"),
                               ),
-                            SizedBox(width: 58),
+                            SizedBox(width: 50),
                             Row(
                               children: [
                                 Text(
