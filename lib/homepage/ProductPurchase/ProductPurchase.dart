@@ -24,13 +24,13 @@ class ProductPurchase extends StatelessWidget {
             expandedHeight: 450.0,
             pinned: true,
             leading: Container(
-              margin: const EdgeInsets.all(13),
+              margin: const EdgeInsets.all(11),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.black,
               ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 13,),
+                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18,),
                 onPressed: () {
                   Navigator.pop(context);
                 },
