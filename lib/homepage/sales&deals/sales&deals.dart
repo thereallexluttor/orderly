@@ -227,7 +227,7 @@ class _StoreCardState extends State<StoreCard> {
                         children: [
                           ...storeItems.map((item) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 0.0),
                               child: ItemCard(itemData: item),
                             );
                           }).toList(),

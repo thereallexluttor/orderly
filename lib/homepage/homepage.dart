@@ -35,43 +35,13 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   SizedBox(height: 70), // Espacio para la imagen del logo
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      CategoryButton(
-                        imagePath: 'lib/images/product_category/motos_y_autopartes.png',
-                        label: 'motos y autopartes',
-                      ),
-                      SizedBox(width: 10),
-                      CategoryButton(
-                        imagePath: 'lib/images/product_category/moda_y_accesorios.png',
-                        label: 'Moda y accesorios',
-                      ),
-                      SizedBox(width: 10),
-                      CategoryButton(
-                        imagePath: 'lib/images/product_category/deportes_y_hobbies.png',
-                        label: 'deportes y hobbies',
-                      ),
-                      SizedBox(width: 10),
-                      CategoryButton(
-                        imagePath: 'lib/images/product_category/electronica_de_consumo.png',
-                        label: 'electronica de consumo',
-                      ),
-                      SizedBox(width: 10),
-                      CategoryButton(
-                        imagePath: 'lib/images/product_category/hogar_y_accesorios.png',
-                        label: 'Hogar y accesorios',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20), // Espacio entre las categorías y los botones de venta
                   PreferredSize(
                     preferredSize: const Size.fromHeight(60),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(7)),
                       child: Container(
                         height: 30,
-                        width: 200,
+                        width: 240,
                         margin: const EdgeInsets.symmetric(horizontal: 60),
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -87,8 +57,8 @@ class _HomePageState extends State<HomePage> {
                           labelColor: Colors.white,
                           unselectedLabelColor: Color.fromARGB(137, 92, 92, 92),
                           tabs: [
-                            TabItem(title: 'Top ventas'),
-                            TabItem(title: 'Ofertas'),
+                            TabItem(title: 'Ofertas!🤟'),
+                            TabItem(title: 'Top tiendas.😎🤍'),
                           ],
                         ),
                       ),
@@ -97,31 +67,107 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        // Top Tiendas tab
-                        StreamBuilder(
-                          stream: FirebaseFirestore.instance.collection('Orderly/Stores/Stores').snapshots(),
-                          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (!snapshot.hasData) {
-                              return Center(child: CircularProgressIndicator());
-                            }
-
-                            var stores = snapshot.data!.docs;
-                            return ListView.builder(
-                              itemCount: stores.length,
-                              itemBuilder: (context, index) {
-                                var store = stores[index];
-                                var storeData = store.data() as Map<String, dynamic>;
-
-                                return StoreCard(
-                                  storeData: storeData,
-                                  storeReference: store.reference,
-                                );
-                              },
-                            );
-                          },
-                        ),
+                        // Top Ventas tab
+                        
                         // Ofertas tab
-                        OffersTab(), // Use the new OffersTab widget here
+                        Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/motos_y_autopartes.png',
+                                  label: 'motos y autopartes',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/moda_y_accesorios.png',
+                                  label: 'Moda y accesorios',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/deportes_y_hobbies.png',
+                                  label: 'deportes y hobbies',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/electronica_de_consumo.png',
+                                  label: 'electronica de consumo',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/hogar_y_accesorios.png',
+                                  label: 'Hogar y accesorios',
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20), // Espacio entre las categorías y las ofertas
+                            Expanded(
+                              child: OffersTab(), // Use the new OffersTab widget here
+                            ),
+                          ],
+                        ),
+
+                        Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/motos_y_autopartes.png',
+                                  label: 'motos y autopartes',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/moda_y_accesorios.png',
+                                  label: 'Moda y accesorios',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/deportes_y_hobbies.png',
+                                  label: 'deportes y hobbies',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/electronica_de_consumo.png',
+                                  label: 'electronica de consumo',
+                                ),
+                                SizedBox(width: 10),
+                                CategoryButton(
+                                  imagePath: 'lib/images/product_category/hogar_y_accesorios.png',
+                                  label: 'Hogar y accesorios',
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 0), // Espacio entre las categorías y los productos
+                            Expanded(
+                              child: StreamBuilder(
+                                stream: FirebaseFirestore.instance.collection('Orderly/Stores/Stores').snapshots(),
+                                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(child: CircularProgressIndicator());
+                                  }
+
+                                  var stores = snapshot.data!.docs;
+                                  return ListView.builder(
+                                    itemCount: stores.length,
+                                    itemBuilder: (context, index) {
+                                      var store = stores[index];
+                                      var storeData = store.data() as Map<String, dynamic>;
+
+                                      return StoreCard(
+                                        storeData: storeData,
+                                        storeReference: store.reference,
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -129,14 +175,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Positioned(
-              top: 20,
-              left: 20,
+              top: 23,
+              left: 23,
               child: Image.asset(
                 'lib/images/OrderlyLogoLogin.png',
-                width: 60, // Ajusta el tamaño de la imagen según sea necesario
-                height: 60,
+                width: 63, // Ajusta el tamaño de la imagen según sea necesario
+                height: 63,
               ),
             ),
+
+            
           ],
         ),
       ),

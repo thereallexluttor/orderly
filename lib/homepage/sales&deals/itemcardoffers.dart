@@ -20,6 +20,8 @@ class ItemCardOffers extends StatelessWidget {
     const Color infoColor = Colors.grey;
 
     return InkWell(
+      highlightColor: Colors.white,
+      hoverColor: Colors.white,
       onTap: () {
         Navigator.push(
           context,
@@ -42,7 +44,7 @@ class ItemCardOffers extends StatelessWidget {
         ),
         elevation: 0,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, // Alinear contenido a la izquierda
             children: [
@@ -57,8 +59,8 @@ class ItemCardOffers extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
                       child: Image.network(
                         itemData['foto_producto'] ?? '',
-                        height: 130,
-                        width: 130,
+                        height: 150,
+                        width: 150,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(Icons.image, size: 100);
@@ -121,10 +123,10 @@ class ItemCardOffers extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Text(
-                itemData['nombre'] != null && itemData['nombre'].length > 15
-                    ? itemData['nombre'].substring(0, 15) + '...'
+                itemData['nombre'] != null && itemData['nombre'].length > 20
+                    ? itemData['nombre'].substring(0, 20) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left, // Alinear texto a la izquierda
@@ -133,31 +135,32 @@ class ItemCardOffers extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start, // Alinear a la izquierda
                 children: [
+                  
                   Text(
                     'COP',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                    style: TextStyle(letterSpacing: 1,fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: 10),
                   Text(
                     itemData['precio'] != null ? NumberFormat('#,##0', 'es_CO').format(itemData['precio']) : 'N/A',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    style: TextStyle(letterSpacing: 1.0,fontSize: 20, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
                 ],
               ),
-              SizedBox(height: 4),
+              SizedBox(height: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     'Ventas: ${itemData['ventas'] ?? 'N/A'}',
-                    style: TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                    style: TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
                   ),
                   SizedBox(width: 8),
                   Icon(Icons.star, size: 12, color: infoColor),
                   SizedBox(width: 2),
                   Text(
                     itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',
-                    style: TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                    style: TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
                   ),
                 ],
               ),

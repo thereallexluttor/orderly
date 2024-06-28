@@ -59,11 +59,11 @@ class ItemCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
                       child: Image.network(
                         itemData['foto_producto'] ?? '',
-                        height: 100,
-                        width: 100,
+                        height: 80,
+                        width: 80,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.image, size: 100);
+                          return Icon(Icons.image, size: 80);
                         },
                       ),
                     ),
@@ -126,7 +126,7 @@ class ItemCard extends StatelessWidget {
                 itemData['nombre'] != null && itemData['nombre'].length > 15
                     ? itemData['nombre'].substring(0, 15) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
+                style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left, // Alinear texto a la izquierda
@@ -142,7 +142,7 @@ class ItemCard extends StatelessWidget {
                   SizedBox(width: 5),
                   Text(
                     NumberFormat('#,##0', 'es_CO').format(precio),
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
                 ],
               ),
@@ -152,14 +152,14 @@ class ItemCard extends StatelessWidget {
                 children: [
                   Text(
                     'Ventas: ${itemData['ventas'] ?? 'N/A'}',
-                    style: TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                    style: TextStyle(fontSize: 8, fontFamily: "Poppins", color: infoColor),
                   ),
                   SizedBox(width: 8),
                   Icon(Icons.star, size: 12, color: infoColor),
                   SizedBox(width: 2),
                   Text(
                     itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',
-                    style: TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                    style: TextStyle(fontSize: 8, fontFamily: "Poppins", color: infoColor),
                   ),
                 ],
               ),
