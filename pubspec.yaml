@@ -49,6 +49,7 @@ dependencies:
   location: ^6.0.2
   dot_navigation_bar: ^1.0.2
   curved_navigation_bar: ^1.0.6
+  webview_flutter: ^4.8.0
 
 dev_dependencies:
   flutter_test:
@@ -137,6 +138,9 @@ flutter:
     - family: Insanibc
       fonts:
         - asset: lib/fonts/Insanibc.ttf
+    - family: TTnormspro
+      fonts:
+        - asset: lib/fonts/TT-Norms-Pro.otf
   # fonts:
   #   - family: Schyler
   #     fonts:

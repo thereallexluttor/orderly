@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:orderly/homepage/ProductPurchase/CardPricePurchase.dart';
+import 'package:orderly/homepage/ProductPurchase/purchase_page_header.dart';
 import 'package:orderly/homepage/StoreHomePage/StoreHomePage.dart';
 
 class ProductPurchase extends StatelessWidget {
@@ -14,165 +16,39 @@ class ProductPurchase extends StatelessWidget {
     int discount = itemData['discount'] ?? 0;
     double discountedPrice = price * ((100 - discount) / 100);
     double savings = price - discountedPrice;
-    int sales = itemData['ventas'] ?? 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 450.0,
-            pinned: true,
-            leading: Container(
-              margin: const EdgeInsets.all(11),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18,),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: itemData['foto_producto'] != null
-                  ? Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.network(
-                          itemData['foto_producto'],
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(237, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  '❤️',
-                                  style: TextStyle(
-                                      fontSize: 14, fontFamily: "Poppins"),
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  '${sales.toString()} ',
-                                  style: const TextStyle(
-                                      fontSize: 14, fontFamily: "Poppins"),
-                                ),
-                                const SizedBox(width: 5),
-                                const Text(
-                                  '⭐',
-                                  style: TextStyle(
-                                      fontSize: 14, fontFamily: "Poppins"),
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  itemData['valoracion'] != null
-                                      ? itemData['valoracion']
-                                          .toStringAsFixed(1)
-                                      : 'N/A',
-                                  style: const TextStyle(
-                                      fontSize: 14, fontFamily: "Poppins"),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(color: Colors.grey),
-            ),
-          ),
+          PurchasePageHeader(itemData: itemData), // Usa el nuevo widget
           SliverList(
             delegate: SliverChildListDelegate(
               [
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
                   child: Text(
                     itemData['nombre'] ?? '',
                     style: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: "Alef",
-                        fontWeight: FontWeight.bold),
+                      fontSize: 13,
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(.0),
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: discount > 0
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                'COP ${NumberFormat('#,##0', 'es_CO').format(discountedPrice)}',
-                                style: const TextStyle(
-                                    fontSize: 25, fontFamily: "Poppins"),
-                              ),
-                              const Text(
-                                '',
-                                style: TextStyle(
-                                    fontSize: 20, fontFamily: "Poppins"),
-                              ),
-                              
-                            ],
-                          ),
-                          if (discount > 0) ...[
-                            const SizedBox(width: 20),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Text(
-                                    '-${discount.toStringAsFixed(0)}%',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontFamily: "Poppins"),
-                                  ),
-                                ),
-                                const SizedBox(height: 3), // Espacio vertical
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Text(
-                                    'Ahorraste COP ${savings.toStringAsFixed(0)}',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontFamily: "Poppins"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ],
+                      
+                      CardPricePurchase(
+                        discountedPrice: discountedPrice,
+                        discount: discount,
+                        savings: savings,
                       ),
-                      const Divider(),
+                      
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(left: 15.0, top: 8),
                         child: Text(
                           itemData['descripcion'] ?? '',
                           style: const TextStyle(
@@ -181,39 +57,119 @@ class ProductPurchase extends StatelessWidget {
                               fontFamily: "Poppins"),
                         ),
                       ),
-                      const Divider(),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Especificaciones',
-                            style:
-                                TextStyle(fontSize: 14, fontFamily: "Poppins"),
-                          ),
-                          Container(
-                            width: 20,
-                            height: 20,
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
-                              shape: BoxShape.circle,
+                      const SizedBox(height: 8),
+                      const Divider(indent: 6, endIndent: 6, thickness: 10, color: Color.fromARGB(14, 80, 80, 80),),
+                      
+                      // Add the icons and text here
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(Icons.local_shipping, color: Colors.green, size: 20,),
+                                SizedBox(width: 10),
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Envios a toda Colombia',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontFamily: "Poppins",
+                                        color: Colors.black
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(width: 10),
+                                
+                                  ],
+                                ),
+                                
+                              ],
                             ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.arrow_forward,
-                                size: 16,
-                                color: Colors.white,
+                            const SizedBox(height: 8,),
+                            const Row(
+                              children: [
+                                Icon(Icons.credit_card, color: Colors.black, size: 20,),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Nequi • PSE • Credito • Debito • Efectivo',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: "Poppins",
+                                    color: Colors.black
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8,),
+                            GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  elevation: 0,
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return DraggableScrollableSheet(
+                                      expand: false,
+                                      builder: (BuildContext context, ScrollController scrollController) {
+                                        return Container(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            children: [
+                                              const Text(
+                                                'Detalles • Especificaciones',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: "Poppins"
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16.0),
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  controller: scrollController,
+                                                  itemCount: itemData['detalle'].length,
+                                                  itemBuilder: (context, index) {
+                                                    return Padding(
+                                                      padding: const EdgeInsets.all(10.0),
+                                                      child: Image.network(itemData['detalle'][index]),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.label, color: Colors.grey, size: 20,),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Detalles • Especificaciones >',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontFamily: "Poppins",
+                                      color: Colors.black
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      const Divider(
-                        thickness: 8,
-                        color: Color.fromARGB(255, 235, 235, 235),
-                      ),
-                     SizedBox(height: 300,)
+                      
+                      const SizedBox(height: 400,),
                     ],
                   ),
                 ),
@@ -240,21 +196,19 @@ class ProductPurchase extends StatelessWidget {
                   var storeData = storeSnapshot.data() as Map<String, dynamic>;
                   Navigator.push(
                     context,
-                    
                     PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => StoreHomePage(
-                      storeData: storeData,
-                                      storeReference: storeSnapshot.reference,
+                      pageBuilder: (context, animation, secondaryAnimation) => StoreHomePage(
+                        storeData: storeData,
+                        storeReference: storeSnapshot.reference,
+                      ),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 800), // Ajusta la duración aquí
                     ),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                    transitionDuration: Duration(milliseconds: 800), // Ajusta la duración aquí
-                  ),
-                    
                   );
                 },
                 tooltip: 'Tienda',
