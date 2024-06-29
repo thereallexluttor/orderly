@@ -24,10 +24,10 @@ class OffersTab extends StatelessWidget {
         var items = snapshot.data!.docs;
         return Center(
           child: GridView.builder(
-            padding: const EdgeInsets.only(left: 15.0),
+            padding: const EdgeInsets.only(left: 25.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, // Número de columnas
-              mainAxisSpacing: 10.0,
+              mainAxisSpacing: 0.0,
               crossAxisSpacing: 0.0,
               childAspectRatio: 0.67, // Ajusta esta relación según sea necesario
             ),

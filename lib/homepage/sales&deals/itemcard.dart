@@ -123,8 +123,8 @@ class ItemCard extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                itemData['nombre'] != null && itemData['nombre'].length > 15
-                    ? itemData['nombre'].substring(0, 15) + '...'
+                itemData['nombre'] != null && itemData['nombre'].length > 12
+                    ? itemData['nombre'].substring(0, 12) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
                 style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
                 maxLines: 1,
@@ -137,12 +137,12 @@ class ItemCard extends StatelessWidget {
                 children: [
                   Text(
                     'COP',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                    style: TextStyle(fontSize: 5, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
                   SizedBox(width: 5),
                   Text(
                     NumberFormat('#,##0', 'es_CO').format(precio),
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
                 ],
               ),
@@ -154,8 +154,8 @@ class ItemCard extends StatelessWidget {
                     'Ventas: ${itemData['ventas'] ?? 'N/A'}',
                     style: TextStyle(fontSize: 8, fontFamily: "Poppins", color: infoColor),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.star, size: 12, color: infoColor),
+                  SizedBox(width: 4),
+                  Icon(Icons.star, size: 8, color: infoColor),
                   SizedBox(width: 2),
                   Text(
                     itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',

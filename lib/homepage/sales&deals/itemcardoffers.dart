@@ -123,8 +123,8 @@ class ItemCardOffers extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Text(
-                itemData['nombre'] != null && itemData['nombre'].length > 20
-                    ? itemData['nombre'].substring(0, 20) + '...'
+                itemData['nombre'] != null && itemData['nombre'].length > 14
+                    ? itemData['nombre'].substring(0, 14) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
                 maxLines: 1,
@@ -140,10 +140,10 @@ class ItemCardOffers extends StatelessWidget {
                     'COP',
                     style: TextStyle(letterSpacing: 1,fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 4),
                   Text(
                     itemData['precio'] != null ? NumberFormat('#,##0', 'es_CO').format(itemData['precio']) : 'N/A',
-                    style: TextStyle(letterSpacing: 1.0,fontSize: 20, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    style: TextStyle(letterSpacing: 1.0,fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
                 ],
               ),
