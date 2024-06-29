@@ -42,7 +42,7 @@ class CategoryButtons extends StatelessWidget {
               var product = topProducts[category];
               bool isSelected = selectedCategory == category;
               return Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
                   children: [
                     GestureDetector(
@@ -50,18 +50,35 @@ class CategoryButtons extends StatelessWidget {
                         onCategorySelected(category);
                       },
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 600),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isSelected ? Border.all(color: Color.fromARGB(57, 155, 39, 176), width: 3) : null,
+                          border: isSelected
+                              ? Border.all(color: Colors.purple, width: 3)
+                              : Border.all(color: Colors.grey.shade300, width: 1),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.purple.withOpacity(0.4),
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: Offset(0, 1),
+                                  ),
+                                ]
+                              : [],
                           color: isSelected ? Colors.purple.withOpacity(0.2) : Colors.transparent,
                         ),
-                        child: CircleAvatar(
-                          radius: 26,
-                          backgroundImage: NetworkImage(product['foto_producto'] ?? ''),
-                          onBackgroundImageError: (error, stackTrace) {
-                            // Manejar el error de carga de la imagen
-                          },
+                        child: AnimatedScale(
+                          scale: isSelected ? 1.08 : 1.0,
+                          duration: const Duration(milliseconds: 300),
+                          child: CircleAvatar(
+                            radius: 24,
+                            backgroundImage: NetworkImage(product['foto_producto'] ?? ''),
+                            onBackgroundImageError: (error, stackTrace) {
+                              // Manejar el error de carga de la imagen
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -69,9 +86,11 @@ class CategoryButtons extends StatelessWidget {
                     Text(
                       category,
                       textAlign: TextAlign.center,
-                      //maxLines: 1,
-                      //overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 8, fontFamily: "Poppins"),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

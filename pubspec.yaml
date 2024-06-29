@@ -134,6 +134,9 @@ flutter:
     - family: Alef
       fonts:
         - asset: lib/fonts/Alef-Regular.ttf
+    - family: Insanibc
+      fonts:
+        - asset: lib/fonts/Insanibc.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
