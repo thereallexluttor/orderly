@@ -61,8 +61,8 @@ class StoreItemCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
                       child: Image.network(
                         itemData['foto_producto'] ?? '',
-                        height: 130,
-                        width: 130,
+                        height: 150,
+                        width: 150,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(Icons.image, size: 100);
