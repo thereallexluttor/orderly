@@ -29,6 +29,7 @@ class _ProductChatState extends State<ProductChat> {
         _scrollToBottom();
       }
     });
+    _checkIfFirstMessage();
   }
 
   @override
@@ -37,6 +38,22 @@ class _ProductChatState extends State<ProductChat> {
     _scrollController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _checkIfFirstMessage() async {
+    var user = _auth.currentUser;
+    if (user != null) {
+      var userDocRef = _firestore.collection('Orderly').doc('Users').collection('users').doc(user.uid);
+      var userDocSnapshot = await userDocRef.get();
+      if (userDocSnapshot.exists) {
+        var chatInfo = userDocSnapshot.data()?['chatInfo'] as Map<String, dynamic>? ?? {};
+        _isFirstMessage = !chatInfo.values.any((existingChat) {
+          return existingChat['nombre'] == widget.itemData['nombre'] &&
+                 existingChat['foto_producto'] == widget.itemData['foto_producto'] &&
+                 existingChat['ruta_chat'] == widget.itemData['ruta_chat'];
+        });
+      }
+    }
   }
 
   @override
@@ -178,6 +195,8 @@ class _ProductChatState extends State<ProductChat> {
     if (_isFirstMessage) {
       await _updateUserChatInfo();
       _isFirstMessage = false;
+    } else {
+      await _updateMessageInUserChatInfo();
     }
 
     setState(() {
@@ -207,17 +226,22 @@ class _ProductChatState extends State<ProductChat> {
       'nombre': widget.itemData['nombre'],
       'foto_producto': widget.itemData['foto_producto'],
       'ruta_chat': widget.itemData['ruta_chat'],
+      'mensaje' : _controller.text,
+      'hora' : FieldValue.serverTimestamp(),
     };
 
     var userDocSnapshot = await userDocRef.get();
     if (userDocSnapshot.exists) {
       var chatInfo = userDocSnapshot.data()?['chatInfo'] as Map<String, dynamic>? ?? {};
-      
+
       // Verificar si los datos ya existen
-      bool exists = chatInfo.values.any((existingChat) {
-        return existingChat['nombre'] == chatData['nombre'] &&
-               existingChat['foto_producto'] == chatData['foto_producto'] &&
-               existingChat['ruta_chat'] == chatData['ruta_chat'];
+      bool exists = false;
+      chatInfo.forEach((key, existingChat) {
+        if (existingChat['nombre'] == chatData['nombre'] &&
+            existingChat['foto_producto'] == chatData['foto_producto'] &&
+            existingChat['ruta_chat'] == chatData['ruta_chat']) {
+          exists = true;
+        }
       });
 
       if (!exists) {
@@ -231,6 +255,29 @@ class _ProductChatState extends State<ProductChat> {
           '1': chatData,
         }
       });
+    }
+  }
+
+  Future<void> _updateMessageInUserChatInfo() async {
+    var user = _auth.currentUser;
+    if (user == null) return;
+
+    var userDocRef = _firestore.collection('Orderly').doc('Users').collection('users').doc(user.uid);
+
+    var userDocSnapshot = await userDocRef.get();
+    if (userDocSnapshot.exists) {
+      var chatInfo = userDocSnapshot.data()?['chatInfo'] as Map<String, dynamic>? ?? {};
+
+      chatInfo.forEach((key, existingChat) {
+        if (existingChat['nombre'] == widget.itemData['nombre'] &&
+            existingChat['foto_producto'] == widget.itemData['foto_producto'] &&
+            existingChat['ruta_chat'] == widget.itemData['ruta_chat']) {
+          existingChat['mensaje'] = _controller.text;
+          existingChat['hora'] = FieldValue.serverTimestamp();
+        }
+      });
+
+      await userDocRef.update({'chatInfo': chatInfo});
     }
   }
 }

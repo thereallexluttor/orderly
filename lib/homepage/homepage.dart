@@ -1,13 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:flutter/material.dart';
-import 'package:orderly/homepage/product_category/category_buttons.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:orderly/homepage/UserChats/UserChats.dart';
+import 'package:orderly/homepage/product_category/category_buttons.dart';
+import 'package:orderly/homepage/sales&deals/offers_tab.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:orderly/homepage/sales&deals/offers_tab.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -201,6 +204,8 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     ),
+    // Página central azul con información del chat
+    ChatInfoScreen(),
     // Página central amarilla
     Container(color: Colors.yellow),
     // Página central verde
@@ -239,6 +244,7 @@ class _HomePageState extends State<HomePage> {
         index: _pageIndex,
         items: <Widget>[
           Icon(Icons.home_outlined, size: 17),
+          Icon(Icons.message_outlined, size: 17),
           Icon(Icons.shopping_cart_outlined, size: 17),
           Icon(Icons.shopping_bag_outlined, size: 17),
           Icon(Icons.perm_identity, size: 17),
