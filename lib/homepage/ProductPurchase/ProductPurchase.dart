@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/CardPricePurchase.dart';
+import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
 import 'package:orderly/homepage/ProductPurchase/purchase_page_header.dart';
 import 'package:orderly/homepage/StoreHomePage/StoreHomePage.dart';
 
@@ -220,6 +221,19 @@ class ProductPurchase extends StatelessWidget {
                 ),
                 onPressed: () {
                   // Acción para Mensaje
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) => ProductChat(itemData),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 800), // Ajusta la duración aquí
+                    ),
+                  );
                 },
                 tooltip: 'Mensaje',
               ),

@@ -1,19 +1,18 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-
 import 'package:flutter/material.dart';
 import 'package:orderly/homepage/product_category/category_buttons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:orderly/homepage/sales&deals/offers_tab.dart'; // Import the new OffersTab widget
+import 'package:orderly/homepage/sales&deals/offers_tab.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -21,9 +20,26 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   int _pageIndex = 0;
   final PageController _pageController = PageController();
+  User? user = FirebaseAuth.instance.currentUser;
 
+  @override
+  void initState() {
+    super.initState();
+    printUserUid();
+  }
+
+  // Función para imprimir el UID del usuario actual
+  void printUserUid() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      for (int i = 0; i < 20; i++) {
+        print(user.uid);
+      }
+    }
+  }
+
+  // Lista de páginas para el PageView
   final List<Widget> _pages = [
-    // Home Page with the TabBar and other elements
     DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -67,9 +83,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        // Top Ventas tab
-                        
-                        // Ofertas tab
+                        // Pestaña Ofertas
                         Column(
                           children: [
                             SizedBox(height: 20),
@@ -104,11 +118,11 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SizedBox(height: 20), // Espacio entre las categorías y las ofertas
                             Expanded(
-                              child: OffersTab(), // Use the new OffersTab widget here
+                              child: OffersTab(), // Utiliza el nuevo widget OffersTab
                             ),
                           ],
                         ),
-
+                        // Pestaña Top Tiendas
                         Column(
                           children: [
                             SizedBox(height: 20),
@@ -183,18 +197,19 @@ class _HomePageState extends State<HomePage> {
                 height: 63,
               ),
             ),
-
-            
           ],
         ),
       ),
     ),
-    // Middle Button Page
+    // Página central amarilla
+    Container(color: Colors.yellow),
+    // Página central verde
     Container(color: Colors.green),
-    // Last Button Page
+    // Última página morada
     Container(color: Colors.purple),
   ];
 
+  // Función para cambiar de página en la navegación inferior
   void _onItemTapped(int index) {
     setState(() {
       _pageIndex = index;
@@ -224,6 +239,7 @@ class _HomePageState extends State<HomePage> {
         index: _pageIndex,
         items: <Widget>[
           Icon(Icons.home_outlined, size: 17),
+          Icon(Icons.shopping_cart_outlined, size: 17),
           Icon(Icons.shopping_bag_outlined, size: 17),
           Icon(Icons.perm_identity, size: 17),
         ],

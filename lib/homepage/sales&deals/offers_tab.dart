@@ -1,11 +1,13 @@
 // offers_tab.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:orderly/homepage/sales&deals/itemcardoffers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class OffersTab extends StatelessWidget {
-  const OffersTab({super.key});
+   // Añade una variable miembro para el usuario
+
+  const OffersTab({ super.key}); // Actualiza el constructor para aceptar el usuario
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +37,8 @@ class OffersTab extends StatelessWidget {
             itemBuilder: (context, index) {
               var item = items[index];
               var itemData = item.data() as Map<String, dynamic>;
-          
-              return ItemCardOffers(itemData: itemData);
+
+              return ItemCardOffers(itemData: itemData); // Pasa el usuario a ItemCardOffers
             },
           ),
         );
