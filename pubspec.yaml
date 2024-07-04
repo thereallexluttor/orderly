@@ -50,6 +50,7 @@ dependencies:
   dot_navigation_bar: ^1.0.2
   curved_navigation_bar: ^1.0.6
   webview_flutter: ^4.8.0
+  another_flutter_splash_screen: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
     - lib/images/OrderlyLogo_doggie_alone2.png
     - lib/images/OrderlyLogo_doggie2.png
     - lib/images/OrderlyLogoLogin.png
+    - lib/images/splash.gif
     - lib/images/interfaceicons/google.png
     - lib/images/interfaceicons/message.png
     - lib/images/interfaceicons/shop.png

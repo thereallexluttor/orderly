@@ -29,7 +29,7 @@ class LogAndSign extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(left: 22.0),
                 child: Text(
-                  'Hoy podrás ordenar, sin filas y muy facil. 😎',
+                  'Hoy podrás comprar lo que necesitas!. 😎',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.black,

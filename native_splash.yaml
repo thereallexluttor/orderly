@@ -4,13 +4,13 @@ flutter_native_splash:
   web: false
 
   color: "#ffffff"
-  image: lib/images/OrderlyLogo_doggie_alone.png # Asegúrate de que la ruta sea correcta
-  branding: lib/images/OrderlyLogo_doggie.png # Asegúrate de que la ruta sea correcta
+  image: lib/images/splash.gif # Asegúrate de que la ruta sea correcta
+ 
 
   android_12:
     color: "#ffffff"
-    image: lib/images/OrderlyLogo_doggie_alone2.png
-    branding: lib/images/OrderlyLogo_doggie2.png
+    image: lib/images/splash.gif
+    
     
 
 
