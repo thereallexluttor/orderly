@@ -1,11 +1,31 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 
-class LogAndSign extends StatelessWidget {
+class LogAndSign extends StatefulWidget {
   const LogAndSign({super.key});
+
+  @override
+  _LogAndSignState createState() => _LogAndSignState();
+}
+
+class _LogAndSignState extends State<LogAndSign> {
+  double _opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicia la animación después de un pequeño retraso
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,111 +33,114 @@ class LogAndSign extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 150),
-              const Center(
-                child: Image(
-                  image: AssetImage("lib/images/OrderlyLogoLogin.png"),
-                  height: 140,
-                  width: 140,
-                ),
-              ),
-              const SizedBox(height: 150),
-              const TextChangingWidget(),
-              const Padding(
-                padding: EdgeInsets.only(left: 22.0),
-                child: Text(
-                  'Hoy podrás comprar lo que necesitas!. 😎',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontFamily: "Poppins",
+          child: AnimatedOpacity(
+            opacity: _opacity,
+            duration: const Duration(seconds: 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 150),
+                const Center(
+                  child: Image(
+                    image: AssetImage("lib/images/OrderlyLogoLogin.png"),
+                    height: 140,
+                    width: 140,
                   ),
                 ),
-              ),
-              const SizedBox(height: 90),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey,
-                      ),
+                const SizedBox(height: 150),
+                const TextChangingWidget(),
+                const Padding(
+                  padding: EdgeInsets.only(left: 22.0),
+                  child: Text(
+                    'Hoy podrás comprar lo que necesitas!. 😎',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: "Poppins",
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        'Ingresa aquí:',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 92, 92, 92),
-                          fontFamily: "Poppins",
-                          fontSize: 11
-                          //fontWeight: FontWeight.normal,
+                  ),
+                ),
+                const SizedBox(height: 90),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text(
+                          'Ingresa aquí:',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 92, 92, 92),
+                            fontFamily: "Poppins",
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await handleLocationPermission(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(270, 33),
+                        elevation: 0,
+                        side: const BorderSide(color: Color.fromARGB(255, 230, 230, 230)),
+                        surfaceTintColor: Colors.white,
+                      ),
+                      child: const Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 0.0), // Ajusta el valor según sea necesario
+                                child: Image(
+                                  image: AssetImage('lib/images/interfaceicons/google.png'),
+                                  width: 20, // Ajusta el tamaño según sea necesario
+                                  height: 25,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Center(
+                              child: Text(
+                                'Iniciar sesión con Google',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.black,
+                                  fontFamily: "Poppins",
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await handleLocationPermission(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(270, 33),
-                      elevation: 0,
-                      side: const BorderSide(color: Color.fromARGB(255, 230, 230, 230)),
-                      surfaceTintColor: Colors.white,
-                    ),
-                    child: const Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 0.0), // Ajusta el valor según sea necesario
-                              child: Image(
-                                image: AssetImage('lib/images/interfaceicons/google.png'),
-                                width: 20, // Ajusta el tamaño según sea necesario
-                                height: 25,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: Center(
-                            child: Text(
-                              'Iniciar sesión con Google',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.black,
-                                fontFamily: "Poppins",
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

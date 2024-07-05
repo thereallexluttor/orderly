@@ -24,12 +24,19 @@ class _PersonalInformationState extends State<PersonalInformation> {
   DateTime? birthdate;
   String? phoneNumber;
   final _formKey = GlobalKey<FormState>();
+  double _opacity = 0.0;
 
   @override
   void initState() {
     super.initState();
     _requestLocationPermission();
     _getUserLocation();
+    // Inicia la animación después de un pequeño retraso
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
   }
 
   void _requestLocationPermission() async {
@@ -59,222 +66,255 @@ class _PersonalInformationState extends State<PersonalInformation> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 40),
-                  const Center(
-                    child: Image(
-                      image: AssetImage("lib/images/OrderlyLogoLogin.png"),
-                      height: 100,
-                      width: 100,
-                    ),
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                const Center(
+                  child: Image(
+                    image: AssetImage("lib/images/OrderlyLogoLogin.png"),
+                    height: 100,
+                    width: 100,
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Información Personal',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: "Poppins",
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 66),
-                  Container(
-                    padding: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color.fromARGB(255, 240, 240, 240)),
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Selecciona tu género:',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontFamily: "Poppins",
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'lib/images/animations/man.gif',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                Radio<String>(
-                                  activeColor: Colors.black,
-                                  value: 'Hombre',
-                                  groupValue: gender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      gender = value;
-                                    });
-                                  },
-                                ),
-                                const Text(
-                                  'Hombre',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: "Poppins",
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              width: 1,
-                              height: 30,
-                              color: Colors.grey,
-                            ),
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'lib/images/animations/woman.gif',
-                                  width: 25,
-                                  height: 25,
-                                ),
-                                Radio<String>(
-                                  activeColor: Colors.black,
-                                  value: 'Mujer',
-                                  groupValue: gender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      gender = value;
-                                    });
-                                  },
-                                ),
-                                const Text(
-                                  'Mujer',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: "Poppins",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Color.fromARGB(255, 240, 240, 240)),
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (birthdate == null)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 16.0, top: 8.0, right: 16.0),
-                            child: Text(
-                              'La fecha de nacimiento debe ser seleccionada para avanzar',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: FormBuilderDateTimePicker(
-                            name: 'Fecha de nacimiento',
-                            initialValue: birthdate ?? DateTime(2001),
-                            inputType: InputType.date,
-                            decoration: InputDecoration(
-                              labelText: 'Fecha de nacimiento',
-                              border: InputBorder.none,
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                birthdate = value;
-                              });
-                            },
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.grey[400],
-                          height: 0,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Color.fromARGB(255, 240, 240, 240)),
+                ),
+                const SizedBox(height: 40),
+                AnimatedOpacity(
+                  opacity: _opacity,
+                  duration: const Duration(seconds: 2),
+                  child: Card(
+                    elevation: 0,
+                    color: Color.fromARGB(71, 226, 226, 226),
+                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        children: [
-                          InternationalPhoneNumberInput(
-                            onInputChanged: (PhoneNumber number) {
-                              setState(() {
-                                phoneNumber = number.phoneNumber;
-                              });
-                            },
-                            validator: (value) {
-                              if (!_validatePhoneNumber(value)) {
-                                return 'Por favor, ingrese un número de teléfono válido de Colombia.';
-                              }
-                              return null;
-                            },
-                            selectorConfig: const SelectorConfig(
-                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                      padding: const EdgeInsets.all(5.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 15,),
+                            const Text(
+                              'Información Personal',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: "Poppins",
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            textStyle: const TextStyle(fontSize: 10),
-                            inputDecoration: const InputDecoration(
-                              labelText: 'Número de teléfono',
-                              border: InputBorder.none,
+                            const SizedBox(height: 30),
+                            Container(
+                              padding: const EdgeInsets.all(5.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Color.fromARGB(255, 240, 240, 240)),
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: Column(
+                                children: [
+                                  const Text(
+                                    'Selecciona tu género:',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontFamily: "Poppins",
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 15,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'lib/images/animations/man.gif',
+                                            width: 20,
+                                            height: 20,
+                                          ),
+                                          Radio<String>(
+                                            activeColor: Colors.black,
+                                            value: 'Hombre',
+                                            groupValue: gender,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                gender = value;
+                                              });
+                                            },
+                                          ),
+                                          const Text(
+                                            'Hombre',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontFamily: "Poppins",
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        width: 1,
+                                        height: 30,
+                                        color: const Color.fromARGB(255, 202, 202, 202),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'lib/images/animations/woman.gif',
+                                            width: 23,
+                                            height: 23,
+                                          ),
+                                          Radio<String>(
+                                            activeColor: Colors.black,
+                                            value: 'Mujer',
+                                            groupValue: gender,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                gender = value;
+                                              });
+                                            },
+                                          ),
+                                          const Text(
+                                            'Mujer',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontFamily: "Poppins",
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            initialValue: PhoneNumber(isoCode: 'CO'),
-                          ),
-                          Divider(
-                            color: Colors.grey[400],
-                            height: 0,
-                          ),
-                        ],
+                            const SizedBox(height: 30),
+                            Container(
+                              padding: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Color.fromARGB(255, 240, 240, 240)),
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (birthdate == null)
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 16.0, top: 8.0, right: 16.0),
+                                      child: Text(
+                                        'La fecha de nacimiento debe ser seleccionada para avanzar',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: FormBuilderDateTimePicker(
+                                      name: 'Fecha de nacimiento',
+                                      initialValue: birthdate ?? DateTime(1997),
+                                      inputType: InputType.date,
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.white,
+                                        labelText: 'Fecha de nacimiento',
+                                        border: InputBorder.none,
+                                      ),
+                                      
+                                      onChanged: (value) {
+                                        setState(() {
+                                          birthdate = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  // Divider(
+                                  //   color: Colors.grey[400],
+                                  //   height: 0,
+                                  // ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Color.fromARGB(255, 240, 240, 240)),
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Column(
+                                  children: [
+                                    InternationalPhoneNumberInput(
+                                    maxLength: 50,
+                                    onInputChanged: (PhoneNumber number) {
+                                      setState(() {
+                                        phoneNumber = number.phoneNumber;
+                                      });
+                                    },
+                                    validator: (value) {
+                                      if (!_validatePhoneNumber(value)) {
+                                        return 'Por favor, ingrese un número de teléfono válido de Colombia.';
+                                      }
+                                      return null;
+                                    },
+                                    selectorConfig: const SelectorConfig(
+                                      selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                                      setSelectorButtonAsPrefixIcon: true,
+                                      leadingPadding: 3.0,
+                                    ),
+                                    textStyle: const TextStyle(fontSize: 11),
+                                    inputDecoration: const InputDecoration(
+                                      labelText: 'Número de teléfono',
+                                      labelStyle: TextStyle(fontSize: 14), // Tamaño del texto del label
+                                      border: InputBorder.none,
+                                    ),
+                                    initialValue: PhoneNumber(isoCode: 'CO'),
+                                    spaceBetweenSelectorAndTextField: 0, // Reduce el espacio entre selector y campo de texto
+                                  ),
+
+                                    // Divider(
+                                    //   color: Colors.grey[400],
+                                    //   height: 0,
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20,)
+                            
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 56),
-                  ElevatedButton(
-                    onPressed: isInformationComplete() && _formKey.currentState!.validate()
-                        ? () => savePersonalInformation()
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, // Color del texto
-                      backgroundColor: Colors.purple, // Color de fondo
-                      textStyle: const TextStyle(
-                        fontFamily: 'Poppins', // Fuente del texto
-                        fontSize: 12, // Tamaño del texto
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // Radio de las esquinas
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24), // Padding del botón
-                    ),
-                    child: const Text('Guardar información'),
-                  )
-                ],
-              ),
+                  
+                ),
+                SizedBox(height: 80),
+                ElevatedButton(
+                              onPressed: isInformationComplete() && _formKey.currentState!.validate()
+                                  ? () => savePersonalInformation()
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white, // Color del texto
+                                backgroundColor: Colors.purple, // Color de fondo
+                                textStyle: const TextStyle(
+                                  fontFamily: 'Poppins', // Fuente del texto
+                                  fontSize: 12, // Tamaño del texto
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9), // Radio de las esquinas
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 84), // Padding del botón
+                              ),
+                              child: const Text('Guardar información'),
+                            )
+              ],
             ),
           ),
         ),
