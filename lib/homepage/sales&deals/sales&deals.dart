@@ -114,31 +114,30 @@ class _StoreCardState extends State<StoreCard> {
         : null;
 
     return GestureDetector(
-     onTap: () {
-  Navigator.push(
-    context,
-    PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => StoreHomePage(
-        storeData: widget.storeData,
-        storeReference: widget.storeReference,
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => StoreHomePage(
+              storeData: widget.storeData,
+              storeReference: widget.storeReference,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 800), // Ajusta la duración aquí
+          ),
         );
       },
-      transitionDuration: Duration(milliseconds: 800), // Ajusta la duración aquí
-    ),
-  );
-},
-
       child: Card(
         color: Colors.white,
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
-          side: BorderSide(color: Colors.grey.shade300, width: 1),
+          side: BorderSide(color: const Color.fromARGB(255, 236, 236, 236), width: 1),
         ),
         elevation: 0,
         child: Padding(
@@ -219,51 +218,54 @@ class _StoreCardState extends State<StoreCard> {
                 ],
               ),
               Divider(),
-              isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          ...storeItems.map((item) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                              child: ItemCard(itemData: item),
-                            );
-                          }).toList(),
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  // Acción a realizar cuando se presione el círculo
-                                  print(widget.storeData['nombre']);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  width: 20,
-                                  height: 20,
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.arrow_forward,
-                                      color: Colors.white,
-                                      size: 13,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: isLoading
+                    ? Center(child: SizedBox.shrink())
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            ...storeItems.map((item) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                                child: ItemCard(itemData: item),
+                              );
+                            }).toList(),
+                            Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    // Acción a realizar cuando se presione el círculo
+                                    print(widget.storeData['nombre']);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    width: 20,
+                                    height: 20,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.white,
+                                        size: 13,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Ver más',
-                                style: TextStyle(fontSize: 10, color: Colors.black),
-                              ),
-                            ],
-                          ),
-                        ],
+                                SizedBox(height: 4),
+                                Text(
+                                  'Ver más',
+                                  style: TextStyle(fontSize: 10, color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+              ),
             ],
           ),
         ),
