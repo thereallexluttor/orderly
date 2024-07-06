@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
 
-
-
 class ItemCardOffers extends StatelessWidget {
   final Map<String, dynamic> itemData;
 
@@ -119,6 +117,54 @@ class ItemCardOffers extends StatelessWidget {
                         ),
                       ),
                     ),
+                  if (itemData['delivery_fee_status'] == true)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10.0),
+                          bottomLeft: Radius.circular(10.0),
+                        ),
+                        child: Container(
+                          color: Colors.green,
+                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          child: Text(
+                            'Delivery Free',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Poppins",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (itemData['cash_back'] == true)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                        ),
+                        child: Container(
+                          color: Colors.purple,
+                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          child: Text(
+                            'Cash Back!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Poppins",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               SizedBox(height: 15),
@@ -135,15 +181,14 @@ class ItemCardOffers extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start, // Alinear a la izquierda
                 children: [
-                  
                   Text(
                     'COP',
-                    style: TextStyle(letterSpacing: 1,fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                    style: TextStyle(letterSpacing: 1, fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
                   SizedBox(width: 4),
                   Text(
                     itemData['precio'] != null ? NumberFormat('#,##0', 'es_CO').format(itemData['precio']) : 'N/A',
-                    style: TextStyle(letterSpacing: 1.0,fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    style: TextStyle(letterSpacing: 1.0, fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
                 ],
               ),

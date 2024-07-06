@@ -11,7 +11,6 @@ import 'package:orderly/homepage/sales&deals/offers_tab.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -24,11 +23,17 @@ class _HomePageState extends State<HomePage> {
   int _pageIndex = 0;
   final PageController _pageController = PageController();
   User? user = FirebaseAuth.instance.currentUser;
+  double _opacity = 0.0;
 
   @override
   void initState() {
     super.initState();
     printUserUid();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
   }
 
   // Función para imprimir el UID del usuario actual
@@ -229,14 +234,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _pageIndex = index;
-          });
-        },
-        children: _pages,
+      body: AnimatedOpacity(
+        opacity: _opacity,
+        duration: Duration(seconds: 1),
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _pageIndex = index;
+            });
+          },
+          children: _pages,
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 45,
