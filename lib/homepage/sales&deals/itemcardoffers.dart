@@ -17,6 +17,13 @@ class ItemCardOffers extends StatelessWidget {
     final Color priceColor2 = isAgotado ? Colors.grey : Color.fromARGB(255, 0, 0, 0);
     const Color infoColor = Colors.grey;
 
+    // Calcular el precio con descuento si hay descuento
+    final int? discount = itemData['discount'];
+    final int? originalPrice = itemData['precio'];
+    final double? discountedPrice = (discount != null && discount > 0 && originalPrice != null)
+        ? originalPrice * (1 - discount / 100)
+        : originalPrice?.toDouble();
+
     return InkWell(
       highlightColor: Colors.white,
       hoverColor: Colors.white,
@@ -183,13 +190,26 @@ class ItemCardOffers extends StatelessWidget {
                 children: [
                   Text(
                     'COP',
-                    style: TextStyle(letterSpacing: 1, fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                    style: TextStyle(letterSpacing: 1, fontSize: 9, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
-                  SizedBox(width: 4),
+                  SizedBox(width: 0.3),
                   Text(
-                    itemData['precio'] != null ? NumberFormat('#,##0', 'es_CO').format(itemData['precio']) : 'N/A',
-                    style: TextStyle(letterSpacing: 1.0, fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    discountedPrice != null ? NumberFormat('#,##0', 'es_CO').format(discountedPrice) : 'N/A',
+                    style: TextStyle(letterSpacing: 1.0, fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
+                  if (discount != null && discount > 0) ...[
+                    SizedBox(width: 1),
+                    Text(
+                      originalPrice != null ? NumberFormat('#,##0', 'es_CO').format(originalPrice) : 'N/A',
+                      style: TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Poppins",
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ],
               ),
               SizedBox(height: 1),
