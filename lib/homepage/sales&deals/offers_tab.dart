@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:orderly/homepage/sales&deals/itemcardoffers.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class OffersTab extends StatelessWidget {
    // Añade una variable miembro para el usuario

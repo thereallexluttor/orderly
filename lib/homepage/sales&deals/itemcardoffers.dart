@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
 
 class ItemCardOffers extends StatelessWidget {
   final Map<String, dynamic> itemData;
 
-  const ItemCardOffers({Key? key, required this.itemData}) : super(key: key);
+  const ItemCardOffers({super.key, required this.itemData});
 
   @override
   Widget build(BuildContext context) {

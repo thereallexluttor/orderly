@@ -137,9 +137,9 @@ class ItemCard extends StatelessWidget {
                 children: [
                   Text(
                     'COP',
-                    style: TextStyle(fontSize: 5, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: 1),
                   Text(
                     NumberFormat('#,##0', 'es_CO').format(precio),
                     style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
