@@ -15,6 +15,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text(
           'Chats',
           style: TextStyle(fontFamily: "Poppins", fontSize: 15),
@@ -28,6 +29,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
           ),
         ),
       ),
+      backgroundColor: Colors.white, // Establece el color de fondo en blanco
       body: StreamBuilder<DocumentSnapshot>(
         stream: _getUserChatInfoStream(),
         builder: (context, snapshot) {
@@ -36,13 +38,21 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text('No chat info found.'));
+            return Container(); // Devuelve un contenedor vacío si no hay datos o si no existe
           } else {
-            var chatInfo = snapshot.data!.data() as Map<String, dynamic>?;
-            if (chatInfo == null || chatInfo.isEmpty) {
-              return Center(child: Text('No chat info found.'));
+            var data = snapshot.data!.data();
+            if (data == null) {
+              return Container(); // Devuelve un contenedor vacío si no hay datos
             }
-            var chatInfoMap = chatInfo['chatInfo'] as Map<String, dynamic>;
+            var chatInfo = data as Map<String, dynamic>?;
+            if (chatInfo == null || chatInfo.isEmpty) {
+              return Container(); // Devuelve un contenedor vacío si no hay chat info
+            }
+            var chatInfoMap = chatInfo['chatInfo'] as Map<String, dynamic>?;
+
+            if (chatInfoMap == null || chatInfoMap.isEmpty) {
+              return Container(); // Devuelve un contenedor vacío si no hay chat info map
+            }
 
             // Convertimos y ordenamos las entradas por la variable hora
             var sortedChatInfo = chatInfoMap.entries.toList();
@@ -63,6 +73,10 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
               return nombre.toLowerCase().contains(_searchText.toLowerCase());
             }).toList();
 
+            if (filteredChatInfo.isEmpty) {
+              return Container(); // Devuelve un contenedor vacío si no hay mensajes después del filtro
+            }
+
             return Column(
               children: [
                 Expanded(
@@ -79,13 +93,14 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                       return Column(
                         children: [
                           Card(
+                            color: Colors.white,
                             elevation: 0,
-                            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: ListTile(
-                              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                               leading: CircleAvatar(
                                 radius: 25,
                                 backgroundImage: NetworkImage(value['foto_producto']),
@@ -102,7 +117,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                 value['mensaje'] ?? '',
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: 14,
+                                  fontSize: 11,
                                   color: Colors.grey[600],
                                 ),
                                 overflow: TextOverflow.ellipsis,
