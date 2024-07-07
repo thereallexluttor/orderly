@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +11,7 @@ class ProductChat extends StatefulWidget {
   const ProductChat(this.itemData, {super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProductChatState createState() => _ProductChatState();
 }
 
@@ -20,6 +23,7 @@ class _ProductChatState extends State<ProductChat> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool _isFirstMessage = true;
+  double _opacity = 0.0;
 
   @override
   void initState() {
@@ -30,6 +34,11 @@ class _ProductChatState extends State<ProductChat> {
       }
     });
     _checkIfFirstMessage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
   }
 
   @override
@@ -65,13 +74,17 @@ class _ProductChatState extends State<ProductChat> {
           style: const TextStyle(fontFamily: "Poppins", fontSize: 13),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildMessageList(),
-          ),
-          _buildInputArea(),
-        ],
+      body: AnimatedOpacity(
+        opacity: _opacity,
+        duration: const Duration(seconds: 1),
+        child: Column(
+          children: [
+            Expanded(
+              child: _buildMessageList(),
+            ),
+            _buildInputArea(),
+          ],
+        ),
       ),
     );
   }
@@ -81,7 +94,7 @@ class _ProductChatState extends State<ProductChat> {
       stream: _firestore.doc(widget.itemData['ruta_chat']).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         var chatData = snapshot.data?.data() as Map<String, dynamic>? ?? {};
         var userMessages = chatData[_auth.currentUser?.uid] ?? {};
@@ -112,8 +125,8 @@ class _ProductChatState extends State<ProductChat> {
                   maxWidth: MediaQuery.of(context).size.width * 0.75,
                 ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
                     color: isCustomer ? Colors.green[100] : Colors.yellow[100],
                     borderRadius: BorderRadius.circular(15),
@@ -121,7 +134,9 @@ class _ProductChatState extends State<ProductChat> {
                   child: Column(
                     crossAxisAlignment: isCustomer ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                     children: [
-                      Text(message),
+                      Text(
+                        message,
+                        style: const TextStyle(fontFamily: "Poppins", fontSize: 12),),
                       Text(formattedTime, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
                     ],
                   ),
@@ -136,14 +151,16 @@ class _ProductChatState extends State<ProductChat> {
 
   Widget _buildInputArea() {
     return Container(
+      color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      color: Colors.grey[200],
+      height: 50,
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: _controller,
               focusNode: _focusNode,
+              
               decoration: InputDecoration(
                 hintText: 'Escribe tu mensaje',
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
@@ -151,6 +168,7 @@ class _ProductChatState extends State<ProductChat> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 filled: true,
+                hoverColor: Colors.blueAccent,
                 fillColor: Colors.white,
               ),
             ),
@@ -160,7 +178,7 @@ class _ProductChatState extends State<ProductChat> {
             radius: 15,
             backgroundColor: Colors.purple,
             child: IconButton(
-              icon: const Icon(Icons.send, size: 13, color: Colors.white),
+              icon: const Icon(Icons.send, size: 15, color: Colors.white),
               onPressed: _sendMessage,
             ),
           ),
@@ -174,6 +192,9 @@ class _ProductChatState extends State<ProductChat> {
     var user = _auth.currentUser;
     if (user == null) return;
 
+    var messageText = _controller.text;
+    _controller.clear();
+
     var chatRef = _firestore.doc(widget.itemData['ruta_chat']);
     var snapshot = await chatRef.get();
 
@@ -184,7 +205,7 @@ class _ProductChatState extends State<ProductChat> {
     var userMessages = snapshot.data()? [user.uid] as Map<String, dynamic>? ?? {};
     var messageCount = userMessages.length;
     var messageData = {
-      'message': _controller.text,
+      'message': messageText,
       'timestamp': FieldValue.serverTimestamp(),
       'user': 'Customer',
     };
@@ -193,15 +214,11 @@ class _ProductChatState extends State<ProductChat> {
     await chatRef.update({user.uid: userMessages});
 
     if (_isFirstMessage) {
-      await _updateUserChatInfo();
+      await _updateUserChatInfo(messageText);
       _isFirstMessage = false;
     } else {
-      await _updateMessageInUserChatInfo();
+      await _updateMessageInUserChatInfo(messageText);
     }
-
-    setState(() {
-      _controller.clear();
-    });
 
     _scrollToBottom();
   }
@@ -210,13 +227,13 @@ class _ProductChatState extends State<ProductChat> {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     }
   }
 
-  Future<void> _updateUserChatInfo() async {
+  Future<void> _updateUserChatInfo(String messageText) async {
     var user = _auth.currentUser;
     if (user == null) return;
 
@@ -226,8 +243,8 @@ class _ProductChatState extends State<ProductChat> {
       'nombre': widget.itemData['nombre'],
       'foto_producto': widget.itemData['foto_producto'],
       'ruta_chat': widget.itemData['ruta_chat'],
-      'mensaje' : _controller.text,
-      'hora' : FieldValue.serverTimestamp(),
+      'mensaje': messageText,
+      'hora': FieldValue.serverTimestamp(),
     };
 
     var userDocSnapshot = await userDocRef.get();
@@ -258,7 +275,7 @@ class _ProductChatState extends State<ProductChat> {
     }
   }
 
-  Future<void> _updateMessageInUserChatInfo() async {
+  Future<void> _updateMessageInUserChatInfo(String messageText) async {
     var user = _auth.currentUser;
     if (user == null) return;
 
@@ -272,7 +289,7 @@ class _ProductChatState extends State<ProductChat> {
         if (existingChat['nombre'] == widget.itemData['nombre'] &&
             existingChat['foto_producto'] == widget.itemData['foto_producto'] &&
             existingChat['ruta_chat'] == widget.itemData['ruta_chat']) {
-          existingChat['mensaje'] = _controller.text;
+          existingChat['mensaje'] = messageText;
           existingChat['hora'] = FieldValue.serverTimestamp();
         }
       });
@@ -285,5 +302,5 @@ class _ProductChatState extends State<ProductChat> {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MaterialApp(home: ProductChat({'nombre': 'Chat', 'ruta_chat': 'chats/your_chat_document', 'foto_producto': 'path_to_product_photo'})));
+  runApp(const MaterialApp(home: ProductChat({'nombre': 'Chat', 'ruta_chat': 'chats/your_chat_document', 'foto_producto': 'path_to_product_photo'})));
 }
