@@ -16,18 +16,21 @@ class PurchasePageHeader extends StatelessWidget {
       expandedHeight: 300.0,
       pinned: true,
       leading: Container(
-        margin: const EdgeInsets.only(left: 22),
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color.fromARGB(178, 0, 0, 0),
+          width: 16, // Ajusta el ancho según sea necesario
+          height: 16, // Ajusta la altura según sea necesario
+          margin: const EdgeInsets.only(left: 25),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color.fromARGB(178, 0, 0, 0),
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18), // Ajusta el tamaño del icono
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20,),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+
       flexibleSpace: FlexibleSpaceBar(
         background: itemData['foto_producto'] != null
             ? Stack(
@@ -38,7 +41,7 @@ class PurchasePageHeader extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                   Positioned(
-                    bottom: 10,
+                    bottom: 20,
                     right: 10,
                     child: Container(
                       padding: const EdgeInsets.all(5),

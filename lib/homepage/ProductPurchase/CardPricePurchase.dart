@@ -34,13 +34,27 @@ class CardPricePurchase extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start, // Alinea el texto al inicio
                 children: [
-                  Text(
-                    'COP ${NumberFormat('#,##0', 'es_CO').format(discountedPrice)}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: "Insanibc",
-                      color: Colors.red,
-                    ),
+                  Row(
+                    children: [
+                      const Text(
+                        'COP',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Text(
+                        NumberFormat('#,##0', 'es_CO').format(discountedPrice),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -84,8 +98,8 @@ class CardPricePurchase extends StatelessWidget {
                   ],
                 ),
               ] else ...[
-                SizedBox(
-                  width: 200, // Ajusta el ancho según sea necesario para que coincida con el espacio ocupado por los textos de descuento y ahorro
+                const SizedBox(
+                  width: 190, // Ajusta el ancho según sea necesario para que coincida con el espacio ocupado por los textos de descuento y ahorro
                 ),
               ],
             ],

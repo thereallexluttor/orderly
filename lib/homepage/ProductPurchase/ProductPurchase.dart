@@ -170,7 +170,7 @@ class ProductPurchase extends StatelessWidget {
                         ),
                       ),
                       
-                      const SizedBox(height: 400,),
+                      const SizedBox(height: 300,),
                     ],
                   ),
                 ),
@@ -180,6 +180,8 @@ class ProductPurchase extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
+        height: 63,
+        elevation: 0,
         color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(.0),
