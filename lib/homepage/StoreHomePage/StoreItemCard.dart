@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
 
-
-
 class StoreItemCard extends StatelessWidget {
   final Map<String, dynamic> itemData;
 
@@ -22,6 +20,7 @@ class StoreItemCard extends StatelessWidget {
     // Asegurarse de que el descuento y el precio sean números
     final int discount = int.tryParse(itemData['discount']?.toString() ?? '0') ?? 0;
     final int precio = int.tryParse(itemData['precio']?.toString() ?? '0') ?? 0;
+    final double discountedPrice = precio * (1 - discount / 100);
 
     return InkWell(
       onTap: () {
@@ -121,6 +120,54 @@ class StoreItemCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  if (itemData['delivery_fee_status'] == true)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(10.0),
+                          bottomLeft: Radius.circular(10.0),
+                        ),
+                        child: Container(
+                          color: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          child: const Text(
+                            'Delivery Free',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Poppins",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (itemData['cash_back'] == true)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                        ),
+                        child: Container(
+                          color: Colors.purple,
+                          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          child: const Text(
+                            'Cash Back!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Poppins",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -139,13 +186,26 @@ class StoreItemCard extends StatelessWidget {
                 children: [
                   Text(
                     'COP',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
+                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
-                  const SizedBox(width: 5),
+                  const SizedBox(width: 1),
                   Text(
-                    NumberFormat('#,##0', 'es_CO').format(precio),
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
+                    NumberFormat('#,##0', 'es_CO').format(discountedPrice),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
+                  if (discount > 0) ...[
+                    const SizedBox(width: 3),
+                    Text(
+                      NumberFormat('#,##0', 'es_CO').format(precio),
+                      style: const TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Poppins",
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: 4),

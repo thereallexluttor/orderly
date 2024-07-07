@@ -54,7 +54,7 @@ class StoreHeader extends StatelessWidget {
                   //   bottomRight: Radius.circular(20.0),
                   // ),
                   child: Container(
-                    height: 140,
+                    height: 100,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -69,10 +69,10 @@ class StoreHeader extends StatelessWidget {
                 bottom: -40,
                 left: 20,
                 child: CircleAvatar(
-                  radius: 35,
+                  radius: 32,
                   backgroundColor: Colors.white,
                   child: CircleAvatar(
-                    radius: 30,
+                    radius: 27,
                     backgroundImage: NetworkImage(logoUrl),
                     onBackgroundImageError: (_, __) => Icon(Icons.store),
                   ),
@@ -124,9 +124,9 @@ class StoreHeader extends StatelessWidget {
                         style: TextStyle(
                           letterSpacing: 1,
                           fontSize: 12,
-                          fontWeight: FontWeight.normal,
+                          fontWeight: FontWeight.bold,
                           color: Colors.black,
-                          fontFamily: "Insanibc",
+                          fontFamily: "Poppins",
                         ),
                       ),
                     ),
@@ -160,13 +160,13 @@ class StoreHeader extends StatelessWidget {
                   child: Text(
                     description,
                     style: TextStyle(
-                      fontSize: 9,
+                      fontSize: 10,
                       color: Colors.black87,
                       fontFamily: "Alef",
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 10.0),
                 Center(
                   child: AnimatedContainer(
                     duration: Duration(seconds: 1),
@@ -190,7 +190,7 @@ class StoreHeader extends StatelessWidget {
                               child: Text(
                                 'COP$discount de descuento por compras superiores a COP$minimumPurchase (Cupon de tienda)',
                                 style: TextStyle(
-                                  fontSize: 8,
+                                  fontSize: 9,
                                   color: Color.fromARGB(221, 104, 104, 104),
                                   fontFamily: "Alef",
                                 ),
@@ -207,7 +207,7 @@ class StoreHeader extends StatelessWidget {
                               child: Text(
                                 'Garantía de envío',
                                 style: TextStyle(
-                                  fontSize: 8,
+                                  fontSize: 9,
                                   color: Color.fromARGB(221, 104, 104, 104),
                                   fontFamily: "Alef",
                                 ),
@@ -216,9 +216,12 @@ class StoreHeader extends StatelessWidget {
                           ],
                         ),
                       ],
+                      
                     ),
                   ),
                 ),
+                SizedBox(height: 5,),
+                Divider()
               ],
             ),
           ),
