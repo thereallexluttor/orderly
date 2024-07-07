@@ -9,6 +9,7 @@ import 'package:orderly/homepage/UserChats/UserChats.dart';
 import 'package:orderly/homepage/product_category/category_buttons.dart';
 import 'package:orderly/homepage/sales&deals/offers_tab.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
+import 'package:orderly/homepage/shopping_cart/shopping_cart.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 
 class HomePage extends StatefulWidget {
@@ -269,7 +270,7 @@ class _HomePageState extends State<HomePage> {
       // Página central azul con información del chat
       ChatInfoScreen(),
       // Página central amarilla
-      Container(color: Colors.yellow),
+      Shopping_Cart(),
       // Página central verde
       Container(color: Colors.green),
       // Última página morada
