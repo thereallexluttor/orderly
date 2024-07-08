@@ -12,7 +12,27 @@ class Shopping_Cart extends StatefulWidget {
   _Shopping_CartState createState() => _Shopping_CartState();
 }
 
-class _Shopping_CartState extends State<Shopping_Cart> {
+class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProviderStateMixin {
+  AnimationController? _controller;
+  Animation<double>? _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(parent: _controller!, curve: Curves.easeIn);
+    _controller?.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   Future<Map<String, dynamic>?> _fetchCartData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return null;
@@ -123,91 +143,94 @@ class _Shopping_CartState extends State<Shopping_Cart> {
           style: TextStyle(fontFamily: "Poppins", fontSize: 13),
         ),
       ),
-      body: FutureBuilder<Map<String, dynamic>?>(
-        future: _fetchCartData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No se encontraron datos del carrito.'));
-          }
+      body: FadeTransition(
+        opacity: _animation!,
+        child: FutureBuilder<Map<String, dynamic>?>(
+          future: _fetchCartData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.hasData || snapshot.data == null) {
+              return Center(child: Text('No se encontraron datos del carrito.'));
+            }
 
-          Map<String, dynamic> cartData = snapshot.data!['carrito_compra'] ?? {};
-          if (cartData.isEmpty) {
-            return Center(child: Text('El carrito está vacío.'));
-          }
+            Map<String, dynamic> cartData = snapshot.data!['carrito_compra'] ?? {};
+            if (cartData.isEmpty) {
+              return Center(child: Text('El carrito está vacío.'));
+            }
 
-          double totalPrice = cartData.values.fold(0.0, (sum, item) => sum + item['total_pagar']);
+            double totalPrice = cartData.values.fold(0.0, (sum, item) => sum + item['total_pagar']);
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: cartData.length,
-                  itemBuilder: (context, index) {
-                    String key = cartData.keys.elementAt(index);
-                    Map<String, dynamic> item = cartData[key];
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cartData.length,
+                    itemBuilder: (context, index) {
+                      String key = cartData.keys.elementAt(index);
+                      Map<String, dynamic> item = cartData[key];
 
-                    return Dismissible(
-                      key: Key(key),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) async {
-                        await _deleteItemFromCart(key, item);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('${item['nombre_producto']} eliminado del carrito')),
-                        );
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(Icons.delete, color: Colors.white),
-                      ),
-                      child: ListTile(
-                        leading: Image.network(item['foto_producto']),
-                        title: Text(
-                          item['nombre_producto'],
-                          style: TextStyle(fontFamily: "Poppins", fontSize: 11),
+                      return Dismissible(
+                        key: Key(key),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) async {
+                          await _deleteItemFromCart(key, item);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${item['nombre_producto']} eliminado del carrito')),
+                          );
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Icon(Icons.delete, color: Colors.white),
                         ),
-                        subtitle: Text(
-                          'X${item['cantidad']}',
-                          style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
+                        child: ListTile(
+                          leading: Image.network(item['foto_producto']),
+                          title: Text(
+                            item['nombre_producto'],
+                            style: TextStyle(fontFamily: "Poppins", fontSize: 11),
+                          ),
+                          subtitle: Text(
+                            'X${item['cantidad']}',
+                            style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
+                          ),
+                          trailing: Text('COP ${item['total_pagar']}'),
                         ),
-                        trailing: Text('COP ${item['total_pagar']}'),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Total: COP $totalPrice',
-                      style: TextStyle(fontFamily: "Poppins", fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _completePurchase,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Total: COP $totalPrice',
+                        style: TextStyle(fontFamily: "Poppins", fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: _completePurchase,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          'Ir a pagar',
+                          style: TextStyle(fontFamily: "Poppins", fontSize: 16),
                         ),
                       ),
-                      child: Text(
-                        'Ir a pagar',
-                        style: TextStyle(fontFamily: "Poppins", fontSize: 16),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

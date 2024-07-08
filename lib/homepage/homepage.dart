@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:orderly/homepage/Purchases/Purchases.dart';
 import 'package:orderly/homepage/UserChats/UserChats.dart';
 import 'package:orderly/homepage/product_category/category_buttons.dart';
 import 'package:orderly/homepage/sales&deals/offers_tab.dart';
@@ -272,7 +273,7 @@ class _HomePageState extends State<HomePage> {
       // Página central amarilla
       Shopping_Cart(),
       // Página central verde
-      Container(color: Colors.green),
+      Purchases(),
       // Última página morada
       Container(color: Colors.purple),
     ];
