@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Shopping_Cart extends StatefulWidget {
   const Shopping_Cart({super.key});
@@ -35,7 +36,6 @@ class _Shopping_CartState extends State<Shopping_Cart> {
 
     String rutaCarrito = item['ruta_carrito'];
 
-    // Eliminar el producto del documento de Firestore en la ruta especificada
     DocumentReference cartRef = FirebaseFirestore.instance.doc(rutaCarrito);
     DocumentSnapshot cartSnapshot = await cartRef.get();
     if (cartSnapshot.exists) {
@@ -50,7 +50,6 @@ class _Shopping_CartState extends State<Shopping_Cart> {
       }
     }
 
-    // Eliminar el producto del carrito de compras del usuario en la colección 'Orderly/Users/users/{user.uid}'
     DocumentReference userDocRef = FirebaseFirestore.instance
         .collection('Orderly')
         .doc('Users')
@@ -61,13 +60,9 @@ class _Shopping_CartState extends State<Shopping_Cart> {
       Map<String, dynamic> carritoCompraData = Map<String, dynamic>.from(userDocSnapshot.data() as Map);
       if (carritoCompraData.containsKey('carrito_compra')) {
         Map<String, dynamic> userCarritoCompra = Map<String, dynamic>.from(carritoCompraData['carrito_compra']);
-        print(userCarritoCompra);
         
-        // Encontrar la clave del elemento a eliminar
         String? keyToRemove;
         userCarritoCompra.forEach((key, value) {
-          print(key);
-         
           if (value['nombre_producto'] == item['nombre_producto'] &&
               value['cantidad'] == item['cantidad'] &&
               value['total_pagar'] == item['total_pagar']) {
@@ -75,24 +70,47 @@ class _Shopping_CartState extends State<Shopping_Cart> {
           }
         });
 
-        // Eliminar el elemento si se encuentra
         if (keyToRemove != null) {
-          print('Eliminando elemento con clave: $keyToRemove');
           userCarritoCompra.remove(keyToRemove);
-          print(userCarritoCompra);
           carritoCompraData['carrito_compra'] = userCarritoCompra;
           await userDocRef.set(carritoCompraData);
-        } else {
-          print('No se encontró el elemento a eliminar.');
         }
-      } else {
-        print('carrito_compra no encontrado en los datos del usuario.');
       }
-    } else {
-      print('No se encontró el documento del usuario.');
     }
 
-    // Actualizar la interfaz de usuario
+    setState(() {});
+  }
+
+  Future<void> _completePurchase() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    DocumentReference userDocRef = FirebaseFirestore.instance
+        .collection('Orderly')
+        .doc('Users')
+        .collection('users')
+        .doc(user.uid);
+
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+    if (userDocSnapshot.exists) {
+      Map<String, dynamic> carritoCompraData = Map<String, dynamic>.from(userDocSnapshot.data() as Map);
+      Map<String, dynamic> carritoCompra = Map<String, dynamic>.from(carritoCompraData['carrito_compra'] ?? {});
+      Map<String, dynamic> compras = Map<String, dynamic>.from(carritoCompraData['compras'] ?? {});
+
+      String fechaCompra = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+      carritoCompra.forEach((key, value) {
+        value['status'] = 'pagado';
+        value['fecha_compra'] = fechaCompra;
+        compras[key] = value;
+      });
+
+      carritoCompraData['compras'] = compras;
+      carritoCompraData.remove('carrito_compra');
+
+      await userDocRef.set(carritoCompraData);
+    }
+
     setState(() {});
   }
 
@@ -120,41 +138,74 @@ class _Shopping_CartState extends State<Shopping_Cart> {
             return Center(child: Text('El carrito está vacío.'));
           }
 
-          return ListView.builder(
-            itemCount: cartData.length,
-            itemBuilder: (context, index) {
-              String key = cartData.keys.elementAt(index);
-              Map<String, dynamic> item = cartData[key];
+          double totalPrice = cartData.values.fold(0.0, (sum, item) => sum + item['total_pagar']);
 
-              return Dismissible(
-                key: Key(key),
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) async {
-                  await _deleteItemFromCart(key, item);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${item['nombre_producto']} eliminado del carrito')),
-                  );
-                },
-                background: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Icon(Icons.delete, color: Colors.white),
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cartData.length,
+                  itemBuilder: (context, index) {
+                    String key = cartData.keys.elementAt(index);
+                    Map<String, dynamic> item = cartData[key];
+
+                    return Dismissible(
+                      key: Key(key),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) async {
+                        await _deleteItemFromCart(key, item);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('${item['nombre_producto']} eliminado del carrito')),
+                        );
+                      },
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Icon(Icons.delete, color: Colors.white),
+                      ),
+                      child: ListTile(
+                        leading: Image.network(item['foto_producto']),
+                        title: Text(
+                          item['nombre_producto'],
+                          style: TextStyle(fontFamily: "Poppins", fontSize: 11),
+                        ),
+                        subtitle: Text(
+                          'X${item['cantidad']}',
+                          style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
+                        ),
+                        trailing: Text('COP ${item['total_pagar']}'),
+                      ),
+                    );
+                  },
                 ),
-                child: ListTile(
-                  leading: Image.network(item['foto_producto']),
-                  title: Text(
-                    item['nombre_producto'],
-                    style: TextStyle(fontFamily: "Poppins", fontSize: 11),
-                  ),
-                  subtitle: Text(
-                    'X${item['cantidad']}',
-                    style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
-                  ),
-                  trailing: Text('COP ${item['total_pagar']}'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Total: COP $totalPrice',
+                      style: TextStyle(fontFamily: "Poppins", fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _completePurchase,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Ir a pagar',
+                        style: TextStyle(fontFamily: "Poppins", fontSize: 16),
+                      ),
+                    ),
+                  ],
                 ),
-              );
-            },
+              ),
+            ],
           );
         },
       ),

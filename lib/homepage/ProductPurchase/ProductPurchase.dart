@@ -63,6 +63,9 @@ class _ProductPurchaseState extends State<ProductPurchase> {
     int newIndex = userCart.length + 1;
     int totalPagar = (widget.itemData['precio'] * ((100 - widget.itemData['discount']) / 100)).round() * _quantity;
 
+    // Obtener la fecha y hora actual
+    String fechaActual = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
     Map<String, dynamic> orderData = {
       'nombre_producto': widget.itemData['nombre'],
       'precio': (widget.itemData['precio'] * ((100 - widget.itemData['discount']) / 100)).round(),
@@ -71,6 +74,8 @@ class _ProductPurchaseState extends State<ProductPurchase> {
       'foto_producto': widget.itemData['foto_producto'],
       'total_pagar': totalPagar,
       'ruta_carrito': '${widget.itemData['ruta']}/carritos/carritos', // Añade esta línea
+      'fecha': fechaActual, // Añade el campo de fecha
+      'status': 'sin pagar', // Añade el campo de estado
     };
 
     userCart[newIndex.toString()] = orderData;
