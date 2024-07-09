@@ -86,14 +86,22 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                   return Card(
                     elevation: 0,
                     color: Colors.white, // Fondo blanco para las tarjetas
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Tarjetas más delgadas
                     child: Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(5), // Ajustar padding para hacer las tarjetas más delgadas
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ListTile(
-                            leading: Image.network(item['foto_producto']),
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0), // Redondear bordes de las imágenes
+                              child: Image.network(
+                                item['foto_producto'],
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             title: Text(
                               item['nombre_producto'],
                               style: TextStyle(fontFamily: "Poppins", fontSize: 13, fontWeight: FontWeight.bold),
