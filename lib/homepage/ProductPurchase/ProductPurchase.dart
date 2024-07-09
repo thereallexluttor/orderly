@@ -7,6 +7,7 @@ import 'package:orderly/homepage/ProductPurchase/CardPricePurchase.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
 import 'package:orderly/homepage/ProductPurchase/purchase_page_header.dart';
 import 'package:orderly/homepage/StoreHomePage/StoreHomePage.dart';
+import 'package:orderly/homepage/HomePage.dart'; // Asegúrate de importar HomePage correctamente
 
 class ProductPurchase extends StatefulWidget {
   final Map<String, dynamic> itemData;
@@ -42,6 +43,19 @@ class _ProductPurchaseState extends State<ProductPurchase> {
   Future<void> _confirmOrder() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
+
+    // Mostrar confeti y colapsar el BottomSheet inmediatamente
+    _confettiController.play();
+    Navigator.pop(context);
+
+    // Navegar a HomePage después de 4 segundos
+    Future.delayed(Duration(seconds: 7), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()), // Asegúrate de que HomePage esté importada y configurada correctamente
+        (route) => false,
+      );
+    });
 
     DocumentReference cartRef = FirebaseFirestore.instance
         .doc('${widget.itemData['ruta']}/carritos/carritos');
@@ -107,10 +121,6 @@ class _ProductPurchaseState extends State<ProductPurchase> {
     setState(() {
       _quantity = 1; // Reinicia el contador de productos a 1
     });
-
-    _confettiController.play(); // Reproduce la animación de confeti
-
-    Navigator.pop(context); // Cierra el BottomSheet después de confirmar
   }
 
   void _showBottomSheet() {
