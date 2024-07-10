@@ -52,7 +52,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
     double totalSpent = 0.0;
     Map<String, int> productCount = {};
     DateTime now = DateTime.now();
-    DateTime oneWeekAgo = now.subtract(Duration(days: 7));
+    DateTime oneWeekAgo = now.subtract(const Duration(days: 7));
 
     purchaseData.forEach((key, value) {
       if (value['fecha_compra'] != null && value['total_pagar'] != null && value['cantidad'] != null && value['nombre_producto'] != null) {
@@ -80,14 +80,19 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final numberFormat = NumberFormat('#,##0', 'es_ES');
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         surfaceTintColor: Colors.white,
-        title: Text(
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
           'Mis compras 💫😉',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins", fontSize: 13, color: Colors.black, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
       body: Container(
         color: Colors.white,
@@ -97,15 +102,15 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
             future: _fetchPurchaseData(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               if (!snapshot.hasData || snapshot.data == null) {
-                return Center(child: Text('No se encontraron compras.'));
+                return const Center(child: Text('No se encontraron compras.'));
               }
 
               Map<String, dynamic> purchaseData = snapshot.data!['compras'] ?? {};
               if (purchaseData.isEmpty) {
-                return Center(child: Text('No has realizado ninguna compra.'));
+                return const Center(child: Text('No has realizado ninguna compra.'));
               }
 
               Map<String, dynamic> metrics = _calculateMetrics(purchaseData);
@@ -115,54 +120,70 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
               List<MapEntry<String, int>> sortedProducts = productCount.entries.toList()
                 ..sort((a, b) => b.value.compareTo(a.value));
 
-              final numberFormat = NumberFormat('#,##0', 'es_ES');
-
               return ListView(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 children: [
-                  Text(
-                    'Estadísticas de la última semana:',
-                    style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Monto total gastado: COP ${numberFormat.format(totalSpent)}',
-                    style: TextStyle(fontFamily: "Poppins", fontSize: 12),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Productos más comprados:',
-                    style: TextStyle(fontFamily: "Poppins", fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  ...sortedProducts.map((entry) => ListTile(
-                        title: Text(
-                          entry.key,
-                          style: TextStyle(fontFamily: "Poppins", fontSize: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Estadísticas de la última semana',
+                          style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
                         ),
-                        trailing: Text(
-                          'Cantidad: ${entry.value}',
-                          style: TextStyle(fontFamily: "Poppins", fontSize: 12),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Monto total gastado: COP ${numberFormat.format(totalSpent)}',
+                          style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
                         ),
-                      )),
-                  Divider(),
-                  Text(
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Productos más comprados:',
+                          style: TextStyle(fontFamily: "Poppins", fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                        ...sortedProducts.map((entry) => ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                entry.key,
+                                style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
+                              ),
+                              trailing: Text(
+                                'Cantidad: ${entry.value}',
+                                style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
                     'Detalle de compras:',
                     style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 10),
                   ...purchaseData.entries.map((entry) {
                     Map<String, dynamic> item = entry.value;
 
                     if (item['nombre_producto'] != null && item['cantidad'] != null && item['total_pagar'] != null && item['foto_producto'] != null && item['fecha_compra'] != null) {
                       return Card(
                         elevation: 0,
-                        color: Colors.white,
-                        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        color: Colors.grey[200],
+                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Padding(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ListTile(
+                                contentPadding: EdgeInsets.zero,
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Image.network(
@@ -174,11 +195,11 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                 ),
                                 title: Text(
                                   item['nombre_producto'],
-                                  style: TextStyle(fontFamily: "Poppins", fontSize: 12, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
                                   'X${item['cantidad']}',
-                                  style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 12),
+                                  style: const TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
                                 ),
                                 trailing: Text('COP ${numberFormat.format(item['total_pagar'])}'),
                               ),
@@ -186,7 +207,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                 padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                                 child: Text(
                                   'Fecha de Compra: ${item['fecha_compra']}',
-                                  style: TextStyle(fontFamily: "Poppins", fontSize: 12, color: Colors.grey),
+                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, color: Colors.grey),
                                 ),
                               ),
                             ],
@@ -194,7 +215,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                         ),
                       );
                     } else {
-                      return SizedBox.shrink(); // Retorna un widget vacío si algún valor es nulo
+                      return const SizedBox.shrink();
                     }
                   }).toList(),
                 ],
@@ -206,3 +227,4 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
     );
   }
 }
+

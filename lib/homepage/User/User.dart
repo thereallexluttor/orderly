@@ -2,9 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class UserPage extends StatelessWidget {
+class UserPage extends StatefulWidget {
   const UserPage({super.key});
+
+  @override
+  _UserPageState createState() => _UserPageState();
+}
+
+class _UserPageState extends State<UserPage> {
+  final ImagePicker _picker = ImagePicker();
+  File? _image;
 
   Future<Map<String, dynamic>?> _fetchUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -21,6 +31,35 @@ class UserPage extends StatelessWidget {
       return userDoc.data() as Map<String, dynamic>?;
     }
     return null;
+  }
+
+  Future<void> _updateProfileImage(String userId, String imageUrl) async {
+    await FirebaseFirestore.instance
+        .collection('Orderly')
+        .doc('Users')
+        .collection('users')
+        .doc(userId)
+        .update({'photo': imageUrl});
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+
+      // Simulating an upload process
+      await Future.delayed(Duration(seconds: 2));
+      String fakeImageUrl = 'https://via.placeholder.com/150'; // Replace with actual upload logic
+
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await _updateProfileImage(user.uid, fakeImageUrl);
+        setState(() {}); // Refresh the UI
+      }
+    }
   }
 
   String _formatTimestamp(Timestamp? timestamp) {
@@ -54,11 +93,23 @@ class UserPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: userData['photo'] != null
-                        ? NetworkImage(userData['photo'])
-                        : AssetImage('assets/default_avatar.png') as ImageProvider,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: userData['photo'] != null
+                            ? NetworkImage(userData['photo'])
+                            : AssetImage('assets/default_avatar.png') as ImageProvider,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: -10,
+                        child: IconButton(
+                          icon: Icon(Icons.camera_alt, color: Colors.blue),
+                          onPressed: _pickImage,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 16),
@@ -78,7 +129,6 @@ class UserPage extends StatelessWidget {
                 _buildDivider(),
                 _buildUserInfoRow('Phone Number:', userData['phoneNumber']),
                 _buildDivider(),
-                
               ],
             ),
           );
@@ -108,6 +158,7 @@ class UserPage extends StatelessWidget {
               ),
             ),
           ),
+          
         ],
       ),
     );
