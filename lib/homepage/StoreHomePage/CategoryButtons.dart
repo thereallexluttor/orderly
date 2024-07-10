@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CategoryButtons extends StatelessWidget {
   final DocumentReference storeReference;
@@ -74,10 +75,17 @@ class CategoryButtons extends StatelessWidget {
                           duration: const Duration(milliseconds: 300),
                           child: CircleAvatar(
                             radius: 24,
-                            backgroundImage: NetworkImage(product['foto_producto'] ?? ''),
-                            onBackgroundImageError: (error, stackTrace) {
-                              // Manejar el error de carga de la imagen
-                            },
+                            backgroundColor: Colors.transparent,
+                            child: ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: product['foto_producto'] ?? '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                                fadeInDuration: Duration(milliseconds: 500),
+                                fadeOutDuration: Duration(milliseconds: 500),
+                              ),
+                            ),
                           ),
                         ),
                       ),

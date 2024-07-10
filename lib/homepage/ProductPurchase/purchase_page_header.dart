@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 
 class PurchasePageHeader extends StatelessWidget {
@@ -16,29 +17,34 @@ class PurchasePageHeader extends StatelessWidget {
       expandedHeight: 300.0,
       pinned: true,
       leading: Container(
-          width: 16, // Ajusta el ancho según sea necesario
-          height: 16, // Ajusta la altura según sea necesario
-          margin: const EdgeInsets.only(left: 25),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color.fromARGB(178, 0, 0, 0),
-          ),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18), // Ajusta el tamaño del icono
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+        width: 16, // Ajusta el ancho según sea necesario
+        height: 16, // Ajusta la altura según sea necesario
+        margin: const EdgeInsets.only(left: 25),
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Color.fromARGB(178, 0, 0, 0),
         ),
-
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18), // Ajusta el tamaño del icono
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       flexibleSpace: FlexibleSpaceBar(
         background: itemData['foto_producto'] != null
             ? Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    itemData['foto_producto'],
+                  CachedNetworkImage(
+                    imageUrl: itemData['foto_producto'],
                     fit: BoxFit.cover,
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    fadeInDuration: Duration(milliseconds: 500),
+                    fadeOutDuration: Duration(milliseconds: 500),
                   ),
                   Positioned(
                     bottom: 20,

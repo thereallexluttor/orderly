@@ -3,6 +3,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:orderly/homepage/ProductPurchase/CardPricePurchase.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
 import 'package:orderly/homepage/ProductPurchase/purchase_page_header.dart';
@@ -319,7 +320,16 @@ class _ProductPurchaseState extends State<ProductPurchase> {
                                                         itemBuilder: (context, index) {
                                                           return Padding(
                                                             padding: const EdgeInsets.all(10.0),
-                                                            child: Image.network(widget.itemData['detalle'][index]),
+                                                            child: CachedNetworkImage(
+                                                              imageUrl: widget.itemData['detalle'][index],
+                                                              fit: BoxFit.cover,
+                                                              placeholder: (context, url) => Center(
+                                                                child: CircularProgressIndicator(),
+                                                              ),
+                                                              errorWidget: (context, url, error) => Icon(Icons.image),
+                                                              fadeInDuration: Duration(milliseconds: 500),
+                                                              fadeOutDuration: Duration(milliseconds: 500),
+                                                            ),
                                                           );
                                                         },
                                                       ),

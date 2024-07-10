@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
 
@@ -58,14 +59,17 @@ class StoreItemCard extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
-                      child: Image.network(
-                        itemData['foto_producto'] ?? '',
+                      child: CachedNetworkImage(
+                        imageUrl: itemData['foto_producto'] ?? '',
                         height: 150,
                         width: 150,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.image, size: 100);
-                        },
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.image, size: 100),
+                        fadeInDuration: Duration(milliseconds: 500),
+                        fadeOutDuration: Duration(milliseconds: 500),
                       ),
                     ),
                   ),

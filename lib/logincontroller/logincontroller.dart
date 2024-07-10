@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:orderly/homepage/homepage.dart';
-//import 'package:orderly_app/HomePage/HomePage.dart';
 import 'package:orderly/personal_information/personal_information.dart';
 import 'package:orderly/login/login.dart';
-import 'package:permission_handler/permission_handler.dart'; // Importa el paquete de manejo de permisos
+import 'package:permission_handler/permission_handler.dart';
 
 class FadePageRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
@@ -42,25 +41,38 @@ class logincontroller extends StatefulWidget {
 }
 
 class _logincontrollerState extends State<logincontroller> {
-  bool _personalInfoCompleted = false;
+  bool _permissionsGranted = false;
 
   @override
   void initState() {
     super.initState();
-    checkPermissions(); // Llama a la función para verificar los permisos al inicializar el widget
+    checkPermissions();
   }
 
   Future<void> checkPermissions() async {
-    // Verifica si el permiso de ubicación está concedido
     if (await Permission.location.isGranted) {
-      // Si está concedido, continúa con la lógica de autenticación
       setState(() {
-        _personalInfoCompleted = true;
+        _permissionsGranted = true;
       });
     } else {
-      // Si no está concedido, solicita el permiso
-      await Permission.location.request();
+      final status = await Permission.location.request();
+      if (status.isGranted) {
+        setState(() {
+          _permissionsGranted = true;
+        });
+      }
     }
+  }
+
+  Future<bool> isPersonalInfoCompleted(User user) async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('Orderly')
+        .doc('Users')
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    return userDoc.exists;
   }
 
   @override
@@ -72,15 +84,9 @@ class _logincontrollerState extends State<logincontroller> {
           if (snapshot.hasData) {
             final User? user = snapshot.data;
             if (user != null) {
-              return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                future: FirebaseFirestore.instance.collection('Orderly').doc('Users').collection('users').doc(user.uid).get(),
-                builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  }
-
+              return FutureBuilder<bool>(
+                future: isPersonalInfoCompleted(user),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: LoadingAnimationWidget.twistingDots(
@@ -91,32 +97,24 @@ class _logincontrollerState extends State<logincontroller> {
                     );
                   }
 
-                  if (snapshot.hasData && snapshot.data!.exists) {
-                    // El usuario existe en Firestore, por lo que puede ir a HomePage
+                  if (snapshot.hasData && snapshot.data == true) {
                     return HomePage();
                   } else {
-                    // El usuario no existe en Firestore, por lo que necesita completar su información personal
-                    if (_personalInfoCompleted) {
-                      // Si los permisos están concedidos, muestra la pantalla de PersonalInformation
-                      return PersonalInformation();
-                    } else {
-                      // Si los permisos no están concedidos, muestra una pantalla de carga o un mensaje de espera
-                      return Center(
-                        child: LoadingAnimationWidget.twistingDots(
-                          leftDotColor: const Color(0xFF1A1A3F),
-                          rightDotColor: Color.fromARGB(255, 198, 55, 234),
-                          size: 50,
-                        ),
-                      ); // Puedes personalizar esto según tu diseño
-                    }
+                    return _permissionsGranted
+                        ? PersonalInformation()
+                        : Center(
+                            child: LoadingAnimationWidget.twistingDots(
+                              leftDotColor: const Color(0xFF1A1A3F),
+                              rightDotColor: Color.fromARGB(255, 198, 55, 234),
+                              size: 50,
+                            ),
+                          );
                   }
                 },
               );
             }
           }
-          // No hay usuario autenticado
-          return 
-          LogAndSign();
+          return LogAndSign();
         },
       ),
     );

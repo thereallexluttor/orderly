@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
 
@@ -12,13 +12,11 @@ class ItemCardOffers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determinar el color del texto en función del estado del producto
     final bool isAgotado = itemData['status'] == 'agotado';
     final Color priceColor = isAgotado ? Colors.grey : const Color.fromARGB(255, 255, 17, 0);
     final Color priceColor2 = isAgotado ? Colors.grey : Color.fromARGB(255, 0, 0, 0);
     const Color infoColor = Colors.grey;
 
-    // Calcular el precio con descuento si hay descuento
     final int? discount = itemData['discount'];
     final int? originalPrice = itemData['precio'];
     final double? discountedPrice = (discount != null && discount > 0 && originalPrice != null)
@@ -39,7 +37,7 @@ class ItemCardOffers extends StatelessWidget {
                 child: child,
               );
             },
-            transitionDuration: Duration(milliseconds: 200), // Ajusta la duración aquí
+            transitionDuration: Duration(milliseconds: 200),
           ),
         );
       },
@@ -52,25 +50,28 @@ class ItemCardOffers extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(0.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Alinear contenido a la izquierda
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Color.fromARGB(255, 235, 235, 235)), // Agregar borde gris
+                      border: Border.all(color: Color.fromARGB(255, 235, 235, 235)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
-                      child: Image.network(
-                        itemData['foto_producto'] ?? '',
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: CachedNetworkImage(
+                        imageUrl: itemData['foto_producto'] ?? '',
                         height: 150,
                         width: 150,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.image, size: 100);
-                        },
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.image, size: 100),
+                        fadeInDuration: Duration(milliseconds: 500),
+                        fadeOutDuration: Duration(milliseconds: 500),
                       ),
                     ),
                   ),
@@ -183,11 +184,11 @@ class ItemCardOffers extends StatelessWidget {
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left, // Alinear texto a la izquierda
+                textAlign: TextAlign.left,
               ),
               SizedBox(height: 4),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start, // Alinear a la izquierda
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     'COP',

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
 
@@ -23,19 +24,18 @@ class ItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-  context,
-  PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => ProductPurchase(itemData: itemData),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => ProductPurchase(itemData: itemData),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 200), // Ajusta la duración aquí
+          ),
         );
-      },
-      transitionDuration: Duration(milliseconds: 200), // Ajusta la duración aquí
-  ),
-);
-
       },
       child: Card(
         color: Colors.white,
@@ -57,14 +57,17 @@ class ItemCard extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10.0), // Redondear la imagen
-                      child: Image.network(
-                        itemData['foto_producto'] ?? '',
+                      child: CachedNetworkImage(
+                        imageUrl: itemData['foto_producto'] ?? '',
                         height: 80,
                         width: 80,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.image, size: 80);
-                        },
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.image, size: 80),
+                        fadeInDuration: Duration(milliseconds: 500),
+                        fadeOutDuration: Duration(milliseconds: 500),
                       ),
                     ),
                   ),

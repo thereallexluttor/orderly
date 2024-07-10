@@ -9,6 +9,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:orderly/homepage/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:confetti/confetti.dart';
 
 class PersonalInformation extends StatefulWidget {
   const PersonalInformation({super.key});
@@ -25,18 +26,25 @@ class _PersonalInformationState extends State<PersonalInformation> {
   String? phoneNumber;
   final _formKey = GlobalKey<FormState>();
   double _opacity = 0.0;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 2));
     _requestLocationPermission();
     _getUserLocation();
-    // Inicia la animación después de un pequeño retraso
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         _opacity = 1.0;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   void _requestLocationPermission() async {
@@ -52,10 +60,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
   bool _validatePhoneNumber(String? number) {
     if (number == null) return false;
 
-    // Remove any non-numeric characters
     String digits = number.replaceAll(RegExp(r'\D'), '');
-
-    // Check if it has 10 digits for mobile or 7 digits for fixed line
     return digits.length == 10;
   }
 
@@ -223,7 +228,6 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                         labelText: 'Fecha de nacimiento',
                                         border: InputBorder.none,
                                       ),
-                                      
                                       onChanged: (value) {
                                         setState(() {
                                           birthdate = value;
@@ -231,10 +235,6 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                       },
                                     ),
                                   ),
-                                  // Divider(
-                                  //   color: Colors.grey[400],
-                                  //   height: 0,
-                                  // ),
                                 ],
                               ),
                             ),
@@ -251,69 +251,84 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                 child: Column(
                                   children: [
                                     InternationalPhoneNumberInput(
-                                    maxLength: 50,
-                                    onInputChanged: (PhoneNumber number) {
-                                      setState(() {
-                                        phoneNumber = number.phoneNumber;
-                                      });
-                                    },
-                                    validator: (value) {
-                                      if (!_validatePhoneNumber(value)) {
-                                        return 'Por favor, ingrese un número de teléfono válido de Colombia.';
-                                      }
-                                      return null;
-                                    },
-                                    selectorConfig: const SelectorConfig(
-                                      selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                                      setSelectorButtonAsPrefixIcon: true,
-                                      leadingPadding: 3.0,
+                                      maxLength: 50,
+                                      onInputChanged: (PhoneNumber number) {
+                                        setState(() {
+                                          phoneNumber = number.phoneNumber;
+                                        });
+                                      },
+                                      validator: (value) {
+                                        if (!_validatePhoneNumber(value)) {
+                                          return 'Por favor, ingrese un número de teléfono válido de Colombia.';
+                                        }
+                                        return null;
+                                      },
+                                      selectorConfig: const SelectorConfig(
+                                        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                                        setSelectorButtonAsPrefixIcon: true,
+                                        leadingPadding: 3.0,
+                                      ),
+                                      textStyle: const TextStyle(fontSize: 11),
+                                      inputDecoration: const InputDecoration(
+                                        labelText: 'Número de teléfono',
+                                        labelStyle: TextStyle(fontSize: 14), // Tamaño del texto del label
+                                        border: InputBorder.none,
+                                      ),
+                                      initialValue: PhoneNumber(isoCode: 'CO'),
+                                      spaceBetweenSelectorAndTextField: 0, // Reduce el espacio entre selector y campo de texto
                                     ),
-                                    textStyle: const TextStyle(fontSize: 11),
-                                    inputDecoration: const InputDecoration(
-                                      labelText: 'Número de teléfono',
-                                      labelStyle: TextStyle(fontSize: 14), // Tamaño del texto del label
-                                      border: InputBorder.none,
-                                    ),
-                                    initialValue: PhoneNumber(isoCode: 'CO'),
-                                    spaceBetweenSelectorAndTextField: 0, // Reduce el espacio entre selector y campo de texto
-                                  ),
-
-                                    // Divider(
-                                    //   color: Colors.grey[400],
-                                    //   height: 0,
-                                    // ),
                                   ],
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20,)
-                            
+                            SizedBox(height: 20),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  
                 ),
                 SizedBox(height: 80),
-                ElevatedButton(
-                              onPressed: isInformationComplete() && _formKey.currentState!.validate()
-                                  ? () => savePersonalInformation()
-                                  : null,
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white, // Color del texto
-                                backgroundColor: Colors.purple, // Color de fondo
-                                textStyle: const TextStyle(
-                                  fontFamily: 'Poppins', // Fuente del texto
-                                  fontSize: 12, // Tamaño del texto
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(9), // Radio de las esquinas
-                                ),
-                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 84), // Padding del botón
-                              ),
-                              child: const Text('Guardar información'),
-                            )
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: isInformationComplete() && _formKey.currentState!.validate()
+                          ? () => savePersonalInformation()
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.purple,
+                        textStyle: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 84),
+                      ),
+                      child: const Text('Guardar información'),
+                    ),
+                    ConfettiWidget(
+                      confettiController: _confettiController,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      shouldLoop: false,
+                      colors: const [
+                        Colors.green,
+                        Colors.blue,
+                        Colors.pink,
+                        Colors.orange,
+                        Colors.purple
+                      ],
+                      createParticlePath: (size) {
+                        var path = Path();
+                        path.addOval(Rect.fromCircle(center: Offset(0, 0), radius: 3));
+                        return path;
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -353,7 +368,10 @@ class _PersonalInformationState extends State<PersonalInformation> {
         'phoneNumber': phoneNumber,
       }).then((value) {
         _setPersonalInfoCompleted();
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        _confettiController.play();
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        });
       }).catchError((error) {
         print('Error saving personal information: $error');
       });

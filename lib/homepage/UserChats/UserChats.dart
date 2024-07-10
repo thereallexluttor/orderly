@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
 
 class ChatInfoScreen extends StatefulWidget {
@@ -155,7 +156,20 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                   contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                                   leading: CircleAvatar(
                                     radius: 25,
-                                    backgroundImage: NetworkImage(value['foto_producto']),
+                                    backgroundImage: CachedNetworkImageProvider(value['foto_producto']),
+                                    onBackgroundImageError: (_, __) => const Icon(Icons.image),
+                                    child: ClipOval(
+                                      child: CachedNetworkImage(
+                                        imageUrl: value['foto_producto'],
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        errorWidget: (context, url, error) => Icon(Icons.image),
+                                        fadeInDuration: Duration(milliseconds: 500),
+                                        fadeOutDuration: Duration(milliseconds: 500),
+                                      ),
+                                    ),
                                   ),
                                   title: Text(
                                     value['nombre'] ?? '',

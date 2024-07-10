@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class StoreHeader extends StatelessWidget {
   final String bannerUrl;
@@ -27,7 +28,7 @@ class StoreHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // Fondo blanco para todo el StoreHeader
+      color: Colors.white,
       child: Column(
         children: [
           Stack(
@@ -35,6 +36,7 @@ class StoreHeader extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
+                  // Uncomment if you need box shadow or rounded corners
                   // boxShadow: [
                   //   BoxShadow(
                   //     color: Colors.black.withOpacity(0.2),
@@ -49,6 +51,7 @@ class StoreHeader extends StatelessWidget {
                   // ),
                 ),
                 child: ClipRRect(
+                  // Uncomment if you need rounded corners
                   // borderRadius: BorderRadius.only(
                   //   bottomLeft: Radius.circular(20.0),
                   //   bottomRight: Radius.circular(20.0),
@@ -56,11 +59,15 @@ class StoreHeader extends StatelessWidget {
                   child: Container(
                     height: 100,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(bannerUrl),
-                        fit: BoxFit.cover,
+                    child: CachedNetworkImage(
+                      imageUrl: bannerUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(),
                       ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      fadeInDuration: Duration(milliseconds: 500),
+                      fadeOutDuration: Duration(milliseconds: 500),
                     ),
                   ),
                 ),
@@ -73,7 +80,7 @@ class StoreHeader extends StatelessWidget {
                   backgroundColor: Colors.white,
                   child: CircleAvatar(
                     radius: 27,
-                    backgroundImage: NetworkImage(logoUrl),
+                    backgroundImage: CachedNetworkImageProvider(logoUrl),
                     onBackgroundImageError: (_, __) => Icon(Icons.store),
                   ),
                 ),
@@ -216,7 +223,6 @@ class StoreHeader extends StatelessWidget {
                           ],
                         ),
                       ],
-                      
                     ),
                   ),
                 ),
