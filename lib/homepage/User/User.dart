@@ -1,0 +1,123 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
+class UserPage extends StatelessWidget {
+  const UserPage({super.key});
+
+  Future<Map<String, dynamic>?> _fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('Orderly')
+        .doc('Users')
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (userDoc.exists) {
+      return userDoc.data() as Map<String, dynamic>?;
+    }
+    return null;
+  }
+
+  String _formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) {
+      return 'N/A';
+    }
+    DateTime date = timestamp.toDate();
+    return DateFormat.yMMMMd().add_jm().format(date);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('User Information'),
+      ),
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: _fetchUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data == null) {
+            return Center(child: Text('No user data found.'));
+          }
+
+          Map<String, dynamic> userData = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: userData['photo'] != null
+                        ? NetworkImage(userData['photo'])
+                        : AssetImage('assets/default_avatar.png') as ImageProvider,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: Text(
+                    userData['name'] ?? 'N/A',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                _buildUserInfoRow('Email:', userData['email']),
+                _buildDivider(),
+                _buildUserInfoRow('Gender:', userData['gender']),
+                _buildDivider(),
+                _buildUserInfoRow('Phone Number:', userData['phoneNumber']),
+                _buildDivider(),
+                
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildUserInfoRow(String title, String? value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value ?? 'N/A',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(
+      color: Colors.grey.shade400,
+      thickness: 1,
+      height: 20,
+    );
+  }
+}

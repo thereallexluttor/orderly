@@ -12,6 +12,7 @@ import 'package:orderly/homepage/sales&deals/offers_tab.dart';
 import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:orderly/homepage/shopping_cart/shopping_cart.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
+import 'package:orderly/homepage/User/User.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -275,7 +276,7 @@ class _HomePageState extends State<HomePage> {
       // Página central verde
       Purchases(),
       // Última página morada
-      Container(color: Colors.purple),
+      UserPage(),
     ];
 
     return Scaffold(
