@@ -13,6 +13,7 @@ class Purchases extends StatefulWidget {
 class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Animation<double>? _animation;
+  bool _showStats = false;
 
   @override
   void initState() {
@@ -117,59 +118,72 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
               double totalSpent = metrics['totalSpent'];
               Map<String, int> productCount = metrics['productCount'];
 
-              List<MapEntry<String, int>> sortedProducts = productCount.entries.toList()
-                ..sort((a, b) => b.value.compareTo(a.value));
+              List<MapEntry<String, dynamic>> sinEntregar = purchaseData.entries
+                  .where((entry) => entry.value['delivery_status'] == 'no')
+                  .toList();
+              List<MapEntry<String, dynamic>> entregadas = purchaseData.entries
+                  .where((entry) => entry.value['delivery_status'] == 'yes')
+                  .toList();
 
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Estadísticas de la última semana',
-                          style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Monto total gastado: COP ${numberFormat.format(totalSpent)}',
-                          style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Productos más comprados:',
-                          style: TextStyle(fontFamily: "Poppins", fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
-                        ...sortedProducts.map((entry) => ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                entry.key,
-                                style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
-                              ),
-                              trailing: Text(
-                                'Cantidad: ${entry.value}',
-                                style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
-                              ),
-                            )),
-                      ],
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showStats = !_showStats;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Estadísticas de la última semana',
+                            style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          if (_showStats) ...[
+                            const SizedBox(height: 10),
+                            Text(
+                              'Monto total gastado: COP ${numberFormat.format(totalSpent)}',
+                              style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Productos más comprados:',
+                              style: TextStyle(fontFamily: "Poppins", fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                            ...productCount.entries.map((entry) => ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    entry.key,
+                                    style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
+                                  ),
+                                  trailing: Text(
+                                    'Cantidad: ${entry.value}',
+                                    style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
+                                  ),
+                                )),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Detalle de compras:',
-                    style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  ...purchaseData.entries.map((entry) {
-                    Map<String, dynamic> item = entry.value;
+                  if (sinEntregar.isNotEmpty) ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Sin Entregar:',
+                      style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    ...sinEntregar.map((entry) {
+                      Map<String, dynamic> item = entry.value;
 
-                    if (item['nombre_producto'] != null && item['cantidad'] != null && item['total_pagar'] != null && item['foto_producto'] != null && item['fecha_compra'] != null) {
                       return Card(
                         elevation: 0,
                         color: Colors.grey[200],
@@ -201,7 +215,21 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                   'X${item['cantidad']}',
                                   style: const TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
                                 ),
-                                trailing: Text('COP ${numberFormat.format(item['total_pagar'])}'),
+                                trailing: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text('COP ${numberFormat.format(item['total_pagar'])}'),
+                                    Text(
+                                      item['delivery_status'] ?? 'N/A',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontFamily: "Poppins",
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 16.0, top: 8.0),
@@ -214,10 +242,78 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                           ),
                         ),
                       );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  }).toList(),
+                    }).toList(),
+                  ],
+                  if (entregadas.isNotEmpty) ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Entregadas:',
+                      style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    ...entregadas.map((entry) {
+                      Map<String, dynamic> item = entry.value;
+
+                      return Card(
+                        elevation: 0,
+                        color: Colors.grey[200],
+                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                    item['foto_producto'],
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                title: Text(
+                                  item['nombre_producto'],
+                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                  'X${item['cantidad']}',
+                                  style: const TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 10),
+                                ),
+                                trailing: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text('COP ${numberFormat.format(item['total_pagar'])}'),
+                                    Text(
+                                      item['delivery_status'] ?? 'N/A',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontFamily: "Poppins",
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+                                child: Text(
+                                  'Fecha de Compra: ${item['fecha_compra']}',
+                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, color: Colors.grey),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
                 ],
               );
             },
@@ -227,4 +323,3 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
     );
   }
 }
-

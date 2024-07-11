@@ -91,6 +91,7 @@ class _ProductPurchaseState extends State<ProductPurchase> {
       'ruta_carrito': '${widget.itemData['ruta']}/carritos/carritos', // Añade esta línea
       'fecha': fechaActual, // Añade el campo de fecha
       'status': 'sin pagar', // Añade el campo de estado
+      'delivery_status': 'no', // Añade el campo delivery_status
     };
 
     userCart[newIndex.toString()] = orderData;

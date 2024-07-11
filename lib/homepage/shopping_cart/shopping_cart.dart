@@ -126,6 +126,7 @@ class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProvider
       carritoCompra.forEach((key, value) {
         value['status'] = 'pagado';
         value['fecha_compra'] = fechaCompra;
+        value['delivery_status'] = value['delivery_status'] ?? 'no'; // Asegura que el campo delivery_status se mantenga o añada
         compras[key] = value;
       });
 
