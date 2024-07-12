@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, unused_field
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +53,7 @@ class _UserPageState extends State<UserPage> {
       });
 
       // Simulating an upload process
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       String fakeImageUrl = 'https://via.placeholder.com/150'; // Replace with actual upload logic
 
       User? user = FirebaseAuth.instance.currentUser;
@@ -74,16 +76,16 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Information'),
+        title: const Text('User Information'),
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _fetchUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No user data found.'));
+            return const Center(child: Text('No user data found.'));
           }
 
           Map<String, dynamic> userData = snapshot.data!;
@@ -99,30 +101,30 @@ class _UserPageState extends State<UserPage> {
                         radius: 50,
                         backgroundImage: userData['photo'] != null
                             ? NetworkImage(userData['photo'])
-                            : AssetImage('assets/default_avatar.png') as ImageProvider,
+                            : const AssetImage('assets/default_avatar.png') as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
                         right: -10,
                         child: IconButton(
-                          icon: Icon(Icons.camera_alt, color: Colors.blue),
+                          icon: const Icon(Icons.camera_alt, color: Colors.blue),
                           onPressed: _pickImage,
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Center(
                   child: Text(
                     userData['name'] ?? 'N/A',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 _buildUserInfoRow('Email:', userData['email']),
                 _buildDivider(),
                 _buildUserInfoRow('Gender:', userData['gender']),
@@ -144,16 +146,16 @@ class _UserPageState extends State<UserPage> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               value ?? 'N/A',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),

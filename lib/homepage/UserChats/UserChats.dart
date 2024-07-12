@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,7 +48,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
       backgroundColor: Colors.white, // Establece el color de fondo en blanco
       body: AnimatedOpacity(
         opacity: _opacity,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         child: StreamBuilder<DocumentSnapshot>(
           stream: _getUserChatInfoStream(),
           builder: (context, snapshot) {
@@ -162,12 +164,12 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                       child: CachedNetworkImage(
                                         imageUrl: value['foto_producto'],
                                         fit: BoxFit.cover,
-                                        placeholder: (context, url) => Center(
+                                        placeholder: (context, url) => const Center(
                                           child: CircularProgressIndicator(),
                                         ),
-                                        errorWidget: (context, url, error) => Icon(Icons.image),
-                                        fadeInDuration: Duration(milliseconds: 500),
-                                        fadeOutDuration: Duration(milliseconds: 500),
+                                        errorWidget: (context, url, error) => const Icon(Icons.image),
+                                        fadeInDuration: const Duration(milliseconds: 500),
+                                        fadeOutDuration: const Duration(milliseconds: 500),
                                       ),
                                     ),
                                   ),

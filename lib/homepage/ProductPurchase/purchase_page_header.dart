@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
 
 class PurchasePageHeader extends StatelessWidget {
   final Map<String, dynamic> itemData;
@@ -39,12 +38,12 @@ class PurchasePageHeader extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: itemData['foto_producto'],
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Center(
+                    placeholder: (context, url) => const Center(
                       child: CircularProgressIndicator(),
                     ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                    fadeInDuration: Duration(milliseconds: 500),
-                    fadeOutDuration: Duration(milliseconds: 500),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    fadeInDuration: const Duration(milliseconds: 500),
+                    fadeOutDuration: const Duration(milliseconds: 500),
                   ),
                   Positioned(
                     bottom: 20,
