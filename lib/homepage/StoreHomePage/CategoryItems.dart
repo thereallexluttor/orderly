@@ -20,7 +20,12 @@ class CategoryItems extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: FadeTransition(
+              opacity: _fadeInAnimation(context),
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
 
         var items = snapshot.data!.docs;
@@ -40,8 +45,7 @@ class CategoryItems extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 0.0,
               mainAxisSpacing: 0.0,
-              childAspectRatio: 0.60
-              ,
+              childAspectRatio: 0.60,
             ),
             itemCount: items.length,
             itemBuilder: (context, index) {
@@ -52,5 +56,15 @@ class CategoryItems extends StatelessWidget {
         );
       },
     );
+  }
+
+  Animation<double> _fadeInAnimation(BuildContext context) {
+    final AnimationController controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: Scaffold.of(context),
+    );
+    final Animation<double> animation = Tween(begin: 0.0, end: 1.0).animate(controller);
+    controller.forward();
+    return animation;
   }
 }
