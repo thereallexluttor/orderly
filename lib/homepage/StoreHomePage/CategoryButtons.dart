@@ -19,7 +19,9 @@ class CategoryButtons extends StatelessWidget {
       stream: storeReference.collection('items').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            
+          );
         }
 
         var items = snapshot.data!.docs;
@@ -80,7 +82,13 @@ class CategoryButtons extends StatelessWidget {
                               child: CachedNetworkImage(
                                 imageUrl: product['foto_producto'] ?? '',
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => CircularProgressIndicator(),
+                                placeholder: (context, url) => FadeInImage.assetNetwork(
+                                  placeholder: 'assets/placeholder.png', // Asegúrate de tener una imagen placeholder en tus assets
+                                  image: '',
+                                  fit: BoxFit.cover,
+                                  fadeInDuration: Duration(milliseconds: 500),
+                                  fadeOutDuration: Duration(milliseconds: 500),
+                                ),
                                 errorWidget: (context, url, error) => Icon(Icons.error),
                                 fadeInDuration: Duration(milliseconds: 500),
                                 fadeOutDuration: Duration(milliseconds: 500),

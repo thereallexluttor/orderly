@@ -6,10 +6,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:orderly/homepage/Purchases/Purchases.dart';
+import 'package:orderly/homepage/StoreHomePage/StoreHomePage.dart';
 import 'package:orderly/homepage/UserChats/UserChats.dart';
-import 'package:orderly/homepage/product_category/category_buttons.dart';
 import 'package:orderly/homepage/sales&deals/offers_tab.dart';
-import 'package:orderly/homepage/sales&deals/sales&deals.dart';
 import 'package:orderly/homepage/shopping_cart/shopping_cart.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 import 'package:orderly/homepage/User/User.dart';
@@ -114,69 +113,20 @@ class _HomePageState extends State<HomePage> {
                             unselectedLabelColor: Color.fromARGB(137, 92, 92, 92),
                             tabs: [
                               TabItem(title: 'Ofertas!🤟'),
-                              TabItem(title: 'Top tiendas.😎🤍'),
+                              TabItem(title: 'Catalogo.😎🤍'),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 13),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0.0),
-                        child: TextField(
-                          onChanged: updateSearchQuery,
-                          decoration: InputDecoration(
-                            constraints: BoxConstraints(maxHeight: 36),
-                            hintText: "Buscar...",
-                            prefixIcon: Icon(Icons.search, size: 17),
-                            contentPadding: EdgeInsets.symmetric(vertical: 5.0), // Ajusta el relleno vertical
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                          ),
-                          style: TextStyle(fontSize: 12), // Ajusta el tamaño del texto según sea necesario
-                        ),
-                      ),
-                    ),
+                    
                     Expanded(
                       child: TabBarView(
                         children: [
                           // Pestaña Ofertas
                           Column(
                             children: [
-                              SizedBox(height: 13),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/motos_y_autopartes.png',
-                                    label: 'motos y autopartes',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/moda_y_accesorios.png',
-                                    label: 'Moda y accesorios',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/deportes_y_hobbies.png',
-                                    label: 'deportes y hobbies',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/electronica_de_consumo.png',
-                                    label: 'electronica de consumo',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/hogar_y_accesorios.png',
-                                    label: 'Hogar y accesorios',
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20), // Espacio entre las categorías y las ofertas
+                              SizedBox(height: 15),
                               Expanded(
                                 child: OffersTab(searchQuery: searchQuery), // Utiliza el nuevo widget OffersTab
                               ),
@@ -185,37 +135,7 @@ class _HomePageState extends State<HomePage> {
                           // Pestaña Top Tiendas
                           Column(
                             children: [
-                              SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/motos_y_autopartes.png',
-                                    label: 'motos y autopartes',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/moda_y_accesorios.png',
-                                    label: 'Moda y accesorios',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/deportes_y_hobbies.png',
-                                    label: 'deportes y hobbies',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/electronica_de_consumo.png',
-                                    label: 'electronica de consumo',
-                                  ),
-                                  SizedBox(width: 10),
-                                  CategoryButton(
-                                    imagePath: 'lib/images/product_category/hogar_y_accesorios.png',
-                                    label: 'Hogar y accesorios',
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 0), // Espacio entre las categorías y los productos
+                              SizedBox(height: 0),
                               Expanded(
                                 child: StreamBuilder(
                                   stream: FirebaseFirestore.instance.collection('Orderly/Stores/Stores').snapshots(),
@@ -233,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                                         itemBuilder: (context, index) {
                                           var store = filteredStores[index];
 
-                                          return StoreCard(
+                                          return StoreHomePage(
                                             storeData: store,
                                             storeReference: snapshot.data!.docs[index].reference,
                                           );
@@ -306,9 +226,9 @@ class _HomePageState extends State<HomePage> {
         ],
         color: Colors.white,
         buttonBackgroundColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 249, 217, 255),
-        animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 200),
+        backgroundColor: Colors.purple,
+        animationCurve: Curves.fastOutSlowIn,
+        animationDuration: Duration(milliseconds: 400),
         onTap: _onItemTapped,
         letIndexChange: (index) => true,
       ),

@@ -27,11 +27,11 @@ class _StoreHomePageState extends State<StoreHomePage> {
 
   void _initializeSelectedCategory() async {
     var snapshot = await widget.storeReference.collection('items').get(GetOptions(source: Source.cache));
-    
+
     if (snapshot.docs.isEmpty) {
       snapshot = await widget.storeReference.collection('items').get(GetOptions(source: Source.server));
     }
-    
+
     var items = snapshot.docs;
     Map<String, dynamic> topProducts = {};
 
@@ -54,49 +54,62 @@ class _StoreHomePageState extends State<StoreHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              surfaceTintColor: Colors.white,
-              expandedHeight: 365.0,
-              flexibleSpace: FlexibleSpaceBar(
-                background: StoreHeader(
-                  bannerUrl: widget.storeData['banner'] ?? '',
-                  logoUrl: widget.storeData['logo'] ?? '',
-                  storeName: widget.storeData['nombre'] ?? 'Store Name',
-                  stars: widget.storeData['stars']?.toString() ?? 'N/A',
-                  sales: widget.storeData['numero_ventas']?.toString() ?? 'N/A',
-                  discount: widget.storeData['descuento'],
-                  minimumPurchase: widget.storeData['compra_minima'],
-                  description: widget.storeData['descripcion'],
-                ),
-              ),
-              pinned: true,
-              automaticallyImplyLeading: false,
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(48),
-                child: Container(
-                  color: Colors.white,
-                  child: CategoryButtons(
-                    storeReference: widget.storeReference,
-                    selectedCategory: selectedCategory,
-                    onCategorySelected: (category) {
-                      setState(() {
-                        selectedCategory = category;
-                      });
-                    },
-                  ),
+    return Card(
+      color: Colors.white,
+      elevation: 0,
+      margin: EdgeInsets.all(0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Container(
+        height: MediaQuery.of(context).size.height - 170, // Adjust this value based on your layout
+        child: Column(
+          children: [
+            Expanded(
+              child: NestedScrollView(
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      backgroundColor: Colors.white,
+                      surfaceTintColor: Colors.white,
+                      expandedHeight: 385.0,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: StoreHeader(
+                          bannerUrl: widget.storeData['banner'] ?? '',
+                          logoUrl: widget.storeData['logo'] ?? '',
+                          storeName: widget.storeData['nombre'] ?? 'Store Name',
+                          stars: widget.storeData['stars']?.toString() ?? 'N/A',
+                          sales: widget.storeData['numero_ventas']?.toString() ?? 'N/A',
+                          discount: widget.storeData['descuento'],
+                          minimumPurchase: widget.storeData['compra_minima'],
+                          description: widget.storeData['descripcion'],
+                        ),
+                      ),
+                      pinned: false,
+                      automaticallyImplyLeading: false,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(48),
+                        child: Container(
+                          color: Colors.white,
+                          child: CategoryButtons(
+                            storeReference: widget.storeReference,
+                            selectedCategory: selectedCategory,
+                            onCategorySelected: (category) {
+                              setState(() {
+                                selectedCategory = category;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ];
+                },
+                body: CategoryItems(
+                  storeReference: widget.storeReference,
+                  selectedCategory: selectedCategory,
                 ),
               ),
             ),
-          ];
-        },
-        body: CategoryItems(
-          storeReference: widget.storeReference,
-          selectedCategory: selectedCategory,
+          ],
         ),
       ),
     );
