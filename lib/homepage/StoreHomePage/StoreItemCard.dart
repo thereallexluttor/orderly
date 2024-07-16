@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class StoreItemCard extends StatelessWidget {
   final Map<String, dynamic> itemData;
@@ -65,7 +66,13 @@ class StoreItemCard extends StatelessWidget {
                         width: 150,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(),
+                          child: FadeTransition(
+                            opacity: AlwaysStoppedAnimation(0.5),
+                            child: SpinKitFadingCircle(
+                              color: Colors.grey,
+                              size: 50.0,
+                            ),
+                          ),
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.image, size: 100),
                         fadeInDuration: Duration(milliseconds: 500),

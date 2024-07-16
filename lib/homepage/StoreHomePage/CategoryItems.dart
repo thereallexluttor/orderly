@@ -22,8 +22,8 @@ class CategoryItems extends StatelessWidget {
         if (!snapshot.hasData) {
           return Center(
             child: FadeTransition(
-              opacity: _fadeInAnimation(context),
-              child: CircularProgressIndicator(),
+              opacity: AlwaysStoppedAnimation(0.5),
+             
             ),
           );
         }
@@ -56,15 +56,5 @@ class CategoryItems extends StatelessWidget {
         );
       },
     );
-  }
-
-  Animation<double> _fadeInAnimation(BuildContext context) {
-    final AnimationController controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: Scaffold.of(context),
-    );
-    final Animation<double> animation = Tween(begin: 0.0, end: 1.0).animate(controller);
-    controller.forward();
-    return animation;
   }
 }

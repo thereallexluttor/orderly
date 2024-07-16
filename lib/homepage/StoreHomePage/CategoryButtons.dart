@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CategoryButtons extends StatelessWidget {
   final DocumentReference storeReference;
@@ -20,7 +21,13 @@ class CategoryButtons extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(
-            
+            child: FadeTransition(
+              opacity: AlwaysStoppedAnimation(0.5),
+              child: SpinKitFadingCircle(
+                color: Colors.grey,
+                size: 50.0,
+              ),
+            ),
           );
         }
 
@@ -82,12 +89,14 @@ class CategoryButtons extends StatelessWidget {
                               child: CachedNetworkImage(
                                 imageUrl: product['foto_producto'] ?? '',
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => FadeInImage.assetNetwork(
-                                  placeholder: 'assets/placeholder.png', // Asegúrate de tener una imagen placeholder en tus assets
-                                  image: '',
-                                  fit: BoxFit.cover,
-                                  fadeInDuration: Duration(milliseconds: 500),
-                                  fadeOutDuration: Duration(milliseconds: 500),
+                                placeholder: (context, url) => Center(
+                                  child: FadeTransition(
+                                    opacity: AlwaysStoppedAnimation(0.5),
+                                    child: SpinKitFadingCircle(
+                                      color: Colors.grey,
+                                      size: 24.0,
+                                    ),
+                                  ),
                                 ),
                                 errorWidget: (context, url, error) => Icon(Icons.error),
                                 fadeInDuration: Duration(milliseconds: 500),

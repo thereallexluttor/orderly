@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductPurchase.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ItemCardOffers extends StatelessWidget {
   final Map<String, dynamic> itemData;
@@ -14,7 +15,7 @@ class ItemCardOffers extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isAgotado = itemData['status'] == 'agotado';
     final Color priceColor = isAgotado ? Colors.grey : const Color.fromARGB(255, 255, 17, 0);
-    final Color priceColor2 = isAgotado ? Colors.grey : Color.fromARGB(255, 0, 0, 0);
+    final Color priceColor2 = isAgotado ? Colors.grey : const Color.fromARGB(255, 0, 0, 0);
     const Color infoColor = Colors.grey;
 
     final int? discount = itemData['discount'];
@@ -56,7 +57,7 @@ class ItemCardOffers extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Color.fromARGB(255, 235, 235, 235)),
+                      border: Border.all(color: const Color.fromARGB(255, 235, 235, 235)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: ClipRRect(
@@ -67,7 +68,13 @@ class ItemCardOffers extends StatelessWidget {
                         width: 150,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(),
+                          child: FadeTransition(
+                            opacity: AlwaysStoppedAnimation(0.5),
+                            child: SpinKitFadingCircle(
+                              color: Colors.grey,
+                              size: 50.0,
+                            ),
+                          ),
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.image, size: 100),
                         fadeInDuration: Duration(milliseconds: 500),
@@ -81,14 +88,14 @@ class ItemCardOffers extends StatelessWidget {
                       left: 0,
                       right: 0,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10.0),
                           topRight: Radius.circular(10.0),
                         ),
                         child: Container(
                           color: Colors.grey,
-                          padding: EdgeInsets.symmetric(vertical: 4.0),
-                          child: Center(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: const Center(
                             child: Text(
                               'Agotado',
                               style: TextStyle(
@@ -107,16 +114,16 @@ class ItemCardOffers extends StatelessWidget {
                       top: 0,
                       left: 0,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10.0),
                           bottomRight: Radius.circular(10.0),
                         ),
                         child: Container(
                           color: const Color.fromARGB(255, 255, 17, 0),
-                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
                           child: Text(
                             '-${itemData['discount']}%',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -131,14 +138,14 @@ class ItemCardOffers extends StatelessWidget {
                       top: 0,
                       right: 0,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(10.0),
                           bottomLeft: Radius.circular(10.0),
                         ),
                         child: Container(
                           color: Colors.green,
-                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
-                          child: Text(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          child: const Text(
                             'Delivery Free',
                             style: TextStyle(
                               color: Colors.white,
@@ -155,14 +162,14 @@ class ItemCardOffers extends StatelessWidget {
                       bottom: 0,
                       left: 0,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(10.0),
                           topRight: Radius.circular(10.0),
                         ),
                         child: Container(
                           color: Colors.purple,
-                          padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
-                          child: Text(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                          child: const Text(
                             'Cash Back!',
                             style: TextStyle(
                               color: Colors.white,
@@ -176,7 +183,7 @@ class ItemCardOffers extends StatelessWidget {
                     ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Text(
                 itemData['nombre'] != null && itemData['nombre'].length > 14
                     ? itemData['nombre'].substring(0, 14) + '...'
@@ -186,7 +193,7 @@ class ItemCardOffers extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -194,16 +201,16 @@ class ItemCardOffers extends StatelessWidget {
                     'COP',
                     style: TextStyle(letterSpacing: 1, fontSize: 9, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor),
                   ),
-                  SizedBox(width: 0.3),
+                  const SizedBox(width: 0.3),
                   Text(
                     discountedPrice != null ? NumberFormat('#,##0', 'es_CO').format(discountedPrice) : 'N/A',
                     style: TextStyle(letterSpacing: 1.0, fontSize: 14, fontWeight: FontWeight.bold, fontFamily: "Poppins-Black", color: priceColor),
                   ),
                   if (discount != null && discount > 0) ...[
-                    SizedBox(width: 1),
+                    const SizedBox(width: 1),
                     Text(
                       originalPrice != null ? NumberFormat('#,##0', 'es_CO').format(originalPrice) : 'N/A',
-                      style: TextStyle(
+                      style: const TextStyle(
                         decoration: TextDecoration.lineThrough,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -214,20 +221,20 @@ class ItemCardOffers extends StatelessWidget {
                   ],
                 ],
               ),
-              SizedBox(height: 1),
+              const SizedBox(height: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     'Ventas: ${itemData['ventas'] ?? 'N/A'}',
-                    style: TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
+                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.star, size: 12, color: infoColor),
-                  SizedBox(width: 2),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.star, size: 12, color: infoColor),
+                  const SizedBox(width: 2),
                   Text(
                     itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',
-                    style: TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
+                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
                   ),
                 ],
               ),
