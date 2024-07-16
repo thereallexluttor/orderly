@@ -76,7 +76,8 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Information'),
+        title: const Text('Informacion personal 👨🏻',
+        style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),),
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _fetchUserData(),

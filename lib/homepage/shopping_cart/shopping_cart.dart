@@ -149,8 +149,9 @@ class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProvider
         surfaceTintColor: Colors.white,
         title: Text(
           'Tu carrito de compras. 🛒👀🧐',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
       body: Stack(
         children: [

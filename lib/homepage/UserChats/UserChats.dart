@@ -32,9 +32,11 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
         title: const Text(
-          'Chats',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 15),
+          'Chats 📨',
+          style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         bottom: PreferredSize(
@@ -65,12 +67,12 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
               }
               var chatInfo = data as Map<String, dynamic>?;
               if (chatInfo == null || chatInfo.isEmpty) {
-                return Container(); // Devuelve un contenedor vacío si no hay chat info
+                return _buildNoConversationsUI(); // Devuelve el UI de no conversaciones
               }
               var chatInfoMap = chatInfo['chatInfo'] as Map<String, dynamic>?;
 
               if (chatInfoMap == null || chatInfoMap.isEmpty) {
-                return Container(); // Devuelve un contenedor vacío si no hay chat info map
+                return _buildNoConversationsUI(); // Devuelve el UI de no conversaciones
               }
 
               // Convertimos y ordenamos las entradas por la variable hora
@@ -92,10 +94,6 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                 return nombre.toLowerCase().contains(_searchText.toLowerCase());
               }).toList();
 
-              if (filteredChatInfo.isEmpty) {
-                return Container(); // Devuelve un contenedor vacío si no hay mensajes después del filtro
-              }
-
               return Column(
                 children: [
                   Expanded(
@@ -103,40 +101,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                       itemCount: filteredChatInfo.length + 1, // +1 para la card adicional
                       itemBuilder: (context, index) {
                         if (index == 0) {
-                          return Card(
-                            elevation: 0,
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                              leading: const CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage('https://www.shutterstock.com/image-vector/ai-stars-icon-artificial-intelligence-600nw-2351532151.jpg'),
-                              ),
-                              title: const Text(
-                                'Chat AI',
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text(
-                                'Aquí puedes hablar con nuestra IA para búsquedas personalizadas 🥸',
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 10,
-                                  color: Colors.grey[600],
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              onTap: () {
-                                // Acción al hacer tap en la card de Chat AI
-                              },
-                            ),
-                          );
+                          return _buildChatAICard();
                         } else {
                           var entry = filteredChatInfo[index - 1]; // Restar 1 para los datos originales
                           var key = entry.key;
@@ -221,6 +186,52 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildChatAICard() {
+    return Card(
+      color: Colors.white,
+      elevation: 0,
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        leading: const CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage('https://www.shutterstock.com/image-vector/ai-stars-icon-artificial-intelligence-600nw-2351532151.jpg'),
+        ),
+        title: const Text(
+          'Chat AI',
+          style: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          'habla con nuestra IA para búsquedas personalizadas 🥸',
+          style: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 10,
+            color: Colors.grey[600],
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        onTap: () {
+          // Acción al hacer tap en la card de Chat AI
+        },
+      ),
+    );
+  }
+
+  Widget _buildNoConversationsUI() {
+    return Column(
+      children: [
+        _buildChatAICard(),
+      ],
     );
   }
 
