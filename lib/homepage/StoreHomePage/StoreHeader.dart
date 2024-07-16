@@ -88,36 +88,6 @@ class StoreHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              // Positioned(
-              //   top: 45,
-              //   left: 20,
-              //   child: InkWell(
-              //     onTap: () {
-              //       Navigator.pop(context);
-              //     },
-              //     child: Container(
-              //       width: 28,
-              //       height: 28,
-              //       decoration: BoxDecoration(
-              //         color: Color.fromARGB(134, 0, 0, 0),
-              //         shape: BoxShape.circle,
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: Colors.black.withOpacity(0.2),
-              //             spreadRadius: 1,
-              //             blurRadius: 3,
-              //             offset: Offset(0, 1),
-              //           ),
-              //         ],
-              //       ),
-              //       child: Icon(
-              //         Icons.arrow_back,
-              //         size: 20,
-              //         color: Colors.white,
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
           SizedBox(height: 40.0),
