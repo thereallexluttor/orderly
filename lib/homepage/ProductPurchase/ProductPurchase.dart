@@ -395,34 +395,6 @@ class _ProductPurchaseState extends State<ProductPurchase> {
             children: [
               IconButton(
                 icon: Image.asset(
-                  'lib/images/interfaceicons/shop.png',
-                  height: 23,
-                ),
-                onPressed: () async {
-                  // Retrieve the store data from Firebase using the store reference
-                  DocumentSnapshot storeSnapshot = await FirebaseFirestore.instance.doc(widget.itemData['ruta']).get();
-                  var storeData = storeSnapshot.data() as Map<String, dynamic>;
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) => StoreHomePage(
-                        storeData: storeData,
-                        storeReference: storeSnapshot.reference,
-                      ),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                      transitionDuration: const Duration(milliseconds: 800),
-                    ),
-                  );
-                },
-                tooltip: 'Tienda',
-              ),
-              IconButton(
-                icon: Image.asset(
                   'lib/images/interfaceicons/message.png',
                   height: 23,
                 ),
