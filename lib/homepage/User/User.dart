@@ -76,9 +76,14 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informacion personal 👨🏻',
-        style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Informacion personal 👨🏻',
+          style: TextStyle(
+              fontFamily: "Poppins", fontSize: 11, fontWeight: FontWeight.bold),
+        ),
       ),
+      backgroundColor: Colors.white, // Fondo blanco para la pantalla
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _fetchUserData(),
         builder: (context, snapshot) {
@@ -102,14 +107,31 @@ class _UserPageState extends State<UserPage> {
                         radius: 50,
                         backgroundImage: userData['photo'] != null
                             ? NetworkImage(userData['photo'])
-                            : const AssetImage('assets/default_avatar.png') as ImageProvider,
+                            : const AssetImage('assets/default_avatar.png')
+                                as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
-                        right: -10,
-                        child: IconButton(
-                          icon: const Icon(Icons.camera_alt, color: Colors.blue),
-                          onPressed: _pickImage,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.purple,
+                                width: 2,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -120,7 +142,8 @@ class _UserPageState extends State<UserPage> {
                   child: Text(
                     userData['name'] ?? 'N/A',
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontFamily: "Poppins",
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -148,8 +171,9 @@ class _UserPageState extends State<UserPage> {
           Text(
             title,
             style: const TextStyle(
+              fontFamily: "Poppins",
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 12,
             ),
           ),
           const SizedBox(width: 10),
@@ -157,11 +181,11 @@ class _UserPageState extends State<UserPage> {
             child: Text(
               value ?? 'N/A',
               style: const TextStyle(
-                fontSize: 16,
+                fontFamily: "Poppins",
+                fontSize: 12,
               ),
             ),
           ),
-          
         ],
       ),
     );
