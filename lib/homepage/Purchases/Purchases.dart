@@ -91,7 +91,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           'Mis compras 💫😉',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 13, color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(fontFamily: "Poppins", fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -145,7 +145,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                         children: [
                           const Text(
                             'Estadísticas de la última semana',
-                            style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
                           ),
                           if (_showStats) ...[
                             const SizedBox(height: 10),
@@ -186,7 +186,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
 
                       return Card(
                         elevation: 0,
-                        color: Colors.grey[200],
+                        color: Colors.white,
                         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -209,7 +209,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                 ),
                                 title: Text(
                                   item['nombre_producto'],
-                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 8, fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
                                   'X${item['cantidad']}',
@@ -219,15 +219,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text('COP ${numberFormat.format(item['total_pagar'])}'),
-                                    Text(
-                                      item['delivery_status'] ?? 'N/A',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontFamily: "Poppins",
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    
                                   ],
                                 ),
                               ),
@@ -235,7 +227,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                 padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                                 child: Text(
                                   'Fecha de Compra: ${item['fecha_compra']}',
-                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, color: Colors.grey),
+                                  style: const TextStyle(fontFamily: "Poppins", fontSize: 10, color: Colors.black45),
                                 ),
                               ),
                             ],

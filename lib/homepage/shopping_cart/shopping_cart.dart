@@ -149,7 +149,7 @@ class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProvider
         surfaceTintColor: Colors.white,
         title: Text(
           'Tu carrito de compras. 🛒👀🧐',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -210,7 +210,7 @@ class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProvider
                               fit: BoxFit.fill,),
                               title: Text(
                                 item['nombre_producto'],
-                                style: TextStyle(fontFamily: "Poppins", fontSize: 11),
+                                style: TextStyle(fontFamily: "Poppins", fontSize: 8),
                               ),
                               subtitle: Text(
                                 'X${item['cantidad']}',

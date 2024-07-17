@@ -36,16 +36,16 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
         backgroundColor: Colors.white,
         title: const Text(
           'Chats 📨',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0), // Altura de la línea
-          child: Container(
-            color: Colors.purple, // Color de la línea
-            height: 4.0, // Grosor de la línea
-          ),
-        ),
+        // bottom: PreferredSize(
+        //   preferredSize: const Size.fromHeight(4.0), // Altura de la línea
+        //   child: Container(
+        //     color: Colors.purple, // Color de la línea
+        //     height: 4.0, // Grosor de la línea
+        //   ),
+        // ),
       ),
       backgroundColor: Colors.white, // Establece el color de fondo en blanco
       body: AnimatedOpacity(
@@ -215,10 +215,10 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
           'habla con nuestra IA para búsquedas personalizadas 🥸',
           style: TextStyle(
             fontFamily: "Poppins",
-            fontSize: 10,
+            fontSize: 8,
             color: Colors.grey[600],
           ),
-          overflow: TextOverflow.ellipsis,
+          
         ),
         onTap: () {
           // Acción al hacer tap en la card de Chat AI
