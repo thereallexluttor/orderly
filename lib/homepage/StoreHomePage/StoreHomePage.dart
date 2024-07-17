@@ -70,7 +70,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
                     SliverAppBar(
                       backgroundColor: Colors.white,
                       surfaceTintColor: Colors.white,
-                      expandedHeight: 385.0,
+                      expandedHeight: MediaQuery.of(context).size.height - 440,
                       flexibleSpace: FlexibleSpaceBar(
                         background: StoreHeader(
                           bannerUrl: widget.storeData['banner'] ?? '',
