@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
+import 'package:orderly/homepage/UserChats/BenjiBot/BenjiBot.dart';  // Asegúrate de importar la pantalla BenjiBot
 
 class ChatInfoScreen extends StatefulWidget {
   const ChatInfoScreen({super.key});
@@ -39,13 +40,6 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
           style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        // bottom: PreferredSize(
-        //   preferredSize: const Size.fromHeight(4.0), // Altura de la línea
-        //   child: Container(
-        //     color: Colors.purple, // Color de la línea
-        //     height: 4.0, // Grosor de la línea
-        //   ),
-        // ),
       ),
       backgroundColor: Colors.white, // Establece el color de fondo en blanco
       body: AnimatedOpacity(
@@ -222,6 +216,12 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
         ),
         onTap: () {
           // Acción al hacer tap en la card de Chat AI
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(),
+            ),
+          );
         },
       ),
     );
