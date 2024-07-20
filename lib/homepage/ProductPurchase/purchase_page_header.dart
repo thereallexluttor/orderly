@@ -1,90 +1,108 @@
+// ignore_for_file: prefer_const_constructors, use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class PurchasePageHeader extends StatelessWidget {
   final Map<String, dynamic> itemData;
 
-  const PurchasePageHeader({super.key, required this.itemData});
+  const PurchasePageHeader({Key? key, required this.itemData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     int sales = itemData['ventas'] ?? 0;
+    double rating = itemData['valoracion'] ?? 0.0;
 
     return SliverAppBar(
-      foregroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      expandedHeight: 300.0,
+      backgroundColor: Colors.transparent,
+      expandedHeight: 270.0,
       pinned: true,
-      leading: Container(
-        width: 16, // Ajusta el ancho según sea necesario
-        height: 16, // Ajusta la altura según sea necesario
-        margin: const EdgeInsets.only(left: 25),
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Color.fromARGB(178, 0, 0, 0),
-        ),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18), // Ajusta el tamaño del icono
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       flexibleSpace: FlexibleSpaceBar(
-        background: itemData['foto_producto'] != null
-            ? Stack(
-                fit: StackFit.expand,
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: itemData['foto_producto'],
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                    fadeInDuration: const Duration(milliseconds: 500),
-                    fadeOutDuration: const Duration(milliseconds: 500),
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    right: 10,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(237, 255, 255, 255),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          const Text(
-                            '❤️',
-                            style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            '${sales.toString()} ',
-                            style: const TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                          ),
-                          const SizedBox(width: 5),
-                          const Text(
-                            '⭐',
-                            style: TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            itemData['valoracion'] != null
-                                ? itemData['valoracion'].toStringAsFixed(1)
-                                : 'N/A',
-                            style: const TextStyle(fontSize: 12, fontFamily: "Poppins"),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : Container(color: Colors.white),
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Product Image
+            Hero(
+              tag: 'product-${itemData['id']}',
+              child: CachedNetworkImage(
+                imageUrl: itemData['foto_producto'] ?? '',
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fadeInDuration: const Duration(milliseconds: 500),
+                fadeOutDuration: const Duration(milliseconds: 500),
+              ),
+            ),
+            // Gradient Overlay
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.2),
+                  ],
+                ),
+              ),
+            ),
+            // Stats Container
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildStatItem('❤️', sales.toString(), 'Ventas'),
+                    _buildStatItem('⭐', rating.toStringAsFixed(1), 'Valoración'),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildStatItem(String emoji, String value, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(emoji, style: const TextStyle(fontSize: 20)),
+        const SizedBox(width: 4),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Poppins",
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                color: Color.fromARGB(255, 39, 39, 39),
+                fontFamily: "Poppins",
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
