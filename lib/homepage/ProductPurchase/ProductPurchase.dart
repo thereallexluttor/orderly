@@ -225,6 +225,18 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
     });
   }
 
+  Route createFadeRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     int price = widget.itemData['precio'] ?? 0;
@@ -265,7 +277,28 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
                           textAlign: TextAlign.justify
                         ),
                         const SizedBox(height: 24),
-                        
+                        Text(
+                          'Compatible',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins"),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.itemData['compatible'] ?? '',
+                          style: TextStyle(fontFamily: "Poppins"),
+                          textAlign: TextAlign.justify,
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Especificaciones',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Poppins"),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.itemData['especificaciones'] ?? '',
+                          style: TextStyle(fontFamily: "Poppins"),
+                          textAlign: TextAlign.justify,
+                        ),
+                        const SizedBox(height: 24),
                         _buildInfoSection(
                           icon: Icons.credit_card,
                           title: 'Métodos de pago',
@@ -349,7 +382,7 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProductChat(widget.itemData)),
+                  createFadeRoute(ProductChat(widget.itemData)),
                 );
               },
               tooltip: 'Mensaje',

@@ -50,24 +50,29 @@ class PurchasePageHeader extends StatelessWidget {
             ),
             // Stats Container
             Positioned(
-              bottom: 16,
-              left: 16,
-              right: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildStatItem('❤️', sales.toString(), 'Ventas'),
-                    _buildStatItem('⭐', rating.toStringAsFixed(1), 'Valoración'),
-                  ],
-                ),
-              ),
-            ),
+  bottom: 16,
+  left: 16,
+  right: 16,
+  child: Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    decoration: BoxDecoration(
+      color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(
+        color: Color.fromARGB(255, 156, 156, 156), // Borde negro
+        width: 1.0, // Ancho del borde
+      ),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildStatItem('❤️', sales.toString(), 'Ventas'),
+        _buildStatItem('⭐', rating.toStringAsFixed(1), 'Valoración'),
+      ],
+    ),
+  ),
+),
+
           ],
         ),
       ),
