@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -210,6 +209,7 @@ class _HomePageState extends State<HomePage> {
               _pageIndex = index;
             });
           },
+          physics: NeverScrollableScrollPhysics(), // Deshabilitar desplazamiento lateral
           children: _pages,
         ),
       ),
