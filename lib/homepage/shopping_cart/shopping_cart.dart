@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
 
-class Shopping_Cart extends StatefulWidget {
-  const Shopping_Cart({super.key});
+class ShoppingCart extends StatefulWidget {
+  const ShoppingCart({super.key});
 
   @override
-  _Shopping_CartState createState() => _Shopping_CartState();
+  _ShoppingCartState createState() => _ShoppingCartState();
 }
 
-class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProviderStateMixin {
+class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Animation<double>? _animation;
   late ConfettiController _confettiController;
@@ -123,17 +123,49 @@ class _Shopping_CartState extends State<Shopping_Cart> with SingleTickerProvider
 
       String fechaCompra = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
       carritoCompra.forEach((key, value) {
         value['status'] = 'pagado';
         value['fecha_compra'] = fechaCompra;
-        value['delivery_status'] = value['delivery_status'] ?? 'no'; // Asegura que el campo delivery_status se mantenga o añada
+        value['delivery_status'] = value['delivery_status'] ?? 'no';
         compras[key] = value;
+
+        // Agregar la eliminación de cada elemento a la batch
+        String rutaCarrito = value['ruta_carrito'];
+        DocumentReference cartRef = FirebaseFirestore.instance.doc(rutaCarrito);
+        batch.update(cartRef, {
+          '${user.uid}.$key': FieldValue.delete()
+        });
+
+        // Eliminar el elemento de carrito_compra en el documento del usuario
+        batch.update(userDocRef, {
+          'carrito_compra.$key': FieldValue.delete()
+        });
       });
 
       carritoCompraData['compras'] = compras;
       carritoCompraData.remove('carrito_compra');
 
-      await userDocRef.set(carritoCompraData);
+      batch.set(userDocRef, carritoCompraData);
+
+      // Guardar la información en el campo especificado
+      DocumentReference compraRef = FirebaseFirestore.instance
+          .collection('Orderly')
+          .doc('Stores')
+          .collection('Stores')
+          .doc('WOLFSGROUP SAS')
+          .collection('compras')
+          .doc('compras');
+
+      batch.set(compraRef, {
+        user.uid: {
+          'compras': compras,
+        }
+      });
+
+      // Ejecutar la batch
+      await batch.commit();
     }
 
     setState(() {});

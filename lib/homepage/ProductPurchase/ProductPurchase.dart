@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
@@ -153,7 +155,7 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
             children: [
               Text(
                 'Resumen del pedido',
-                style: Theme.of(context).textTheme.headline6?.copyWith(fontFamily: "Poppins", fontSize: 15),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontFamily: "Poppins", fontSize: 15),
               ),
               const SizedBox(height: 20),
               Row(
@@ -304,14 +306,7 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
                           title: 'Métodos de pago',
                           subtitle: 'Nequi • PSE • Crédito • Débito • Efectivo',
                         ),
-                        _buildInfoSection(
-                          icon: Icons.label,
-                          title: 'Detalles y Especificaciones',
-                          subtitle: 'Toca para ver más información',
-                          onTap: () {
-                            // Your existing bottom sheet code here
-                          },
-                        ),
+                        
                       ],
                     ),
                   ),

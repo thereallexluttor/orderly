@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // Lista de páginas para el PageView
-    final List<Widget> _pages = [
+    final List<Widget> _pages = <Widget>[
       DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
       // Página central azul con información del chat
       ChatInfoScreen(),
       // Página central amarilla
-      Shopping_Cart(),
+      ShoppingCart(),
       // Página central verde
       Purchases(),
       // Última página morada
