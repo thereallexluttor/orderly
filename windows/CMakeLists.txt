@@ -23,6 +23,7 @@ else()
       "Debug" "Profile" "Release")
   endif()
 endif()
+
 # Define settings for the Profile build mode.
 set(CMAKE_EXE_LINKER_FLAGS_PROFILE "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
 set(CMAKE_SHARED_LINKER_FLAGS_PROFILE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
@@ -31,6 +32,9 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
+
+# Add definition to disable security warnings
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 # Compilation settings that should be applied to most targets.
 #
@@ -52,11 +56,9 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 # Application build; see runner/CMakeLists.txt.
 add_subdirectory("runner")
 
-
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
-
 
 # === Installation ===
 # Support files are copied into place next to the executable, so that it can

@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:orderly/Administrator/AdminHomePage.dart';
+import 'package:orderly/homepage/homepage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 
@@ -139,6 +141,36 @@ class _LogAndSignState extends State<LogAndSign> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AdministratorHomePage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(270, 33),
+                        elevation: 0,
+                        side: const BorderSide(color: Color.fromARGB(255, 230, 230, 230)),
+                        surfaceTintColor: Colors.white,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Ir a HomePage',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.black,
+                            fontFamily: "Poppins",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -205,6 +237,7 @@ class _LogAndSignState extends State<LogAndSign> {
     }
   }
 }
+
 
 class TextChangingWidget extends StatefulWidget {
   const TextChangingWidget({super.key});
