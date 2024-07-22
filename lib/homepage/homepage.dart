@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Positioned(
-                top: 23,
+                top: 14,
                 left: 23,
                 child: Image.asset(
                   'lib/images/OrderlyLogoLogin.png',
