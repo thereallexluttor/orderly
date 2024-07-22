@@ -10,7 +10,7 @@ import 'package:orderly/homepage/ProductPurchase/CardPricePurchase.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
 import 'package:orderly/homepage/ProductPurchase/purchase_page_header.dart';
 import 'package:orderly/homepage/HomePage.dart';
-
+import 'package:uuid/uuid.dart';
 class ProductPurchase extends StatefulWidget {
   final Map<String, dynamic> itemData;
 
@@ -51,6 +51,7 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
     super.dispose();
   }
 
+
   Future<void> _confirmOrder() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -85,7 +86,6 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
     }
 
     Map<String, dynamic> userCart = Map<String, dynamic>.from(cartData[userId]);
-    int newIndex = userCart.length + 1;
     int totalPagar = (widget.itemData['precio'] * ((100 - widget.itemData['discount']) / 100)).round() * _quantity;
 
     // Obtener la fecha y hora actual
@@ -99,12 +99,15 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
       'foto_producto': widget.itemData['foto_producto'],
       'total_pagar': totalPagar,
       'ruta_carrito': '${widget.itemData['ruta']}/carritos/carritos', // Añade esta línea
-      'fecha': fechaActual, // Añade el campo de fecha
+      'fecha': fechaActual, // Añade el campo de fecha y hora actual
       'status': 'sin pagar', // Añade el campo de estado
       'delivery_status': 'no', // Añade el campo delivery_status
     };
 
-    userCart[newIndex.toString()] = orderData;
+    var uuid = Uuid();
+    String uniqueId = uuid.v4();
+    userCart[uniqueId] = orderData;
+
     cartData[userId] = userCart;
 
     await cartRef.set(cartData);
@@ -125,7 +128,7 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
 
     Map<String, dynamic> userCarritoCompra = Map<String, dynamic>.from(carritoCompraData['carrito_compra'] ?? {});
 
-    userCarritoCompra[newIndex.toString()] = orderData;
+    userCarritoCompra[uniqueId] = orderData;
     carritoCompraData['carrito_compra'] = userCarritoCompra;
 
     await userDocRef.set(carritoCompraData, SetOptions(merge: true));
@@ -133,7 +136,7 @@ class _ProductPurchaseState extends State<ProductPurchase> with SingleTickerProv
     setState(() {
       _quantity = 1; // Reinicia el contador de productos a 1
     });
-  }
+}
 
   void _showBottomSheet() {
     int price = widget.itemData['precio'] ?? 0;

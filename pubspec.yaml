@@ -58,6 +58,7 @@ dependencies:
   dart_openai: ^5.1.0
   envied: ^0.5.4+1
   chat_gpt_sdk: ^3.0.7
+  uuid: ^4.4.2
 
 dev_dependencies:
   flutter_test:
