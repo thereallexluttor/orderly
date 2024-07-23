@@ -159,9 +159,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
           .doc('compras');
 
       batch.set(compraRef, {
-        user.uid: {
-          'compras': compras,
-        }
+        user.uid: compras
       });
 
       // Ejecutar la batch
