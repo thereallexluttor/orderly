@@ -1,26 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print
-
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:orderly/Administrator/custom_card.dart';
+import 'package:orderly/Administrator/firebase_service.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: AdministratorHomePage(),
-    );
-  }
-}
 
 class AdministratorHomePage extends StatefulWidget {
   const AdministratorHomePage({super.key});
@@ -32,215 +14,15 @@ class AdministratorHomePage extends StatefulWidget {
 class _AdministratorHomePageState extends State<AdministratorHomePage> {
   late Future<Map<String, dynamic>?> documentFields;
   String selectedKey = ""; // Variable para almacenar la clave seleccionada
+  String parentDocumentId = ""; // Variable para almacenar el ID del documento padre
+  Map<String, dynamic>? selectedData; // Datos seleccionados para mostrar
+
+  final FirebaseService _firebaseService = FirebaseService();
 
   @override
   void initState() {
     super.initState();
-    documentFields = getDocumentFields();
-  }
-
-  Future<Map<String, dynamic>?> getDocumentFields() async {
-    DocumentReference docRef = FirebaseFirestore.instance
-        .doc('/Orderly/Stores/Stores/WOLFSGROUP SAS/compras/compras');
-
-    DocumentSnapshot docSnapshot = await docRef.get();
-
-    if (docSnapshot.exists) {
-      return docSnapshot.data() as Map<String, dynamic>?;
-    } else {
-      return null;
-    }
-  }
-
-  Future<void> updateDeliveryStatus(String documentId, String status) async {
-    if (documentId.isNotEmpty) {
-      DocumentReference docRef = FirebaseFirestore.instance
-          .doc('/Orderly/Stores/Stores/WOLFSGROUP SAS/compras/compras');
-
-      print('Selected Key: $selectedKey'); // Imprime la clave seleccionada para depuración
-
-      print('Updating document ID: $documentId with status: $status');
-
-      await docRef.update({'delivery_status': status});
-
-      setState(() {
-        documentFields = getDocumentFields(); // Refresh the data after updating
-      });
-    } else {
-      print('Invalid document ID');
-    }
-  }
-
-  List<Widget> buildNestedList(Map<String, dynamic> data, String documentId) {
-    List<Widget> itemList = [];
-    String firstKey = ""; // Variable para almacenar la primera clave de la card
-
-    data.forEach((key, value) {
-      if (firstKey.isEmpty) {
-        firstKey = key; // Almacena la primera clave
-      }
-
-      if (value is Map) {
-        itemList.add(
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedKey = key; // Actualiza la clave seleccionada aquí
-              });
-              print('Selected Key on Tap: $selectedKey');
-            },
-            child: Card(
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      key,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                    ),
-                    ...buildNestedList(Map<String, dynamic>.from(value), documentId),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      } else if (value is List) {
-        itemList.add(
-          Card(
-            margin: const EdgeInsets.all(10),
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color.fromARGB(255, 255, 62, 62)),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    key,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                  ...value.map((item) {
-                    if (item is Map) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: buildNestedList(Map<String, dynamic>.from(item), documentId),
-                      );
-                    } else {
-                      return Text('$item', style: const TextStyle(fontSize: 10));
-                    }
-                  }).toList()
-                ],
-              ),
-            ),
-          ),
-        );
-      } else if (key == 'foto_producto' && value is String) {
-        itemList.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(value, height: 150),
-            ),
-          ),
-        );
-      } else if (key == 'delivery_status' && value is String) {
-        itemList.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              children: [
-                Text(
-                  '$key: ',
-                  style: const TextStyle(fontSize: 12),
-                ),
-                Text(
-                  value,
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-        );
-      } else if (['precio', 'nombre_producto', 'cantidad', 'total_pagar', 'status'].contains(key)) {
-        itemList.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Text(
-              '$key: $value',
-              style: const TextStyle(fontSize: 12),
-            ),
-          ),
-        );
-      }
-    });
-
-    return itemList;
-  }
-
-  Widget buildCard(String documentId, Map<String, dynamic> value) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedKey = documentId; // Almacena la clave del documento
-        });
-        print('Selected Document ID: $selectedKey');
-      },
-      child: Card(
-        color: Colors.white,
-        margin: const EdgeInsets.all(10),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (value.containsKey('foto_producto') && value['foto_producto'] is String)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    value['foto_producto'],
-                    height: 150,
-                    width: 150,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    ...buildNestedList(value, documentId),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    documentFields = _firebaseService.getDocumentFields();
   }
 
   Widget buildListView(Map<String, dynamic> data) {
@@ -248,7 +30,18 @@ class _AdministratorHomePageState extends State<AdministratorHomePage> {
 
     data.forEach((key, value) {
       if (value is Map<String, dynamic>) {
-        itemList.add(buildCard(key, value));
+        itemList.add(CustomCard(
+          documentId: key,
+          value: value,
+          onTap: () {
+            setState(() {
+              selectedKey = key; // Almacena la clave del documento
+              parentDocumentId = key; // Actualiza el ID del documento padre
+            });
+            print('Selected Document ID: $selectedKey');
+            print('Parent Document ID: $parentDocumentId');
+          },
+        ));
       }
     });
 
@@ -279,7 +72,14 @@ class _AdministratorHomePageState extends State<AdministratorHomePage> {
                         if (selectedKey.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('Selected Key: $selectedKey'),
+                            child: Column(
+                              children: [
+                                Text('Selected Key: $selectedKey'),
+                                Text('Parent Document ID: $parentDocumentId'),
+                                if (selectedData != null)
+                                  ...selectedData!.entries.map((entry) => Text('${entry.key}: ${entry.value}')).toList(),
+                              ],
+                            ),
                           ),
                       ],
                     );
