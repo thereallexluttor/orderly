@@ -1,7 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:orderly/Administrator/custom_card.dart';
+import 'package:orderly/Administrator/delivery_status.dart';
 import 'package:orderly/Administrator/firebase_service.dart';
+
 
 
 class AdministratorHomePage extends StatefulWidget {
@@ -25,6 +27,18 @@ class _AdministratorHomePageState extends State<AdministratorHomePage> {
     documentFields = _firebaseService.getDocumentFields();
   }
 
+  void navigateToDeliveryStatus(BuildContext context, String key, String parentId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeliveryStatusPage(
+          selectedKey: key,
+          parentDocumentId: parentId,
+        ),
+      ),
+    );
+  }
+
   Widget buildListView(Map<String, dynamic> data) {
     List<Widget> itemList = [];
 
@@ -37,9 +51,11 @@ class _AdministratorHomePageState extends State<AdministratorHomePage> {
             setState(() {
               selectedKey = key; // Almacena la clave del documento
               parentDocumentId = key; // Actualiza el ID del documento padre
+              //navigateToDeliveryStatus(context, key, selectedKey);
             });
             print('Selected Document ID: $selectedKey');
             print('Parent Document ID: $parentDocumentId');
+            
           },
         ));
       }

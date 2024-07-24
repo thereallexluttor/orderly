@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orderly/Administrator/delivery_status.dart';
 
 class NestedList extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -14,11 +15,29 @@ class NestedList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _buildNestedList(data),
+      children: _buildNestedList(context, data),
     );
   }
 
-  List<Widget> _buildNestedList(Map<String, dynamic> data) {
+  void navigateToDeliveryStatus(BuildContext context, String key, String parentId) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => DeliveryStatusPage(
+          selectedKey: key,
+          parentDocumentId: parentId,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+  List<Widget> _buildNestedList(BuildContext context, Map<String, dynamic> data) {
     List<Widget> itemList = [];
 
     data.forEach((key, value) {
@@ -28,6 +47,7 @@ class NestedList extends StatelessWidget {
             onTap: () {
               print('Selected Key: $key');
               print('Parent Document ID: $documentId');
+              navigateToDeliveryStatus(context, key, documentId);
             },
             child: Card(
               color: Colors.white,
@@ -38,7 +58,7 @@ class NestedList extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
+                  border: Border.all(color: Color.fromARGB(255, 212, 212, 212)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: const EdgeInsets.all(10.0),
@@ -81,7 +101,7 @@ class NestedList extends StatelessWidget {
                     if (item is Map) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _buildNestedList(Map<String, dynamic>.from(item)),
+                        children: _buildNestedList(context, Map<String, dynamic>.from(item)),
                       );
                     } else {
                       return Text('$item', style: const TextStyle(fontSize: 10));
