@@ -62,14 +62,51 @@ class NestedList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text(
-                      key,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    if (value.containsKey('foto_producto')) 
+                      Image.network(
+                        value['foto_producto'],
+                        width: 100,
+                        height: 100,
+                        errorBuilder: (context, error, stackTrace) => Icon(Icons.image, size: 50),
+                      ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            value['nombre_producto'] ?? 'Producto',
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Alef"),
+                          ),
+                          Text(
+                            value['descripcion_producto'] ?? '',
+                            style: const TextStyle(fontSize: 10, color: Colors.blue),
+                          ),
+                          Text(
+                            'Precio: ${value['precio'] ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          Text(
+                            'Cantidad: ${value['cantidad'] ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          Text(
+                            'Total a pagar: ${value['total_pagar'] ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          Text(
+                            'Status: ${value['status'] ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          Text(
+                            'Delivery status: ${value['delivery_status'] ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
-                    NestedList(data: Map<String, dynamic>.from(value), documentId: documentId),
                   ],
                 ),
               ),
@@ -93,9 +130,20 @@ class NestedList extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    key,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Image.network(
+                        'https://example.com/image.png',
+                        width: 50,
+                        height: 50,
+                        errorBuilder: (context, error, stackTrace) => Icon(Icons.image, size: 50),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        key,
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   ...value.map((item) {
                     if (item is Map) {
