@@ -27,12 +27,7 @@ class NestedList extends StatelessWidget {
           selectedKey: key,
           parentDocumentId: parentId,
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
+        
       ),
     );
   }
@@ -51,20 +46,21 @@ class NestedList extends StatelessWidget {
             },
             child: Card(
               color: Colors.white,
+              surfaceTintColor: Colors.white,
               margin: const EdgeInsets.all(10),
-              elevation: 0,
+              elevation: 0.5,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 212, 212, 212)),
+                  border: Border.all(color: Color.fromARGB(255, 255, 240, 255)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: [
-                    if (value.containsKey('foto_producto')) 
+                    if (value.containsKey('foto_producto'))
                       Image.network(
                         value['foto_producto'],
                         width: 100,
@@ -78,31 +74,55 @@ class NestedList extends StatelessWidget {
                         children: [
                           Text(
                             value['nombre_producto'] ?? 'Producto',
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Alef"),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                           Text(
                             value['descripcion_producto'] ?? '',
-                            style: const TextStyle(fontSize: 10, color: Colors.blue),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.blue,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                           Text(
                             'Precio: ${value['precio'] ?? 'N/A'}',
-                            style: const TextStyle(fontSize: 10),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                           Text(
                             'Cantidad: ${value['cantidad'] ?? 'N/A'}',
-                            style: const TextStyle(fontSize: 10),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                           Text(
                             'Total a pagar: ${value['total_pagar'] ?? 'N/A'}',
-                            style: const TextStyle(fontSize: 10),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                           Text(
                             'Status: ${value['status'] ?? 'N/A'}',
-                            style: const TextStyle(fontSize: 10),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                           Text(
                             'Delivery status: ${value['delivery_status'] ?? 'N/A'}',
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
                         ],
                       ),
@@ -117,7 +137,6 @@ class NestedList extends StatelessWidget {
         itemList.add(
           Card(
             margin: const EdgeInsets.all(10),
-            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -141,7 +160,11 @@ class NestedList extends StatelessWidget {
                       SizedBox(width: 10),
                       Text(
                         key,
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
                     ],
                   ),
@@ -152,7 +175,7 @@ class NestedList extends StatelessWidget {
                         children: _buildNestedList(context, Map<String, dynamic>.from(item)),
                       );
                     } else {
-                      return Text('$item', style: const TextStyle(fontSize: 10));
+                      return Text('$item', style: const TextStyle(fontSize: 10, fontFamily: 'Poppins'));
                     }
                   }).toList()
                 ],
@@ -178,11 +201,11 @@ class NestedList extends StatelessWidget {
               children: [
                 Text(
                   '$key: ',
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12, fontFamily: 'Poppins'),
                 ),
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
                 ),
               ],
             ),
@@ -194,7 +217,7 @@ class NestedList extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Text(
               '$key: $value',
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: 12, fontFamily: 'Poppins'),
             ),
           ),
         );
