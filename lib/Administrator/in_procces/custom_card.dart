@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:orderly/Administrator/nested_list.dart';
+import 'package:orderly/Administrator/in_procces/nested_list.dart';
 
-class CustomCard extends StatefulWidget {
+class CustomCard2 extends StatefulWidget {
   final String documentId;
   final Map<String, dynamic> value;
   final VoidCallback onTap;
   final String parentId;
 
-  const CustomCard({
+  const CustomCard2({
     required this.documentId,
     required this.value,
     required this.onTap,
@@ -17,10 +17,10 @@ class CustomCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomCardState createState() => _CustomCardState();
+  _CustomCard2State createState() => _CustomCard2State();
 }
 
-class _CustomCardState extends State<CustomCard> {
+class _CustomCard2State extends State<CustomCard2> {
   Future<Map<String, dynamic>?> getUserData(String parentId) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance

@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:orderly/Administrator/custom_card.dart';
-import 'package:orderly/Administrator/delivery_status.dart';
-import 'package:orderly/Administrator/firebase_service.dart';
+import 'package:orderly/Administrator/no_sended/custom_card.dart';
+import 'package:orderly/Administrator/in_procces/custom_card.dart';
+import 'package:orderly/Administrator/no_sended/delivery_status.dart';
+import 'package:orderly/Administrator/no_sended/firebase_service.dart';
+import 'package:orderly/Administrator/sended/custom_card.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 
 class AdministratorHomePage extends StatefulWidget {
@@ -46,6 +48,62 @@ class _AdministratorHomePageState extends State<AdministratorHomePage> {
     data.forEach((key, value) {
       if (value is Map<String, dynamic>) {
         itemList.add(CustomCard(
+          documentId: key,
+          value: value,
+          onTap: () {
+            if (mounted) {
+              setState(() {
+                selectedKey = key; // Almacena la clave del documento
+                parentDocumentId = key; // Actualiza el ID del documento padre
+                selectedData = value; // Almacena los datos seleccionados
+                //navigateToDeliveryStatus(context, key, selectedKey);
+              });
+            }
+            print('Selected Document ID: $selectedKey');
+            print('Parent Document ID: $parentDocumentId');
+          },
+          parentId: parentDocumentId,
+        ));
+      }
+    });
+
+    return ListView(children: itemList);
+  }
+
+  Widget buildListView2(Map<String, dynamic> data) {
+    List<Widget> itemList = [];
+
+    data.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        itemList.add(CustomCard2(
+          documentId: key,
+          value: value,
+          onTap: () {
+            if (mounted) {
+              setState(() {
+                selectedKey = key; // Almacena la clave del documento
+                parentDocumentId = key; // Actualiza el ID del documento padre
+                selectedData = value; // Almacena los datos seleccionados
+                //navigateToDeliveryStatus(context, key, selectedKey);
+              });
+            }
+            print('Selected Document ID: $selectedKey');
+            print('Parent Document ID: $parentDocumentId');
+          },
+          parentId: parentDocumentId,
+        ));
+      }
+    });
+
+    return ListView(children: itemList);
+  }
+
+  Widget buildListView3(Map<String, dynamic> data) {
+    List<Widget> itemList = [];
+
+    data.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        itemList.add(CustomCard3(
           documentId: key,
           value: value,
           onTap: () {
@@ -140,17 +198,21 @@ class _AdministratorHomePageState extends State<AdministratorHomePage> {
                                 // Contenido de la Pestaña 2
                                 AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 500),
-                                  child: Container(
+                                  child: Column(
                                     key: ValueKey<String>('tab2'),
-                                    color: Colors.blue, // Solo como ejemplo, aquí puedes poner otro contenido
+                                    children: [
+                                      Expanded(child: buildListView2(snapshot.data!)),
+                                    ],
                                   ),
                                 ),
                                 // Contenido de la Pestaña 3
                                 AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 500),
-                                  child: Container(
-                                    key: ValueKey<String>('tab3'),
-                                    color: Colors.green, // Solo como ejemplo, aquí puedes poner otro contenido
+                                  child: Column(
+                                    key: ValueKey<String>('tab2'),
+                                    children: [
+                                      Expanded(child: buildListView3(snapshot.data!)),
+                                    ],
                                   ),
                                 ),
                               ],

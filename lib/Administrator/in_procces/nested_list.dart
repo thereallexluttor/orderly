@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:orderly/Administrator/delivery_status.dart';
+import 'package:orderly/Administrator/in_procces/delivery_status.dart';
+
 
 class NestedList extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -27,7 +28,6 @@ class NestedList extends StatelessWidget {
           selectedKey: key,
           parentDocumentId: parentId,
         ),
-        
       ),
     );
   }
@@ -36,7 +36,7 @@ class NestedList extends StatelessWidget {
     List<Widget> itemList = [];
 
     data.forEach((key, value) {
-      if (value is Map) {
+      if (value is Map && value['delivery_status'] == 'en proceso') {
         itemList.add(
           GestureDetector(
             onTap: () {
