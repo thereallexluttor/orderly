@@ -34,10 +34,10 @@ class SplashScreen extends StatelessWidget {
     return FlutterSplashScreen.gif(
       backgroundColor: Colors.white,
       gifPath: 'lib/images/splash.gif',
-      gifWidth: 150,
-      gifHeight: 150,
+      gifWidth: 170,
+      gifHeight: 170,
       nextScreen: const logincontroller(),
-      duration: const Duration(milliseconds: 3515),
+      duration: const Duration(milliseconds: 4515),
       onInit: () async {
         debugPrint("onInit");
       },

@@ -113,22 +113,9 @@ class _DeliveryStatusPageState extends State<DeliveryStatusPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Order Details',
-                            style: Theme.of(context).textTheme.headline5?.copyWith(
-                              color: Colors.teal,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          
                           const SizedBox(height: 8),
-                          Text(
-                            'Selected Key: ${widget.selectedKey}',
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          Text(
-                            'Parent Document ID: ${widget.parentDocumentId}',
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
+                          
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: data['delivery_status'] == 'en proceso' ? null : updateDeliveryStatus,
@@ -201,24 +188,8 @@ class _DeliveryStatusPageState extends State<DeliveryStatusPage> {
                 Icons.label,
                 color: Colors.teal,
               ),
-              const SizedBox(height: 8),
-              Text(
-                entry.key,
-                style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal[700],
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: Text(
-                  '${entry.value}',
-                  style: Theme.of(context).textTheme.bodyText2,
-                  overflow: TextOverflow.fade,
-                ),
-              ),
+            
+              
             ],
           ),
         ),
