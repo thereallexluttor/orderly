@@ -53,71 +53,69 @@ class CategoryButtons extends StatelessWidget {
               bool isSelected = selectedCategory == category;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        onCategorySelected(category);
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: isSelected
-                              ? Border.all(color: Colors.purple, width: 3)
-                              : Border.all(color: Colors.grey.shade300, width: 1),
-                          boxShadow: isSelected
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.purple.withOpacity(0.4),
-                                    spreadRadius: 1,
-                                    blurRadius: 3,
-                                    offset: Offset(0, 1),
-                                  ),
-                                ]
-                              : [],
-                          color: isSelected ? Colors.purple.withOpacity(0.2) : Colors.transparent,
+                child: GestureDetector(
+                  onTap: () {
+                    onCategorySelected(category);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15), // Bordes redondeados
+                      border: isSelected
+                          ? Border.all(color: Colors.purple.shade100, width: 0.1)
+                          : Border.all(color: Colors.grey.shade300, width: 0.5),
+                      boxShadow: isSelected
+                          ? [
+                        BoxShadow(
+                          color: Colors.purple.withOpacity(0.4),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 1),
                         ),
-                        child: AnimatedScale(
-                          scale: isSelected ? 1.08 : 1.0,
-                          duration: const Duration(milliseconds: 300),
-                          child: CircleAvatar(
-                            radius: 24,
-                            backgroundColor: Colors.transparent,
-                            child: ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: product['foto_producto'] ?? '',
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => Center(
-                                  child: FadeTransition(
-                                    opacity: AlwaysStoppedAnimation(0.5),
-                                    child: SpinKitFadingCircle(
-                                      color: Colors.grey,
-                                      size: 24.0,
-                                    ),
-                                  ),
+                      ]
+                          : [],
+                    ),
+                    width: 80,
+                    height: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15), // Bordes redondeados para la imagen
+                          child: CachedNetworkImage(
+                            imageUrl: product['foto_producto'] ?? '',
+                            height: 60,
+                            width: 60,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Center(
+                              child: FadeTransition(
+                                opacity: AlwaysStoppedAnimation(0.5),
+                                child: SpinKitFadingCircle(
+                                  color: Colors.grey,
+                                  size: 24.0,
                                 ),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
-                                fadeInDuration: Duration(milliseconds: 500),
-                                fadeOutDuration: Duration(milliseconds: 500),
                               ),
                             ),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                            fadeInDuration: Duration(milliseconds: 500),
+                            fadeOutDuration: Duration(milliseconds: 500),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 5),
+                        Text(
+                          category,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontFamily: "Poppins",
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      category,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontFamily: "Poppins",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             }).toList(),
