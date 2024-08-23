@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:orderly/homepage/Purchases/Purchases.dart';
@@ -9,8 +8,8 @@ import 'package:orderly/homepage/StoreHomePage/StoreHomePage.dart';
 import 'package:orderly/homepage/UserChats/UserChats.dart';
 import 'package:orderly/homepage/sales&deals/offers_tab.dart';
 import 'package:orderly/homepage/shopping_cart/shopping_cart.dart';
-import 'package:orderly/homepage/tabbar/TabItem.dart';
 import 'package:orderly/homepage/User/User.dart';
+import 'package:orderly/homepage/tabbar/TabItem.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   int _pageIndex = 0;
   final PageController _pageController = PageController();
   User? user = FirebaseAuth.instance.currentUser;
@@ -38,7 +36,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // Función para imprimir el UID del usuario actual
   void printUserUid() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -48,21 +45,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Función para actualizar el término de búsqueda
   void updateSearchQuery(String query) {
     setState(() {
       searchQuery = query.toLowerCase();
     });
   }
 
-  // Función para filtrar los resultados en las pestañas
   List<Map<String, dynamic>> filterItems(List<Map<String, dynamic>> items) {
     return items
         .where((item) => item['nombre'].toLowerCase().contains(searchQuery))
         .toList();
   }
 
-  // Función para cambiar de página en la navegación inferior
   void _onItemTapped(int index) {
     setState(() {
       _pageIndex = index;
@@ -76,7 +70,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Lista de páginas para el PageView
     final List<Widget> _pages = <Widget>[
       DefaultTabController(
         length: 2,
@@ -88,17 +81,17 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(0.0),
                 child: Column(
                   children: [
-                    SizedBox(height: 70), // Espacio para la imagen del logo
+                    SizedBox(height: 50),
                     PreferredSize(
                       preferredSize: const Size.fromHeight(60),
                       child: ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(7)),
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
                         child: Container(
                           height: 30,
                           width: 240,
                           margin: const EdgeInsets.symmetric(horizontal: 60),
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            borderRadius: const BorderRadius.all(Radius.circular(4)),
                             color: Colors.purple.shade50,
                           ),
                           child: const TabBar(
@@ -106,32 +99,29 @@ class _HomePageState extends State<HomePage> {
                             dividerColor: Colors.transparent,
                             indicator: BoxDecoration(
                               color: Colors.purple,
-                              borderRadius: BorderRadius.all(Radius.circular(7)),
+                              borderRadius: BorderRadius.all(Radius.circular(4)),
                             ),
                             labelColor: Colors.white,
                             unselectedLabelColor: Color.fromARGB(137, 92, 92, 92),
                             tabs: [
                               TabItem(title: 'Ofertas!🤟'),
-                              TabItem(title: 'Catalogo.😎🤍'),
+                              TabItem(title: 'Catalogo.📖'),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    
                     Expanded(
                       child: TabBarView(
                         children: [
-                          // Pestaña Ofertas
                           Column(
                             children: [
                               SizedBox(height: 15),
                               Expanded(
-                                child: OffersTab(searchQuery: searchQuery), // Utiliza el nuevo widget OffersTab
+                                child: OffersTab(searchQuery: searchQuery),
                               ),
                             ],
                           ),
-                          // Pestaña Top Tiendas
                           Column(
                             children: [
                               SizedBox(height: 0),
@@ -175,62 +165,75 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Positioned(
-                top: 14,
-                left: 23,
-                child: Image.asset(
-                  'lib/images/OrderlyLogoLogin.png',
-                  width: 63, // Ajusta el tamaño de la imagen según sea necesario
-                  height: 63,
-                ),
-              ),
             ],
           ),
         ),
       ),
-      // Página central azul con información del chat
       ChatInfoScreen(),
-      // Página central amarilla
       ShoppingCart(),
-      // Página central verde
       Purchases(),
-      // Última página morada
+      UserPage(),
       UserPage(),
     ];
 
     return Scaffold(
-      body: AnimatedOpacity(
-        opacity: _opacity,
-        duration: Duration(seconds: 1),
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() {
-              _pageIndex = index;
-            });
-          },
-          physics: NeverScrollableScrollPhysics(), // Deshabilitar desplazamiento lateral
-          children: _pages,
-        ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: _pages[_pageIndex], // Cambiar el widget que se muestra según el índice
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 45,
-        key: _bottomNavigationKey,
-        index: _pageIndex,
-        items: <Widget>[
-          Icon(Icons.home_outlined, size: 17),
-          Icon(Icons.message_outlined, size: 17),
-          Icon(Icons.shopping_cart_outlined, size: 17),
-          Icon(Icons.shopping_bag_outlined, size: 17),
-          Icon(Icons.perm_identity, size: 17),
-        ],
-        color: Colors.white,
-        buttonBackgroundColor: Colors.white,
-        backgroundColor: Colors.purple,
-        animationCurve: Curves.fastOutSlowIn,
-        animationDuration: Duration(milliseconds: 400),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _pageIndex,
         onTap: _onItemTapped,
-        letIndexChange: (index) => true,
+        items: [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Inicio',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.message_outlined),
+            label: 'Chats',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(
+              AssetImage('lib/images/interfaceicons/artificial-intelligence.png'),
+              size: 20,
+            ),
+            activeIcon: ImageIcon(
+              AssetImage('lib/images/interfaceicons/artificial-intelligence2.png'),
+              size: 20,
+            ),
+            label: 'AI',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart_outlined),
+            label: 'Carrito',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag_outlined),
+            label: 'Compras',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.perm_identity),
+            label: 'Perfil',
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.purpleAccent,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontFamily: "Poppins",
+          fontSize: 10,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.normal,
+          fontFamily: "Poppins",
+          fontSize: 10,
+        ),
       ),
     );
   }

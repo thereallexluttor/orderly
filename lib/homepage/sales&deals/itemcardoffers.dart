@@ -65,7 +65,7 @@ class ItemCardOffers extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: itemData['foto_producto'] ?? '',
                         height: 150,
-                        width: 150,
+                        width: 155,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Center(
                           child: FadeTransition(
@@ -167,7 +167,7 @@ class ItemCardOffers extends StatelessWidget {
                           topRight: Radius.circular(10.0),
                         ),
                         child: Container(
-                          color: Colors.purple,
+                          color: Colors.green[800],
                           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
                           child: const Text(
                             'Cash Back!',
@@ -183,13 +183,13 @@ class ItemCardOffers extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 5),
               Text(
-                itemData['nombre'] != null && itemData['nombre'].length > 14
-                    ? itemData['nombre'].substring(0, 14) + '...'
+                itemData['nombre'] != null && itemData['nombre'].length > 50
+                    ? itemData['nombre'].substring(0, 50) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
-                maxLines: 1,
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
               ),

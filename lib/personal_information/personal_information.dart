@@ -74,7 +74,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
             padding: const EdgeInsets.all(5.0),
             child: Column(
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 60),
                 const Center(
                   child: Image(
                     image: AssetImage("lib/images/OrderlyLogoLogin.png"),
@@ -82,13 +82,13 @@ class _PersonalInformationState extends State<PersonalInformation> {
                     width: 100,
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 0),
                 AnimatedOpacity(
                   opacity: _opacity,
                   duration: const Duration(seconds: 2),
                   child: Card(
                     elevation: 0,
-                    color: Color.fromARGB(71, 226, 226, 226),
+                    color: Color.fromARGB(71, 255, 255, 255),
                     margin: const EdgeInsets.symmetric(horizontal: 16.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -206,17 +206,16 @@ class _PersonalInformationState extends State<PersonalInformation> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (birthdate == null)
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 16.0, top: 8.0, right: 16.0),
-                                      child: Text(
-                                        'La fecha de nacimiento debe ser seleccionada para avanzar',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 10,
-                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16.0, top: 8.0, right: 16.0),
+                                    child: Text(
+                                      'La fecha de nacimiento debe ser seleccionada para avanzar',
+                                      style: TextStyle(
+                                        color: birthdate == null ? Colors.red : Colors.white,
+                                        fontSize: 10,
                                       ),
                                     ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                     child: FormBuilderDateTimePicker(
@@ -238,7 +237,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 30),
                             Container(
                               padding: const EdgeInsets.all(16.0),
                               decoration: BoxDecoration(
@@ -293,10 +292,12 @@ class _PersonalInformationState extends State<PersonalInformation> {
                   alignment: Alignment.center,
                   children: [
                     ElevatedButton(
+
                       onPressed: isInformationComplete() && _formKey.currentState!.validate()
                           ? () => savePersonalInformation()
                           : null,
                       style: ElevatedButton.styleFrom(
+                        elevation: 1,
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.purple,
                         textStyle: const TextStyle(
@@ -304,7 +305,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
                           fontSize: 12,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 84),
                       ),

@@ -99,6 +99,8 @@ flutter:
     - lib/images/interfaceicons/google.png
     - lib/images/interfaceicons/message.png
     - lib/images/interfaceicons/shop.png
+    - lib/images/interfaceicons/artificial-intelligence.png
+    - lib/images/interfaceicons/artificial-intelligence2.png
     - lib/images/animations/qr-code.gif
     - lib/images/animations/clock.gif
     - lib/images/animations/walk.gif
