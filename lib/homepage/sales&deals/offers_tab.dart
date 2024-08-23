@@ -31,12 +31,12 @@ class OffersTab extends StatelessWidget {
           }).toList();
 
           content = GridView.builder(
-            padding: const EdgeInsets.only(left: 15.0),
+            padding: const EdgeInsets.only(left: 20.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, // Número de columnas
               mainAxisSpacing: 0.0,
               crossAxisSpacing: 0.0,
-              childAspectRatio: 0.5, // Ajusta esta relación según sea necesario
+              childAspectRatio: 0.65, // Ajusta esta relación según sea necesario
             ),
             itemCount: filteredItems.length,
             itemBuilder: (context, index) {

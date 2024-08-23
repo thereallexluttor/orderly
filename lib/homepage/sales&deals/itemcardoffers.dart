@@ -14,7 +14,7 @@ class ItemCardOffers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isAgotado = itemData['status'] == 'agotado';
-    final Color priceColor = isAgotado ? Colors.grey : const Color.fromARGB(255, 255, 17, 0);
+    final Color priceColor = isAgotado ? Colors.grey : const Color.fromARGB(255, 255, 0, 0);
     final Color priceColor2 = isAgotado ? Colors.grey : const Color.fromARGB(255, 0, 0, 0);
     const Color infoColor = Colors.grey;
 
@@ -58,10 +58,10 @@ class ItemCardOffers extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: const Color.fromARGB(255, 235, 235, 235)),
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(8.0),
                       child: CachedNetworkImage(
                         imageUrl: itemData['foto_producto'] ?? '',
                         height: 150,
@@ -115,19 +115,19 @@ class ItemCardOffers extends StatelessWidget {
                       left: 0,
                       child: ClipRRect(
                         borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10.0),
+                          topLeft: Radius.circular(8.0),
                           bottomRight: Radius.circular(10.0),
                         ),
                         child: Container(
-                          color: const Color.fromARGB(255, 255, 17, 0),
+                          color: const Color.fromARGB(255, 255, 0, 0),
                           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
                           child: Text(
                             '-${itemData['discount']}%',
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Poppins"
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Poppins"
                             ),
                           ),
                         ),
@@ -140,7 +140,7 @@ class ItemCardOffers extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
+                          bottomLeft: Radius.circular(8.0),
                         ),
                         child: Container(
                           color: Colors.green,
@@ -227,14 +227,17 @@ class ItemCardOffers extends StatelessWidget {
                 children: [
                   Text(
                     'Ventas: ${itemData['ventas'] ?? 'N/A'}',
-                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
+                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: Colors.black),
                   ),
                   const SizedBox(width: 8),
-                  const Icon(Icons.star, size: 12, color: infoColor),
+                  const Text(
+                    '⭐', // Cambiar el ícono de la estrella por el símbolo
+                    style: TextStyle(fontSize: 10),
+                  ),
                   const SizedBox(width: 2),
                   Text(
                     itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',
-                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: infoColor),
+                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: Colors.black), // Cambiar color a negro
                   ),
                 ],
               ),
