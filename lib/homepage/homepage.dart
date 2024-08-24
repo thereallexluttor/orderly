@@ -11,6 +11,8 @@ import 'package:orderly/homepage/shopping_cart/shopping_cart.dart';
 import 'package:orderly/homepage/User/User.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 
+import 'ai/OrderlyAi.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -170,10 +172,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       ChatInfoScreen(),
+      OrderlyAi(),
       ShoppingCart(),
       Purchases(),
       UserPage(),
-      UserPage(),
+
     ];
 
     return Scaffold(

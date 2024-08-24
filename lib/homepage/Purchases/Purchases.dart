@@ -90,8 +90,8 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
-          'Mis compras 💫😉',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+          'Mis compras 💰',
+          style: TextStyle(fontFamily: "Poppins", fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),

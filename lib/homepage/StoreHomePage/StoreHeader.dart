@@ -152,8 +152,9 @@ class StoreHeader extends StatelessWidget {
                     description,
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.black87,
+                      color: Colors.black,
                       fontFamily: "Alef",
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -184,6 +185,7 @@ class StoreHeader extends StatelessWidget {
                                   fontSize: 9,
                                   color: Colors.black,
                                   fontFamily: "Alef",
+                                  fontWeight: FontWeight.bold
                                 ),
                               ),
                             ),
@@ -201,6 +203,7 @@ class StoreHeader extends StatelessWidget {
                                   fontSize: 9,
                                   color: Colors.black,
                                   fontFamily: "Alef",
+                                  fontWeight: FontWeight.bold
                                 ),
                               ),
                             ),

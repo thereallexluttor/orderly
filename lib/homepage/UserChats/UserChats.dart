@@ -10,7 +10,6 @@ class ChatInfoScreen extends StatefulWidget {
   const ChatInfoScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChatInfoScreenState createState() => _ChatInfoScreenState();
 }
 
@@ -36,7 +35,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
         backgroundColor: Colors.white,
         title: const Text(
           'Chats 📨',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
+          style: TextStyle(fontFamily: "Poppins", fontSize: 13, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -91,7 +90,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: filteredChatInfo.length, // Ya no +1, pues eliminamos la card adicional
+                      itemCount: filteredChatInfo.length,
                       itemBuilder: (context, index) {
                         var entry = filteredChatInfo[index];
                         var key = entry.key;
@@ -110,16 +109,16 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                             Card(
                               color: Colors.white,
                               elevation: 0,
-                              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                                 leading: Stack(
                                   children: [
                                     CircleAvatar(
-                                      radius: 25,
+                                      radius: 20, // Reducir el tamaño de la imagen
                                       backgroundImage: CachedNetworkImageProvider(value['foto_producto']),
                                       onBackgroundImageError: (_, __) => const Icon(Icons.image),
                                       child: ClipOval(
@@ -137,10 +136,10 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                     ),
                                     if (value['mensaje_vendedor'] != null && value['mensaje_vendedor'].isNotEmpty)
                                       Positioned(
-                                        top: -6, // Posiciona un poco más arriba para que quede alineado con el borde
-                                        right: 0, // Posiciona un poco más hacia la derecha
+                                        top: -6,
+                                        right: 0,
                                         child: Container(
-                                          padding: EdgeInsets.all(7), // Aumenta el padding para hacer el icono más grande
+                                          padding: EdgeInsets.all(5), // Tamaño de la notificación ajustado
                                           decoration: BoxDecoration(
                                             color: Colors.red,
                                             shape: BoxShape.circle,
@@ -149,7 +148,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                             '!',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 14, // Aumenta el tamaño de la fuente
+                                              fontSize: 12, // Tamaño de la fuente ajustado
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -161,7 +160,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                   value['nombre'] ?? '',
                                   style: const TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 10,
+                                    fontSize: 9, // Tamaño de la fuente reducido
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -169,7 +168,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                   subtitleText,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 11,
+                                    fontSize: 9, // Tamaño de la fuente reducido
                                     color: Colors.grey[600],
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -178,7 +177,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                   "${messageTime.hour}:${messageTime.minute.toString().padLeft(2, '0')}",
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 12,
+                                    fontSize: 10, // Tamaño de la fuente reducido
                                     color: Colors.grey[600],
                                   ),
                                 ),
@@ -192,7 +191,7 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                                 },
                               ),
                             ),
-                            const Divider(indent: 90, height: 3,), // Divider al final de cada Card
+                            const Divider(indent: 0, height: 1), // Divider al final de cada Card
                           ],
                         );
                       },

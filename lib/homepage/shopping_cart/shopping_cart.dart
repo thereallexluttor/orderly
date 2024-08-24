@@ -178,8 +178,8 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: Text(
-          'Tu carrito de compras. 🛒👀🧐',
-          style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
+          'Tu carrito de compras. 🛒',
+          style: TextStyle(fontFamily: "Poppins", fontSize: 13, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -199,7 +199,11 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
 
                 Map<String, dynamic> cartData = snapshot.data!['carrito_compra'] ?? {};
                 if (cartData.isEmpty) {
-                  return Center(child: Text('El carrito está vacío.'));
+                  return Center(child: Text('El carrito está vacío.',style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),));
                 }
 
                 double totalPrice = cartData.values.fold(0.0, (sum, item) => sum + item['total_pagar']);
@@ -228,7 +232,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                               );
                             },
                             background: Container(
-                              color: Colors.red,
+                              color: Colors.red[900],
                               alignment: Alignment.centerRight,
                               padding: EdgeInsets.symmetric(horizontal: 20),
                               child: Icon(Icons.delete, color: Colors.white),
@@ -240,7 +244,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                               fit: BoxFit.fill,),
                               title: Text(
                                 item['nombre_producto'],
-                                style: TextStyle(fontFamily: "Poppins", fontSize: 8),
+                                style: TextStyle(fontFamily: "Poppins", fontSize: 8, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
                                 'X${item['cantidad']}',
@@ -265,9 +269,9 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                             onPressed: _completePurchase,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple,
-                              minimumSize: Size(double.infinity, 50),
+                              minimumSize: Size(double.infinity, 40),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
+                                borderRadius: BorderRadius.circular(4),
                               ),
                             ),
                             child: Text(
