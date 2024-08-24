@@ -103,7 +103,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
                     ),
                   ];
                 },
-                body: CategoryItems(
+                body: CategoryItemsWrapper(
                   storeReference: widget.storeReference,
                   selectedCategory: selectedCategory,
                 ),
@@ -112,6 +112,31 @@ class _StoreHomePageState extends State<StoreHomePage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// Nueva clase Stateful para envolver CategoryItems
+class CategoryItemsWrapper extends StatefulWidget {
+  final DocumentReference<Object?> storeReference;
+  final String? selectedCategory;
+
+  const CategoryItemsWrapper({
+    Key? key,
+    required this.storeReference,
+    required this.selectedCategory,
+  }) : super(key: key);
+
+  @override
+  _CategoryItemsWrapperState createState() => _CategoryItemsWrapperState();
+}
+
+class _CategoryItemsWrapperState extends State<CategoryItemsWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return CategoryItems(
+      storeReference: widget.storeReference,
+      selectedCategory: widget.selectedCategory,
     );
   }
 }

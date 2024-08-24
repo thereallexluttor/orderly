@@ -34,58 +34,69 @@ class StoreHeader extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  // Uncomment if you need box shadow or rounded corners
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black.withOpacity(0.2),
-                  //     spreadRadius: 2,
-                  //     blurRadius: 7,
-                  //     offset: Offset(0, 3),
-                  //   ),
-                  // ],
-                  // borderRadius: BorderRadius.only(
-                  //   bottomLeft: Radius.circular(20.0),
-                  //   bottomRight: Radius.circular(20.0),
-                  // ),
-                ),
-                child: ClipRRect(
-                  // Uncomment if you need rounded corners
-                  // borderRadius: BorderRadius.only(
-                  //   bottomLeft: Radius.circular(20.0),
-                  //   bottomRight: Radius.circular(20.0),
-                  // ),
-                  child: Container(
-                    height: 100,
-                    width: double.infinity,
-                    child: CachedNetworkImage(
-                      imageUrl: bannerUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: FadeTransition(
-                          opacity: AlwaysStoppedAnimation(0.5),
-                          child: const Text('Loading...'),
-                        ),
+              FutureBuilder(
+                future: _precacheImage(context, bannerUrl),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // Si la imagen ya está en caché, simplemente la mostramos sin animación.
+                    return Container(
+                      height: 100,
+                      width: double.infinity,
+                      child: CachedNetworkImage(
+                        imageUrl: bannerUrl,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      fadeInDuration: Duration(milliseconds: 500),
-                      fadeOutDuration: Duration(milliseconds: 500),
-                    ),
-                  ),
-                ),
+                    );
+                  } else {
+                    // Si la imagen no está en caché, mostramos un placeholder mientras se carga.
+                    return Container(
+                      height: 100,
+                      width: double.infinity,
+                      child: CachedNetworkImage(
+                        imageUrl: bannerUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        fadeInDuration: Duration(milliseconds: 500),
+                        fadeOutDuration: Duration(milliseconds: 500),
+                      ),
+                    );
+                  }
+                },
               ),
               Positioned(
                 bottom: -40,
                 left: 20,
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.white,
-                  child: CircleAvatar(
-                    radius: 27,
-                    backgroundImage: CachedNetworkImageProvider(logoUrl),
-                    onBackgroundImageError: (_, __) => Icon(Icons.store),
-                  ),
+                child: FutureBuilder(
+                  future: _precacheImage(context, logoUrl),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      // Si la imagen ya está en caché, simplemente la mostramos sin animación.
+                      return CircleAvatar(
+                        radius: 32,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 27,
+                          backgroundImage: CachedNetworkImageProvider(logoUrl),
+                          onBackgroundImageError: (_, __) => Icon(Icons.store),
+                        ),
+                      );
+                    } else {
+                      // Si la imagen no está en caché, mostramos un placeholder mientras se carga.
+                      return CircleAvatar(
+                        radius: 32,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 27,
+                          backgroundColor: Colors.grey.shade200,
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
             ],
@@ -164,14 +175,14 @@ class StoreHeader extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.local_offer_outlined, size: 18, color: Colors.grey),
+                            Icon(Icons.local_offer_outlined, size: 18, color: Colors.purple),
                             SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 'COP$discount de descuento por compras superiores a COP$minimumPurchase (Cupon de tienda)',
                                 style: TextStyle(
                                   fontSize: 9,
-                                  color: Color.fromARGB(221, 104, 104, 104),
+                                  color: Colors.black,
                                   fontFamily: "Alef",
                                 ),
                               ),
@@ -181,14 +192,14 @@ class StoreHeader extends StatelessWidget {
                         SizedBox(height: 10),
                         Row(
                           children: [
-                            Icon(Icons.local_shipping_outlined, size: 18, color: Colors.grey),
+                            Icon(Icons.local_shipping_outlined, size: 18, color: Colors.purple),
                             SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 'Garantía de envío',
                                 style: TextStyle(
                                   fontSize: 9,
-                                  color: Color.fromARGB(221, 104, 104, 104),
+                                  color: Colors.black,
                                   fontFamily: "Alef",
                                 ),
                               ),
@@ -207,5 +218,10 @@ class StoreHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _precacheImage(BuildContext context, String imageUrl) async {
+    final imageProvider = CachedNetworkImageProvider(imageUrl);
+    await precacheImage(imageProvider, context);
   }
 }
