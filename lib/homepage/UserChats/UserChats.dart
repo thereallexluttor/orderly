@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:orderly/homepage/ProductPurchase/ProductChat/ProductChat.dart';
-import 'package:orderly/homepage/UserChats/BenjiBot/BenjiBot.dart';  // Asegúrate de importar la pantalla BenjiBot
 
 class ChatInfoScreen extends StatefulWidget {
   const ChatInfoScreen({super.key});
@@ -92,85 +91,110 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: filteredChatInfo.length + 1, // +1 para la card adicional
+                      itemCount: filteredChatInfo.length, // Ya no +1, pues eliminamos la card adicional
                       itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return _buildChatAICard();
-                        } else {
-                          var entry = filteredChatInfo[index - 1]; // Restar 1 para los datos originales
-                          var key = entry.key;
-                          var value = entry.value as Map<String, dynamic>;
-                          var messageTime = value['hora'] != null
-                              ? (value['hora'] as Timestamp).toDate()
-                              : DateTime.now();
+                        var entry = filteredChatInfo[index];
+                        var key = entry.key;
+                        var value = entry.value as Map<String, dynamic>;
+                        var messageTime = value['hora'] != null
+                            ? (value['hora'] as Timestamp).toDate()
+                            : DateTime.now();
 
-                          return Column(
-                            children: [
-                              Card(
-                                color: Colors.white,
-                                elevation: 0,
-                                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                                  leading: CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: CachedNetworkImageProvider(value['foto_producto']),
-                                    onBackgroundImageError: (_, __) => const Icon(Icons.image),
-                                    child: ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: value['foto_producto'],
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        errorWidget: (context, url, error) => const Icon(Icons.image),
-                                        fadeInDuration: const Duration(milliseconds: 500),
-                                        fadeOutDuration: const Duration(milliseconds: 500),
-                                      ),
-                                    ),
-                                  ),
-                                  title: Text(
-                                    value['nombre'] ?? '',
-                                    style: const TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    value['mensaje'] ?? '',
-                                    style: TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontSize: 11,
-                                      color: Colors.grey[600],
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  trailing: Text(
-                                    "${messageTime.hour}:${messageTime.minute.toString().padLeft(2, '0')}",
-                                    style: TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductChat(value),
-                                      ),
-                                    );
-                                  },
-                                ),
+                        // Condicional para mostrar mensaje_vendedor si no está vacío, de lo contrario mostrar mensaje
+                        String subtitleText = (value['mensaje_vendedor'] != null && value['mensaje_vendedor'].isNotEmpty)
+                            ? value['mensaje_vendedor']
+                            : (value['mensaje'] ?? '');
+
+                        return Column(
+                          children: [
+                            Card(
+                              color: Colors.white,
+                              elevation: 0,
+                              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              const Divider(indent: 90, height: 3,), // Divider al final de cada Card
-                            ],
-                          );
-                        }
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                                leading: Stack(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: CachedNetworkImageProvider(value['foto_producto']),
+                                      onBackgroundImageError: (_, __) => const Icon(Icons.image),
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl: value['foto_producto'],
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          errorWidget: (context, url, error) => const Icon(Icons.image),
+                                          fadeInDuration: const Duration(milliseconds: 500),
+                                          fadeOutDuration: const Duration(milliseconds: 500),
+                                        ),
+                                      ),
+                                    ),
+                                    if (value['mensaje_vendedor'] != null && value['mensaje_vendedor'].isNotEmpty)
+                                      Positioned(
+                                        top: -6, // Posiciona un poco más arriba para que quede alineado con el borde
+                                        right: 0, // Posiciona un poco más hacia la derecha
+                                        child: Container(
+                                          padding: EdgeInsets.all(7), // Aumenta el padding para hacer el icono más grande
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Text(
+                                            '!',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14, // Aumenta el tamaño de la fuente
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                title: Text(
+                                  value['nombre'] ?? '',
+                                  style: const TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  subtitleText,
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 11,
+                                    color: Colors.grey[600],
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: Text(
+                                  "${messageTime.hour}:${messageTime.minute.toString().padLeft(2, '0')}",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductChat(value),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            const Divider(indent: 90, height: 3,), // Divider al final de cada Card
+                          ],
+                        );
                       },
                     ),
                   ),
@@ -183,55 +207,18 @@ class _ChatInfoScreenState extends State<ChatInfoScreen> {
     );
   }
 
-  Widget _buildChatAICard() {
-    return Card(
-      color: Colors.white,
-      elevation: 0,
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-        leading: const CircleAvatar(
-          radius: 25,
-          backgroundImage: NetworkImage('https://www.shutterstock.com/image-vector/ai-stars-icon-artificial-intelligence-600nw-2351532151.jpg'),
-        ),
-        title: const Text(
-          'Chat AI',
-          style: TextStyle(
-            fontFamily: "Poppins",
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(
-          'habla con nuestra IA para búsquedas personalizadas 🥸',
-          style: TextStyle(
-            fontFamily: "Poppins",
-            fontSize: 8,
-            color: Colors.grey[600],
-          ),
-          
-        ),
-        onTap: () {
-          // Acción al hacer tap en la card de Chat AI
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildNoConversationsUI() {
-    return Column(
-      children: [
-        _buildChatAICard(),
-      ],
+    return Container(
+      child: Center(
+        child: Text(
+          'No hay conversaciones',
+          style: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 12,
+            color: Colors.grey,
+          ),
+        ),
+      ),
     );
   }
 
