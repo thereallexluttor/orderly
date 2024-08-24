@@ -64,15 +64,15 @@ class CategoryButtons extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15), // Bordes redondeados
                       border: isSelected
-                          ? Border.all(color: Colors.purple.shade100, width: 0.1)
+                          ? Border.all(color: Colors.purple.shade100, width: 0.05)
                           : Border.all(color: Colors.grey.shade300, width: 0.5),
                       boxShadow: isSelected
                           ? [
                         BoxShadow(
                           color: Colors.purple.withOpacity(0.4),
-                          spreadRadius: 1,
+                          spreadRadius: 0.1,
                           blurRadius: 3,
-                          offset: Offset(0, 1),
+                          offset: Offset(0, 0),
                         ),
                       ]
                           : [],

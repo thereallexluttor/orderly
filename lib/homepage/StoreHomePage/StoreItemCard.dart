@@ -117,7 +117,7 @@ class StoreItemCard extends StatelessWidget {
                           bottomRight: Radius.circular(10.0),
                         ),
                         child: Container(
-                          color: const Color.fromARGB(255, 255, 17, 0),
+                          color: const Color.fromARGB(255, 255, 0, 0),
                           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
                           child: Text(
                             '-$discount%',
@@ -165,7 +165,7 @@ class StoreItemCard extends StatelessWidget {
                           topRight: Radius.circular(10.0),
                         ),
                         child: Container(
-                          color: Colors.purple,
+                          color: Colors.green[800],
                           padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
                           child: const Text(
                             'Cash Back!',
@@ -183,11 +183,11 @@ class StoreItemCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                itemData['nombre'] != null && itemData['nombre'].length > 15
-                    ? itemData['nombre'].substring(0, 15) + '...'
+                itemData['nombre'] != null && itemData['nombre'].length > 50
+                    ? itemData['nombre'].substring(0, 50) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
-                maxLines: 1,
+                style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left, // Alinear texto a la izquierda
               ),
@@ -225,14 +225,17 @@ class StoreItemCard extends StatelessWidget {
                 children: [
                   Text(
                     'Ventas: ${itemData['ventas'] ?? 'N/A'}',
-                    style: const TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: Colors.black),
                   ),
                   const SizedBox(width: 8),
-                  const Icon(Icons.star, size: 12, color: infoColor),
+                  const Text(
+                    '⭐', // Cambiar el ícono de la estrella por el símbolo
+                    style: TextStyle(fontSize: 10),
+                  ),
                   const SizedBox(width: 2),
                   Text(
                     itemData['valoracion'] != null ? itemData['valoracion'].toStringAsFixed(1) : 'N/A',
-                    style: const TextStyle(fontSize: 10, fontFamily: "Poppins", color: infoColor),
+                    style: const TextStyle(fontSize: 12, fontFamily: "Poppins", color: Colors.black), // Cambiar color a negro
                   ),
                 ],
               ),

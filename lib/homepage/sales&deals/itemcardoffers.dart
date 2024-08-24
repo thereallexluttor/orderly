@@ -65,7 +65,7 @@ class ItemCardOffers extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: itemData['foto_producto'] ?? '',
                         height: 150,
-                        width: 155,
+                        width: 150,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Center(
                           child: FadeTransition(
@@ -188,7 +188,7 @@ class ItemCardOffers extends StatelessWidget {
                 itemData['nombre'] != null && itemData['nombre'].length > 50
                     ? itemData['nombre'].substring(0, 50) + '...'
                     : itemData['nombre'] ?? 'Unnamed Item',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, fontFamily: "Poppins", color: priceColor2),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
