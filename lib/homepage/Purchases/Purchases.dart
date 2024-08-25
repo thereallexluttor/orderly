@@ -13,7 +13,6 @@ class Purchases extends StatefulWidget {
 class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Animation<double>? _animation;
-  bool _showStats = false;
 
   @override
   void initState() {
@@ -79,6 +78,112 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
     };
   }
 
+  void _showStatsModal(BuildContext context, double totalSpent, Map<String, int> productCount) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        final numberFormat = NumberFormat('#,##0', 'es_ES');
+        final screenWidth = MediaQuery.of(context).size.width;
+
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 50,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Text(
+                  'Estadísticas de la última semana',
+                  style: TextStyle(fontFamily: "Poppins", fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: screenWidth * 0.9,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Monto total gastado:',
+                      style: TextStyle(fontFamily: "Poppins", fontSize: 13, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'COP ${numberFormat.format(totalSpent)}',
+                      style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green[700]),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Productos más comprados:',
+                style: TextStyle(fontFamily: "Poppins", fontSize: 13, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
+              ...productCount.entries.map((entry) => Container(
+                margin: const EdgeInsets.symmetric(vertical: 4.0),
+                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+                width: screenWidth * 0.9,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        entry.key,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontFamily: "Poppins", fontSize: 13),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Cantidad: ${entry.value}',
+                      style: TextStyle(fontFamily: "Poppins", fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              )),
+
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final numberFormat = NumberFormat('#,##0', 'es_ES');
@@ -94,6 +199,18 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
           style: TextStyle(fontFamily: "Poppins", fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart, color: Colors.black),
+            onPressed: () async {
+              final purchaseData = await _fetchPurchaseData();
+              if (purchaseData != null && purchaseData['compras'] != null) {
+                final metrics = _calculateMetrics(purchaseData['compras']);
+                _showStatsModal(context, metrics['totalSpent'], metrics['productCount']);
+              }
+            },
+          ),
+        ],
       ),
       body: Container(
         color: Colors.white,
@@ -114,10 +231,6 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                 return const Center(child: Text('No has realizado ninguna compra.'));
               }
 
-              Map<String, dynamic> metrics = _calculateMetrics(purchaseData);
-              double totalSpent = metrics['totalSpent'];
-              Map<String, int> productCount = metrics['productCount'];
-
               List<MapEntry<String, dynamic>> sinEntregar = purchaseData.entries
                   .where((entry) => entry.value['delivery_status'] == 'no')
                   .toList();
@@ -128,54 +241,8 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _showStats = !_showStats;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Estadísticas de la última semana',
-                            style: TextStyle(fontFamily: "Poppins", fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
-                          if (_showStats) ...[
-                            const SizedBox(height: 10),
-                            Text(
-                              'Monto total gastado: COP ${numberFormat.format(totalSpent)}',
-                              style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
-                            ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'Productos más comprados:',
-                              style: TextStyle(fontFamily: "Poppins", fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                            ...productCount.entries.map((entry) => ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  title: Text(
-                                    entry.key,
-                                    style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
-                                  ),
-                                  trailing: Text(
-                                    'Cantidad: ${entry.value}',
-                                    style: const TextStyle(fontFamily: "Poppins", fontSize: 10),
-                                  ),
-                                )),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 20),
                   if (sinEntregar.isNotEmpty) ...[
-                    const SizedBox(height: 20),
                     const Text(
                       'Sin Entregar:',
                       style: TextStyle(fontFamily: "Poppins", fontSize: 14, fontWeight: FontWeight.bold),
@@ -219,7 +286,7 @@ class _PurchasesState extends State<Purchases> with SingleTickerProviderStateMix
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text('COP ${numberFormat.format(item['total_pagar'])}'),
-                                    
+
                                   ],
                                 ),
                               ),
