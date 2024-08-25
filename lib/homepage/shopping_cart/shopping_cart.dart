@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_print, prefer_const_constructors
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:confetti/confetti.dart';
+import 'auth_service.dart';
+import 'cart_service.dart';
 
 class ShoppingCart extends StatefulWidget {
   const ShoppingCart({super.key});
@@ -14,6 +14,8 @@ class ShoppingCart extends StatefulWidget {
 }
 
 class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderStateMixin {
+  final AuthService _authService = AuthService();
+  final CartService _cartService = CartService();
   AnimationController? _controller;
   Animation<double>? _animation;
   late ConfettiController _confettiController;
@@ -21,13 +23,17 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+    _initAnimation();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 2));
+  }
+
+  void _initAnimation() {
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
     _animation = CurvedAnimation(parent: _controller!, curve: Curves.easeIn);
     _controller?.forward();
-    _confettiController = ConfettiController(duration: const Duration(seconds: 2));
   }
 
   @override
@@ -37,137 +43,17 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
     super.dispose();
   }
 
-  Future<Map<String, dynamic>?> _fetchCartData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return null;
-
-    DocumentReference userDocRef = FirebaseFirestore.instance
-        .collection('Orderly')
-        .doc('Users')
-        .collection('users')
-        .doc(user.uid);
-
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-    if (userDocSnapshot.exists) {
-      return userDocSnapshot.data() as Map<String, dynamic>?;
-    }
-    return null;
+  String formatCurrency(int amount) {
+    final formatter = NumberFormat('#,##0', 'es_CO');
+    return formatter.format(amount);
   }
 
-  Future<void> _deleteItemFromCart(String itemKey, Map<String, dynamic> item) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    String rutaCarrito = item['ruta_carrito'];
-
-    DocumentReference cartRef = FirebaseFirestore.instance.doc(rutaCarrito);
-    DocumentSnapshot cartSnapshot = await cartRef.get();
-    if (cartSnapshot.exists) {
-      Map<String, dynamic> cartData = Map<String, dynamic>.from(cartSnapshot.data() as Map);
-      if (cartData.containsKey(user.uid)) {
-        Map<String, dynamic> userCart = Map<String, dynamic>.from(cartData[user.uid]);
-        if (userCart.containsKey(itemKey)) {
-          userCart.remove(itemKey);
-          cartData[user.uid] = userCart;
-          await cartRef.set(cartData);
-        }
-      }
-    }
-
-    DocumentReference userDocRef = FirebaseFirestore.instance
-        .collection('Orderly')
-        .doc('Users')
-        .collection('users')
-        .doc(user.uid);
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-    if (userDocSnapshot.exists) {
-      Map<String, dynamic> carritoCompraData = Map<String, dynamic>.from(userDocSnapshot.data() as Map);
-      if (carritoCompraData.containsKey('carrito_compra')) {
-        Map<String, dynamic> userCarritoCompra = Map<String, dynamic>.from(carritoCompraData['carrito_compra']);
-        
-        String? keyToRemove;
-        userCarritoCompra.forEach((key, value) {
-          if (value['nombre_producto'] == item['nombre_producto'] &&
-              value['cantidad'] == item['cantidad'] &&
-              value['total_pagar'] == item['total_pagar']) {
-            keyToRemove = key;
-          }
-        });
-
-        if (keyToRemove != null) {
-          userCarritoCompra.remove(keyToRemove);
-          carritoCompraData['carrito_compra'] = userCarritoCompra;
-          await userDocRef.set(carritoCompraData);
-        }
-      }
-    }
-
-    setState(() {});
-  }
-
-  Future<void> _completePurchase() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    DocumentReference userDocRef = FirebaseFirestore.instance
-        .collection('Orderly')
-        .doc('Users')
-        .collection('users')
-        .doc(user.uid);
-
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-    if (userDocSnapshot.exists) {
-      Map<String, dynamic> carritoCompraData = Map<String, dynamic>.from(userDocSnapshot.data() as Map);
-      Map<String, dynamic> carritoCompra = Map<String, dynamic>.from(carritoCompraData['carrito_compra'] ?? {});
-      Map<String, dynamic> compras = Map<String, dynamic>.from(carritoCompraData['compras'] ?? {});
-
-      String fechaCompra = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-
-      carritoCompra.forEach((key, value) {
-        value['status'] = 'pagado';
-        value['fecha_compra'] = fechaCompra;
-        value['delivery_status'] = value['delivery_status'] ?? 'no';
-        compras[key] = value;
-
-        // Agregar la eliminación de cada elemento a la batch
-        String rutaCarrito = value['ruta_carrito'];
-        DocumentReference cartRef = FirebaseFirestore.instance.doc(rutaCarrito);
-        batch.update(cartRef, {
-          '${user.uid}.$key': FieldValue.delete()
-        });
-
-        // Eliminar el elemento de carrito_compra en el documento del usuario
-        batch.update(userDocRef, {
-          'carrito_compra.$key': FieldValue.delete()
-        });
-      });
-
-      carritoCompraData['compras'] = compras;
-      carritoCompraData.remove('carrito_compra');
-
-      batch.set(userDocRef, carritoCompraData);
-
-      // Guardar la información en el campo especificado
-      DocumentReference compraRef = FirebaseFirestore.instance
-          .collection('Orderly')
-          .doc('Stores')
-          .collection('Stores')
-          .doc('WOLFSGROUP SAS')
-          .collection('compras')
-          .doc('compras');
-
-      batch.set(compraRef, {
-        user.uid: compras
-      });
-
-      // Ejecutar la batch
-      await batch.commit();
-    }
-
-    setState(() {});
-    _confettiController.play();
+  Future<void> _updateScreen() async {
+    // Reinicia la animación antes de actualizar la pantalla
+    await _controller?.reverse();
+    setState(() {
+      _controller?.forward();  // Reproduce la animación nuevamente
+    });
   }
 
   @override
@@ -188,7 +74,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
           FadeTransition(
             opacity: _animation!,
             child: FutureBuilder<Map<String, dynamic>?>(
-              future: _fetchCartData(),
+              future: _cartService.fetchCartData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -208,11 +94,6 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
 
                 double totalPrice = cartData.values.fold(0.0, (sum, item) => sum + item['total_pagar']);
 
-                String formatCurrency(int amount) {
-                  final formatter = NumberFormat('#,##0', 'es_CO');
-                  return formatter.format(amount);
-                }
-
                 return Column(
                   children: [
                     Expanded(
@@ -226,10 +107,11 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                             key: Key(key),
                             direction: DismissDirection.endToStart,
                             onDismissed: (direction) async {
-                              await _deleteItemFromCart(key, item);
+                              await _cartService.deleteItemFromCart(key, item);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('${item['nombre_producto']} eliminado del carrito')),
                               );
+                              await _updateScreen();  // Actualizar pantalla con efecto de desvanecimiento
                             },
                             background: Container(
                               color: Colors.red[900],
@@ -239,9 +121,9 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                             ),
                             child: ListTile(
                               leading: Image.network(item['foto_producto'],
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.fill,),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.fill,),
                               title: Text(
                                 item['nombre_producto'],
                                 style: TextStyle(fontFamily: "Poppins", fontSize: 8, fontWeight: FontWeight.bold),
@@ -266,7 +148,10 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
                           ),
                           SizedBox(height: 10),
                           ElevatedButton(
-                            onPressed: _completePurchase,
+                            onPressed: () async {
+                              await _cartService.completePurchase(_confettiController);
+                              await _updateScreen();  // Actualizar pantalla después de completar la compra
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple,
                               minimumSize: Size(double.infinity, 40),
@@ -293,7 +178,7 @@ class _ShoppingCartState extends State<ShoppingCart> with SingleTickerProviderSt
               confettiController: _confettiController,
               blastDirectionality: BlastDirectionality.explosive,
               shouldLoop: false,
-              colors: const [Colors.red, Colors.blue, Colors.green, Colors.yellow], // confetti colors
+              colors: const [Colors.red, Colors.blue, Colors.green, Colors.yellow],
             ),
           ),
         ],
