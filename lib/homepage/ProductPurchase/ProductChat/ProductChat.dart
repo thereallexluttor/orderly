@@ -1,9 +1,17 @@
 // ignore_for_file: file_names, unused_local_variable
-
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:image_picker/image_picker.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MaterialApp(home: ProductChat({'nombre': 'Chat', 'ruta_chat': 'chats/your_chat_document', 'foto_producto': 'path_to_product_photo'})));
+}
 
 class ProductChat extends StatefulWidget {
   final Map<String, dynamic> itemData;
@@ -11,7 +19,6 @@ class ProductChat extends StatefulWidget {
   const ProductChat(this.itemData, {super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProductChatState createState() => _ProductChatState();
 }
 
@@ -21,6 +28,7 @@ class _ProductChatState extends State<ProductChat> {
   final FocusNode _focusNode = FocusNode();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final ImagePicker _picker = ImagePicker();
 
   bool _isFirstMessage = true;
   double _opacity = 0.0;
@@ -58,8 +66,8 @@ class _ProductChatState extends State<ProductChat> {
         var chatInfo = userDocSnapshot.data()?['chatInfo'] as Map<String, dynamic>? ?? {};
         _isFirstMessage = !chatInfo.values.any((existingChat) {
           return existingChat['nombre'] == widget.itemData['nombre'] &&
-                 existingChat['foto_producto'] == widget.itemData['foto_producto'] &&
-                 existingChat['ruta_chat'] == widget.itemData['ruta_chat'];
+              existingChat['foto_producto'] == widget.itemData['foto_producto'] &&
+              existingChat['ruta_chat'] == widget.itemData['ruta_chat'];
         });
       }
     }
@@ -69,6 +77,7 @@ class _ProductChatState extends State<ProductChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           widget.itemData['nombre'],
           style: const TextStyle(fontFamily: "Poppins", fontSize: 13),
@@ -111,12 +120,12 @@ class _ProductChatState extends State<ProductChat> {
             var key = sortedKeys[index];
             var messageData = userMessages[key] as Map<String, dynamic>;
             var message = messageData['message'];
+            var base64Image = messageData['image'];
             var userType = messageData['user'];
             var timestamp = messageData['timestamp'] != null ? (messageData['timestamp'] as Timestamp).toDate() : DateTime.now();
             var formattedTime = "${timestamp.hour}:${timestamp.minute} ${timestamp.day}/${timestamp.month}/${timestamp.year}";
 
             bool isCustomer = userType == 'Customer';
-            bool isSeller = userType == 'Seller';
 
             return Align(
               alignment: isCustomer ? Alignment.centerRight : Alignment.centerLeft,
@@ -129,14 +138,28 @@ class _ProductChatState extends State<ProductChat> {
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
                     color: isCustomer ? Colors.green[100] : Colors.yellow[100],
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
                     crossAxisAlignment: isCustomer ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        message,
-                        style: const TextStyle(fontFamily: "Poppins", fontSize: 12),),
+                      if (base64Image != null)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenImage(base64Image: base64Image),
+                              ),
+                            );
+                          },
+                          child: Image.memory(base64Decode(base64Image)),
+                        ),
+                      if (message != null)
+                        Text(
+                          message,
+                          style: const TextStyle(fontFamily: "Poppins", fontSize: 12),
+                        ),
                       Text(formattedTime, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
                     ],
                   ),
@@ -156,16 +179,19 @@ class _ProductChatState extends State<ProductChat> {
       height: 50,
       child: Row(
         children: [
+          IconButton(
+            icon: const Icon(Icons.image),
+            onPressed: _sendImage,
+          ),
           Expanded(
             child: TextField(
               controller: _controller,
               focusNode: _focusNode,
-              
               decoration: InputDecoration(
                 hintText: 'Escribe tu mensaje',
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 filled: true,
                 hoverColor: Colors.blueAccent,
@@ -223,6 +249,44 @@ class _ProductChatState extends State<ProductChat> {
     _scrollToBottom();
   }
 
+  void _sendImage() async {
+    var user = _auth.currentUser;
+    if (user == null) return;
+
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) return;
+
+    File imageFile = File(pickedFile.path);
+    String base64Image = base64Encode(await imageFile.readAsBytes());
+
+    var chatRef = _firestore.doc(widget.itemData['ruta_chat']);
+    var snapshot = await chatRef.get();
+
+    if (!snapshot.exists) {
+      await chatRef.set({user.uid: {}});
+    }
+
+    var userMessages = snapshot.data()? [user.uid] as Map<String, dynamic>? ?? {};
+    var messageCount = userMessages.length;
+    var messageData = {
+      'image': base64Image,
+      'timestamp': FieldValue.serverTimestamp(),
+      'user': 'Customer',
+    };
+    userMessages[(messageCount + 1).toString()] = messageData;
+
+    await chatRef.update({user.uid: userMessages});
+
+    if (_isFirstMessage) {
+      await _updateUserChatInfo('Imagen enviada');
+      _isFirstMessage = false;
+    } else {
+      await _updateMessageInUserChatInfo('Imagen enviada');
+    }
+
+    _scrollToBottom();
+  }
+
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
@@ -251,7 +315,6 @@ class _ProductChatState extends State<ProductChat> {
     if (userDocSnapshot.exists) {
       var chatInfo = userDocSnapshot.data()?['chatInfo'] as Map<String, dynamic>? ?? {};
 
-      // Verificar si los datos ya existen
       bool exists = false;
       chatInfo.forEach((key, existingChat) {
         if (existingChat['nombre'] == chatData['nombre'] &&
@@ -299,8 +362,22 @@ class _ProductChatState extends State<ProductChat> {
   }
 }
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MaterialApp(home: ProductChat({'nombre': 'Chat', 'ruta_chat': 'chats/your_chat_document', 'foto_producto': 'path_to_product_photo'})));
+class FullScreenImage extends StatelessWidget {
+  final String base64Image;
+
+  const FullScreenImage({Key? key, required this.base64Image}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Image.memory(base64Decode(base64Image)),
+      ),
+    );
+  }
 }

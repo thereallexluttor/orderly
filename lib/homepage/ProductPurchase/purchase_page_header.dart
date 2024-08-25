@@ -83,8 +83,8 @@ class PurchasePageHeader extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 20)),
-        const SizedBox(width: 4),
+        Text(emoji, style: const TextStyle(fontSize: 15)),
+        const SizedBox(width: 1),
         Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,14 +95,18 @@ class PurchasePageHeader extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 fontFamily: "Poppins",
+                color: Colors.black
               ),
             ),
             Text(
               label,
               style: TextStyle(
                 fontSize: 10,
-                color: Color.fromARGB(255, 39, 39, 39),
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
                 fontFamily: "Poppins",
+
+
               ),
             ),
           ],
