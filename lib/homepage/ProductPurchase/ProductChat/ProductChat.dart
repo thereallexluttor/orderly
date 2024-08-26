@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'auth_service.dart';
 import 'chat_service.dart';
 import 'image_service.dart';
@@ -158,6 +159,16 @@ class _ProductChatState extends State<ProductChat> {
     );
   }
 
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
   void _sendMessage() async {
     if (_controller.text.isEmpty) return;
     var user = _authService.currentUser;
@@ -173,6 +184,10 @@ class _ProductChatState extends State<ProductChat> {
     };
 
     await _chatService.sendMessage(widget.itemData['ruta_chat'], user.uid, messageData);
+
+    // Aquí es donde guardamos el mensaje en la ruta de 'users/users'
+    await _updateUserChatInfo(user.uid, widget.itemData, messageText);
+
     _scrollToBottom();
   }
 
@@ -190,16 +205,54 @@ class _ProductChatState extends State<ProductChat> {
     };
 
     await _chatService.sendMessage(widget.itemData['ruta_chat'], user.uid, messageData);
+
+    // Aquí es donde guardamos la imagen en la ruta de 'users/users'
+    await _updateUserChatInfo(user.uid, widget.itemData, 'Imagen enviada');
+
     _scrollToBottom();
   }
 
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+  Future<void> _updateUserChatInfo(String userId, Map<String, dynamic> itemData, String messageText) async {
+    var userDocRef = FirebaseFirestore.instance
+        .collection('Orderly')
+        .doc('Users')
+        .collection('users')
+        .doc(userId);
+
+    var chatData = {
+      'nombre': itemData['nombre'],
+      'foto_producto': itemData['foto_producto'],
+      'ruta_chat': itemData['ruta_chat'],
+      'mensaje': messageText,
+      'hora': FieldValue.serverTimestamp(),
+    };
+
+    var userDocSnapshot = await userDocRef.get();
+    if (userDocSnapshot.exists) {
+      var chatInfo = userDocSnapshot.data()?['chatInfo'] as Map<String, dynamic>? ?? {};
+
+      bool exists = false;
+      chatInfo.forEach((key, existingChat) {
+        if (existingChat['nombre'] == chatData['nombre'] &&
+            existingChat['foto_producto'] == chatData['foto_producto'] &&
+            existingChat['ruta_chat'] == chatData['ruta_chat']) {
+          chatInfo[key] = chatData;  // Actualizar el mensaje y la hora si ya existe
+          exists = true;
+        }
+      });
+
+      if (!exists) {
+        var chatInfoCount = chatInfo.length;
+        chatInfo[(chatInfoCount + 1).toString()] = chatData;
+      }
+
+      await userDocRef.update({'chatInfo': chatInfo});
+    } else {
+      await userDocRef.set({
+        'chatInfo': {
+          '1': chatData,
+        }
+      });
     }
   }
 }
