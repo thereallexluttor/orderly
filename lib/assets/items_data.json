@@ -1,0 +1,34 @@
+[
+    {
+        "cash_back": false,
+        "valoracion": 0.8720193224029249,
+        "reviews": {},
+        "discount": 1,
+        "Index": 0,
+        "category": "Viela",
+        "precio": 821449,
+        "ventas": 36,
+        "stock": 54,
+        "especificaciones": "User-friendly design",
+        "nombre": "EMPAQUE DE MOTOR PARA POLO TIGUAN\u00a01,4",
+        "compatible": "Works with Series X",
+        "foto_producto": "https://media.istockphoto.com/id/1398787159/de/foto/querschnitt-des-industriellen-elektromotors-elektromotorteile-und-struktur-isoliert-auf-wei%C3%9Fem.jpg?s=612x612&w=0&k=20&c=hnWkFJkMG1fiM-YtRDZjw7MugbuZWN6A4JPAPB1VVoM=",
+        "id": "0"
+    },
+    {
+        "valoracion": 0.47644225749520486,
+        "reviews": {},
+        "cash_back": true,
+        "discount": 15,
+        "Index": 1,
+        "category": "Empaque",
+        "precio": 655394,
+        "ventas": 167,
+        "stock": 290,
+        "especificaciones": "Built to last",
+        "nombre": "EMPAQUE DE MOTOR \u00a0Golf Jetta A4 Beetle Sharan 1.8 turbo Passat 2000 a 2005 1.8 turbo.\u00a0",
+        "compatible": "Suitable for new and old versions",
+        "foto_producto": "https://media.istockphoto.com/id/1398787159/de/foto/querschnitt-des-industriellen-elektromotors-elektromotorteile-und-struktur-isoliert-auf-wei%C3%9Fem.jpg?s=612x612&w=0&k=20&c=hnWkFJkMG1fiM-YtRDZjw7MugbuZWN6A4JPAPB1VVoM=",
+        "id": "1"
+    }
+]

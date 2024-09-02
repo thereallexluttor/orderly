@@ -86,7 +86,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  assets: 
+  assets:
+    - lib/assets/items_data.json
     - lib/images/product_category/motos_y_autopartes.png
     - lib/images/product_category/moda_y_accesorios.png
     - lib/images/product_category/deportes_y_hobbies.png

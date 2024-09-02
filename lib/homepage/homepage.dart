@@ -11,6 +11,7 @@ import 'package:orderly/homepage/shopping_cart/shopping_cart.dart';
 import 'package:orderly/homepage/User/User.dart';
 import 'package:orderly/homepage/tabbar/TabItem.dart';
 
+import 'UserChats/BenjiBot/BenjiBot.dart';
 import 'ai/OrderlyAi.dart';
 
 class HomePage extends StatefulWidget {
@@ -172,7 +173,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       ChatInfoScreen(),
-      OrderlyAi(),
+      ChatScreen(),
       ShoppingCart(),
       Purchases(),
       UserPage(),
