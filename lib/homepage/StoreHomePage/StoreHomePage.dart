@@ -60,7 +60,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
       margin: EdgeInsets.all(0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Container(
-        height: MediaQuery.of(context).size.height - 0, // Adjust this value based on your layout
+        height: MediaQuery.of(context).size.height , // Adjust this value based on your layout
         child: Column(
           children: [
             Expanded(
@@ -70,7 +70,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
                     SliverAppBar(
                       backgroundColor: Colors.white,
                       surfaceTintColor: Colors.white,
-                      expandedHeight: MediaQuery.of(context).size.height - 330,
+                      expandedHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).size.height/1.85 + 70,
                       flexibleSpace: FlexibleSpaceBar(
                         background: StoreHeader(
                           bannerUrl: widget.storeData['banner'] ?? '',

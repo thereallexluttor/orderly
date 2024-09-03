@@ -16,6 +16,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, dynamic>> _messageJsons = [];
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
   late OpenAI openAI;
   String? jsonContextText;
@@ -164,6 +165,9 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       return;
     }
 
+    // Ocultar el teclado al enviar un mensaje
+    FocusScope.of(context).unfocus();
+
     setState(() {
       _controller.clear();
       _isLoading = true;
@@ -264,6 +268,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         });
       }
 
+      _scrollToBottom();
+
     } catch (e) {
       print("Error durante el proceso de mensaje: $e");
       setState(() {
@@ -276,6 +282,18 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
     });
   }
 
@@ -295,6 +313,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               padding: const EdgeInsets.all(8.0),
               itemCount: _messageJsons.length,
               itemBuilder: (context, index) {
@@ -380,6 +399,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       final controller = message['response']['animation_controller'] as AnimationController?;
       controller?.dispose();
     }
+    _scrollController.dispose();
     super.dispose();
   }
 }
