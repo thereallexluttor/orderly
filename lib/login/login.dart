@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -51,7 +52,7 @@ class _LogAndSignState extends State<LogAndSign> {
                 const DividerWithText(text: 'Ingresa aquí:'),
                 const SizedBox(height: 5),
                 _buildLoginButton(
-                  onPressed: () => handleLocationPermission(context),
+                  onPressed: () => handleSignIn(context),
                   iconPath: 'lib/images/interfaceicons/google.png',
                   text: 'Iniciar sesión con Google',
                 ),
@@ -114,6 +115,14 @@ class _LogAndSignState extends State<LogAndSign> {
     );
   }
 
+  Future<void> handleSignIn(BuildContext context) async {
+    if (kIsWeb) {
+      await _signInWithGoogleWeb();
+    } else {
+      await handleLocationPermission(context);  // This remains for mobile
+    }
+  }
+
   Future<void> handleLocationPermission(BuildContext context) async {
     final status = await Permission.location.status;
     if (status.isGranted) {
@@ -125,6 +134,37 @@ class _LogAndSignState extends State<LogAndSign> {
       } else if (await Permission.location.isDenied) {
         _showLocationPermissionDeniedDialog(context);
       }
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return;
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      print(userCredential.user?.displayName);
+    } catch (e) {
+      print('Error during Google sign in: $e');
+    }
+  }
+
+  Future<void> _signInWithGoogleWeb() async {
+    try {
+      final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+      print(userCredential.user?.displayName);
+    } catch (e) {
+      print('Error during Google sign in on web: $e');
     }
   }
 
@@ -147,24 +187,6 @@ class _LogAndSignState extends State<LogAndSign> {
         );
       },
     );
-  }
-
-  Future<void> _signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
-
-      final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      print(userCredential.user?.displayName);
-    } catch (e) {
-      print('Error during Google sign in: $e');
-    }
   }
 
   void _navigateToPage(BuildContext context, Widget page) {
